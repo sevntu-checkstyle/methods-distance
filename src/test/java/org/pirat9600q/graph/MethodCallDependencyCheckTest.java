@@ -12,7 +12,7 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
     @Test
     public void testThatWeCanWriteTests() throws Exception {
         final DefaultConfiguration config = createCheckConfig(MethodCallDependencyCheck.class);
-        verify(config, getInputPath("Input1.java"));
+        verify(config, getInputPath("InputIndependentMethods.java"));
     }
 
     private static String getInputPath(final String fileName) {
