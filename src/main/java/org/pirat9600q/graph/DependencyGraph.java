@@ -1,10 +1,11 @@
 package org.pirat9600q.graph;
 
+import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import org.apache.commons.collections.MapUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DependencyGraph {
 
@@ -20,6 +21,23 @@ public class DependencyGraph {
         matrix.setFromTo(nodeIndex(caller), nodeIndex(callee));
     }
 
+    public Set<DetailAST> getAllMethods() {
+        return nodeToIndex.keySet();
+    }
+
+    public List<DetailAST> getMethodDependencies(final DetailAST method) {
+        return mapIndicesToNodes(matrix.getSuccessorsOf(nodeIndex(method)));
+    }
+
+    public List<DetailAST> getMethodDependants(final DetailAST method) {
+        return mapIndicesToNodes(matrix.getPredecessorsOf(nodeIndex(method)));
+    }
+
+    private List<DetailAST> mapIndicesToNodes(final List<Integer> indices) {
+        final Map<Integer, DetailAST> indexToNode = getIndexToNodeMap();
+        return indices.stream().map(indexToNode::get).collect(Collectors.toList());
+    }
+
     private int nodeIndex(final DetailAST node) {
         if(nodeToIndex.containsKey(node)) {
             return nodeToIndex.get(node);
@@ -30,6 +48,10 @@ public class DependencyGraph {
             nodeToIndex.put(node, nodeIndex);
             return nodeIndex;
         }
+    }
+
+    private Map<Integer, DetailAST> getIndexToNodeMap() {
+        return MapUtils.invertMap(nodeToIndex);
     }
 
     @Override
@@ -69,6 +91,24 @@ public class DependencyGraph {
                     newMatrix[i][j] = matrix[i][j];
             order = newOrder;
             matrix = newMatrix;
+        }
+
+        public List<Integer> getSuccessorsOf(final int index) {
+            final List<Integer> result = new ArrayList<>();
+            for(int j = 0; j < matrix[index].length; ++j)
+                if(matrix[index][j]) {
+                    result.add(j);
+                }
+            return result;
+        }
+
+        public List<Integer> getPredecessorsOf(final int index) {
+            final List<Integer> result  = new ArrayList<>();
+            for(int i = 0; i < matrix.length; ++i)
+                if(matrix[i][index]) {
+                    result.add(i);
+                }
+            return result;
         }
 
         public boolean isSetFromTo(final int from, final int to) {
