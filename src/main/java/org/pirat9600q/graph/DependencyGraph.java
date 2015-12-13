@@ -1,6 +1,5 @@
 package org.pirat9600q.graph;
 
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.collections.MapUtils;
 
@@ -9,16 +8,24 @@ import java.util.stream.Collectors;
 
 public class DependencyGraph {
 
-    private final IncidenceMatrix matrix;
+    private final IncidenceMatrix matrix = new IncidenceMatrix();
+
+    private final Map<DetailAST, String> nodeToSignature = new HashMap<>();
 
     private final Map<DetailAST, Integer> nodeToIndex = new HashMap<>();
 
-    public DependencyGraph(final int initialOrder) {
-        matrix = new IncidenceMatrix(initialOrder);
+    public void addMethod(final DetailAST method, final String signatureText) {
+        matrix.growOrder(+1);
+        nodeToIndex.put(method, nodeToIndex.size());
+        nodeToSignature.put(method, signatureText);
+    }
+
+    public String getMethodSignature(final DetailAST method) {
+        return nodeToSignature.get(method);
     }
 
     public void setFromTo(final DetailAST caller, final DetailAST callee) {
-        matrix.setFromTo(nodeIndex(caller), nodeIndex(callee));
+        matrix.setFromTo(getNodeIndex(caller), getNodeIndex(callee));
     }
 
     public Set<DetailAST> getAllMethods() {
@@ -26,11 +33,11 @@ public class DependencyGraph {
     }
 
     public List<DetailAST> getMethodDependencies(final DetailAST method) {
-        return mapIndicesToNodes(matrix.getSuccessorsOf(nodeIndex(method)));
+        return mapIndicesToNodes(matrix.getSuccessorsOf(getNodeIndex(method)));
     }
 
     public List<DetailAST> getMethodDependants(final DetailAST method) {
-        return mapIndicesToNodes(matrix.getPredecessorsOf(nodeIndex(method)));
+        return mapIndicesToNodes(matrix.getPredecessorsOf(getNodeIndex(method)));
     }
 
     private List<DetailAST> mapIndicesToNodes(final List<Integer> indices) {
@@ -38,15 +45,12 @@ public class DependencyGraph {
         return indices.stream().map(indexToNode::get).collect(Collectors.toList());
     }
 
-    private int nodeIndex(final DetailAST node) {
+    private int getNodeIndex(final DetailAST node) {
         if(nodeToIndex.containsKey(node)) {
             return nodeToIndex.get(node);
         }
         else {
-            matrix.growOrder(+1);
-            final int nodeIndex = nodeToIndex.size();
-            nodeToIndex.put(node, nodeIndex);
-            return nodeIndex;
+            throw new RuntimeException("Method node " + node + "was not registered in dependency graph");
         }
     }
 
@@ -73,6 +77,10 @@ public class DependencyGraph {
         private int order;
 
         private boolean[][] matrix;
+
+        public IncidenceMatrix() {
+            this(0);
+        }
 
         public IncidenceMatrix(final int order) {
             matrix = createMatrix(order);
