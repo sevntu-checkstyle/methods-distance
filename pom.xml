@@ -10,13 +10,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <checkstyle-version>6.13</checkstyle-version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>6.11</version>
+            <version>${checkstyle-version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

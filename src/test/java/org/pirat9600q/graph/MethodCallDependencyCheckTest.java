@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
-import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -35,7 +34,8 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
                 .dependsOn("dependencyDependency1()")
                 .dependsOn("dependencyDependency2()")
                 .method("dependencyDependency1()")
-                .method("dependencyDependency2()");
+                .method("dependencyDependency2()")
+                .get();
         verifyGraph(dc, "InputSimpleDependency.java", expected);
     }
 
@@ -83,14 +83,14 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
     }
 
     public static Dependencies asDependencies(final DependencyGraph graph) {
-        final Dependencies result = Dependencies.builder();
+        final Builder result = Dependencies.builder();
         for(final DetailAST method : graph.getAllMethods()) {
             result.method(graph.getMethodSignature(method));
             for(final DetailAST dependency : graph.getMethodDependencies(method)) {
                 result.dependsOn(graph.getMethodSignature(dependency));
             }
         }
-        return result;
+        return result.get();
     }
 
     private static String getInputPath(final String fileName) {
@@ -124,7 +124,16 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
         }
     }
 
-    public static class Dependencies {
+    public interface Builder {
+
+        Builder method(final String methodName);
+
+        Builder dependsOn(final String method);
+
+        Dependencies get();
+    }
+
+    public static class Dependencies implements Builder {
 
         private final SortedMap<String, SortedSet<String>> methodDependencies = new TreeMap<>();
 
@@ -138,7 +147,7 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
 
         private Dependencies() {}
 
-        public Dependencies method(final String methodName) {
+        public Builder method(final String methodName) {
             if(method != null) {
                 methodDependencies.put(method, dependencies);
             }
@@ -147,13 +156,22 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
             return this;
         }
 
-        public Dependencies dependsOn(final String method) {
+        public Builder dependsOn(final String method) {
             dependencies.add(method);
             return this;
         }
 
-        public static Dependencies builder() {
+        public Dependencies get() {
+            if(method != null) {
+                methodDependencies.put(method, dependencies);
+            }
+            return this;
+        }
+
+        public static Builder builder() {
             return new Dependencies();
         }
+
+
     }
 }
