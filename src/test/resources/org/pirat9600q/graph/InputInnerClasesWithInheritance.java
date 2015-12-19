@@ -2,20 +2,34 @@ package org.pirat9600q.graph;
 
 public class InputInnerClasesWithInheritance {
 
-    void outerMethod() {
-
-    }
+    void method() {}
 
     class InnerBase {
-        void outerMethod() {
+        void method() {}
+    }
 
+    void instanceMethodCase() {
+        class Inner extends InnerBase {
+            void innerMethod() {
+                // call to InnerBase.method(), not to InputInnerClasesWithInheritance.method()
+                method();
+            }
         }
     }
 
-    class Inner extends InnerBase {
+    static void staticMethod() {}
 
-        void innerMethod() {
-            outerMethod(); // call to InnerBase.outerMethod(), not to InputInnerClasesWithInheritance.outerMethod()
+    static class InnerStaticBase {
+        static void staticMethod() {}
+    }
+
+    void staticMethodCase() {
+        class InnerStatic extends InnerStaticBase {
+            void method() {
+                //call to InnerStaticBase.staticMethod(), not to InputInnerClasesWithInheritance.staticMethod()
+                staticMethod();
+            }
         }
     }
+
 }
