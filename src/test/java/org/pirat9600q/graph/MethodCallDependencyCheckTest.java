@@ -11,6 +11,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.rmi.server.ExportException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,40 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
                 .method("dependencyDependency2()")
                 .get();
         verifyGraph(dc, "InputSimpleDependency.java", expected);
+    }
+
+    @Test
+    public void testEmptyInterface() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        verifyGraph(dc, "InputEmptyInterface.java", Dependencies.empty());
+    }
+
+    @Test
+    public void testMethodCallInInitialization() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        verifyGraph(dc, "InputMethodCallInInitialization.java", Dependencies.empty());
+    }
+
+    @Test
+    public void testAnonymousClasses() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Dependencies expected = Dependencies.builder()
+                .method("method()")
+                .method("a()")
+                .method("a(String)")
+                .method("topLevelMethod()")
+                .get();
+        verifyGraph(dc, "InputAnonymousClasses.java", expected);
+    }
+
+    @Test
+    public void testRecursiveMethod() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Dependencies expected = Dependencies.builder()
+                .method("method()")
+                .dependsOn("method()")
+                .get();
+        verifyGraph(dc, "InputRecursiveMethod.java", expected);
     }
 
     protected void verifyGraph(final Configuration config, final String fileName, final Dependencies expected) throws Exception {
@@ -170,6 +205,10 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
 
         public static Builder builder() {
             return new Dependencies();
+        }
+
+        public static Dependencies empty() {
+            return builder().get();
         }
 
 

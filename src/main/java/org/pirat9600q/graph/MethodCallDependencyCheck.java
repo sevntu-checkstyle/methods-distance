@@ -14,6 +14,8 @@ public class MethodCallDependencyCheck extends Check {
 
     private DependencyGraph graph;
 
+    private DetailAST topLevelClass;
+
     public DependencyGraph getGraph() {
         return graph;
     }
@@ -26,21 +28,29 @@ public class MethodCallDependencyCheck extends Check {
     @Override
     public void beginTree(DetailAST rootAST) {
         graph = new DependencyGraph();
+        topLevelClass = null;
     }
 
     @Override
     public void visitToken(DetailAST ast) {
         switch (ast.getType()) {
             case METHOD_CALL: {
-                final DetailAST enclosingMethod = getEnclosingMethod(ast);
-                final DetailAST enclosingClass = getEnclosingClass(ast);
-                final DetailAST calledMethod = getClassDeclaredMethodByCallSignature(enclosingClass, ast);
-                graph.setFromTo(enclosingMethod, calledMethod);
+                if(isNestedInsideMethodDef(ast) && isInsideClassDef(ast)) {
+                    final DetailAST enclosingMethod = getEnclosingMethod(ast);
+                    final DetailAST enclosingClass = getEnclosingClass(ast);
+                    if(enclosingClass.equals(topLevelClass)) {
+                        final DetailAST calledMethod = getClassDeclaredMethodByCallSignature(enclosingClass, ast);
+                        graph.setFromTo(enclosingMethod, calledMethod);
+                    }
+                }
             }
             break;
             case CLASS_DEF: {
-                for(final DetailAST method : getClassDeclaredMethods(ast)) {
-                    graph.addMethod(method, getMethodSignature(method));
+                if(topLevelClass == null) {
+                    topLevelClass = ast;
+                    for(final DetailAST method : getClassDeclaredMethods(ast)) {
+                        graph.addMethod(method, getMethodSignature(method));
+                    }
                 }
             }
             break;
@@ -111,7 +121,10 @@ public class MethodCallDependencyCheck extends Check {
             return possibleMethodDefs.get(0);
         }
         else {
-            throw new RuntimeException("Unimplemented");
+            //TODO if we have multiple methods with specified name and parameter count
+            // use some other signs to make more accurate gues.
+            // Currently we will just take first one
+            return possibleMethodDefs.get(0);
         }
     }
 
@@ -153,11 +166,47 @@ public class MethodCallDependencyCheck extends Check {
     }
 
     protected static DetailAST getEnclosingMethod(final DetailAST node) {
-        return getClosestParentOfType(node, METHOD_DEF);
+        return getClosestParentOfTypes(node, METHOD_DEF);
     }
 
     protected static DetailAST getEnclosingClass(final DetailAST node) {
-        return getClosestParentOfType(node, CLASS_DEF);
+        return getClosestParentOfTypes(node, CLASS_DEF);
+    }
+
+    protected static boolean isNestedInsideMethodDef(final DetailAST node) {
+        final DetailAST parent = getClosestParentOfTypes(node, METHOD_DEF, VARIABLE_DEF, LAMBDA);
+        switch (parent.getType()) {
+            case METHOD_DEF:
+                return true;
+            case LAMBDA:
+                return false;
+            case VARIABLE_DEF:
+                if(isFieldDeclaration(parent)) {
+                    return false;
+                }
+                else {
+                    return isNestedInsideMethodDef(parent);
+                }
+            default:
+                throw unexpectedTokenTypeException(parent.getType());
+        }
+    }
+
+    protected static boolean isInsideClassDef(final DetailAST node) {
+        final DetailAST parent = getClosestParentOfTypes(node, CLASS_DEF, LITERAL_NEW, INTERFACE_DEF);
+        switch (parent.getType()) {
+            case CLASS_DEF:
+                return true;
+            case LITERAL_NEW:
+            case INTERFACE_DEF:
+                return false;
+            default:
+                throw unexpectedTokenTypeException(parent.getType());
+        }
+    }
+
+    protected static boolean isFieldDeclaration(final DetailAST variableDef) {
+        return variableDef.getParent().getType() == OBJBLOCK;
     }
 
     /**
@@ -177,17 +226,31 @@ public class MethodCallDependencyCheck extends Check {
         return result;
     }
 
-    protected static DetailAST getClosestParentOfType(final DetailAST node, final int type) {
+    protected static DetailAST getClosestParentOfTypes(final DetailAST node, final Integer... ofTypes) {
         for(DetailAST parent = node.getParent(); parent != null; parent = parent.getParent()) {
-            if(parent.getType() == type) {
+            if(Arrays.asList(ofTypes).contains(parent.getType())) {
                 return parent;
             }
         }
+        final String tokenTypeNames = Arrays.stream(ofTypes)
+                .map(TokenUtils::getTokenName)
+                .collect(Collectors.joining(", "));
         final String msg = String.format(
-                "Node of type %s is not contained within node of type %s",
+                "Node of type %s is not contained within node of types %s",
                 TokenUtils.getTokenName(node.getType()),
-                TokenUtils.getTokenName(type));
+                tokenTypeNames);
         throw new RuntimeException(msg);
+    }
+
+    protected static boolean isNestedInNodeOfTypes(final DetailAST node, final Integer... ofTypes) {
+        for(DetailAST parent = node.getParent();; parent = parent.getParent()) {
+            if(parent == null) {
+                return false;
+            }
+            else if(Arrays.asList(ofTypes).contains(parent.getType())) {
+                return true;
+            }
+        }
     }
 
     protected static RuntimeException unexpectedTokenTypeException(final int type) {

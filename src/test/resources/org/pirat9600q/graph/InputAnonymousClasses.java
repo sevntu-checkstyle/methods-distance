@@ -21,6 +21,16 @@ public class InputAnonymousClasses {
 
             }
         };
+
+        class NiceRunner implements Runnable {
+
+            @Override
+            public void run() {
+
+            }
+        }
+
+        final Runnable rr = () -> {};
     }
 
     public void a() {
