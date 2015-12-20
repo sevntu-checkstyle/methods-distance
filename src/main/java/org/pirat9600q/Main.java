@@ -81,7 +81,7 @@ public final class Main {
                 else {
                     // create config helper object
                     final CliOptions config = convertCliToPojo(commandLine);
-                    config.configLocation = Main.class.getResource("checkstyle-config.xml").getPath();
+                    config.configLocation = "checkstyle-config.xml";
                     // run Checker
                     errorCounter = runCheckstyle(config);
                     exitStatus = errorCounter;

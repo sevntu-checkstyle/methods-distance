@@ -6,6 +6,8 @@
     <property name="charset" value="UTF-8" />
 
     <module name="TreeWalker">
-        <module name="org.pirat9600q.graph.MethodCallDependencyCheck"/>
+        <module name="org.pirat9600q.graph.MethodCallDependencyCheck">
+            <property name="writeResult" value="true"/>
+        </module>
     </module>
 </module>

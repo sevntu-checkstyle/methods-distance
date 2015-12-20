@@ -5,6 +5,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import static com.puppycrawl.tools.checkstyle.api.TokenTypes.*;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +17,14 @@ public class MethodCallDependencyCheck extends Check {
 
     private DetailAST topLevelClass;
 
+    private boolean writeResult = false;
+
     public DependencyGraph getGraph() {
         return graph;
+    }
+
+    public void setWriteResult(final boolean wr) {
+        writeResult = wr;
     }
 
     @Override
@@ -56,6 +63,14 @@ public class MethodCallDependencyCheck extends Check {
             break;
             default:
                 throw unexpectedTokenTypeException(ast.getType());
+        }
+    }
+
+    @Override
+    public void finishTree(DetailAST rootAST) {
+        if(writeResult) {
+            final String fileName = new File(getFileContents().getFileName()).getName() + ".dot";
+            DependencyGraphSerializer.writeToFile(graph, fileName);
         }
     }
 
