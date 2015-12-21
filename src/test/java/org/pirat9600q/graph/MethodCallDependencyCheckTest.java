@@ -29,6 +29,8 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
     public void testSimpleDependency() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
         final Dependencies expected = Dependencies.builder()
+                .method("InputSimpleDependency()")
+                .dependsOn("dependant()")
                 .method("dependant()")
                 .dependsOn("dependency()")
                 .method("dependency()")

@@ -47,7 +47,9 @@ public class MethodCallDependencyCheck extends Check {
                     final DetailAST enclosingClass = getEnclosingClass(ast);
                     if(enclosingClass.equals(topLevelClass)) {
                         final DetailAST calledMethod = getClassDeclaredMethodByCallSignature(enclosingClass, ast);
-                        graph.setFromTo(enclosingMethod, calledMethod);
+                        if(calledMethod != null) {
+                            graph.setFromTo(enclosingMethod, calledMethod);
+                        }
                     }
                 }
             }
@@ -132,14 +134,17 @@ public class MethodCallDependencyCheck extends Check {
                 classNode,
                 getMethodCallName(methodCall),
                 getMethodCallParameterCount(methodCall));
-        if(possibleMethodDefs.size() == 1) {
-            return possibleMethodDefs.get(0);
-        }
-        else {
+        if(possibleMethodDefs.size() > 1) {
             //TODO if we have multiple methods with specified name and parameter count
             // use some other signs to make more accurate gues.
             // Currently we will just take first one
             return possibleMethodDefs.get(0);
+        }
+        else if(possibleMethodDefs.size() == 1) {
+            return possibleMethodDefs.get(0);
+        }
+        else {
+            return null;
         }
     }
 
@@ -153,7 +158,7 @@ public class MethodCallDependencyCheck extends Check {
     }
 
     protected static List<DetailAST> getClassDeclaredMethods(final DetailAST classDef) {
-        return getNodeChildren(classDef.findFirstToken(OBJBLOCK), METHOD_DEF);
+        return getNodeChildren(classDef.findFirstToken(OBJBLOCK), METHOD_DEF, CTOR_DEF);
     }
 
     protected static String getMethodDefName(final DetailAST methodDef) {
@@ -181,7 +186,7 @@ public class MethodCallDependencyCheck extends Check {
     }
 
     protected static DetailAST getEnclosingMethod(final DetailAST node) {
-        return getClosestParentOfTypes(node, METHOD_DEF);
+        return getClosestParentOfTypes(node, METHOD_DEF, CTOR_DEF);
     }
 
     protected static DetailAST getEnclosingClass(final DetailAST node) {
@@ -189,9 +194,10 @@ public class MethodCallDependencyCheck extends Check {
     }
 
     protected static boolean isNestedInsideMethodDef(final DetailAST node) {
-        final DetailAST parent = getClosestParentOfTypes(node, METHOD_DEF, VARIABLE_DEF, LAMBDA);
+        final DetailAST parent = getClosestParentOfTypes(node, METHOD_DEF, CTOR_DEF, VARIABLE_DEF, LAMBDA);
         switch (parent.getType()) {
             case METHOD_DEF:
+            case CTOR_DEF:
                 return true;
             case LAMBDA:
                 return false;

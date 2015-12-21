@@ -2,6 +2,10 @@ package org.pirat9600q.graph;
 
 public class InputSimpleDependency {
 
+    public InputSimpleDependency() {
+        dependant();
+    }
+
     public void dependant() {
         dependency();
     }
