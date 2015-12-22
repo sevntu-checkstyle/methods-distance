@@ -12,7 +12,6 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import java.rmi.server.ExportException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,13 +76,6 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
         verifyGraph(dc, "InputRecursiveMethod.java", expected);
     }
 
-    @Ignore
-    @Test
-    public void testTextStatistics() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        verifyGraph(dc, "InputTextStatistics.java", Dependencies.empty());
-    }
-
     @Test
     public void testMethodNameClashes() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
@@ -118,6 +110,21 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
                 .method("m(List[]...)")
                 .get();
         verifyGraph(dc, "InputMethodSignatures.java", expected);
+    }
+
+    @Test
+    public void testVarargMethodCall() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Dependencies expected = Dependencies.builder()
+                .method("varargMethod(Integer...)")
+                .method("c1()")
+                .dependsOn("varargMethod(Integer...)")
+                .method("c2()")
+                .dependsOn("varargMethod(Integer...)")
+                .method("c3()")
+                .dependsOn("varargMethod(Integer...)")
+                .get();
+        verifyGraph(dc, "InputVarargMethodCall.java", expected);
     }
 
     protected void verifyGraph(final Configuration config, final String fileName, final Dependencies expected) throws Exception {

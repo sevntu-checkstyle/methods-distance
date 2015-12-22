@@ -159,30 +159,47 @@ public class MethodCallDependencyCheck extends Check {
     protected static DetailAST getClassDeclaredMethodByCallSignature(
             final DetailAST classNode, final DetailAST methodCall)
     {
-        final List<DetailAST> possibleMethodDefs = getClassMethodDefsByNameAndParameterCount(
+        final List<DetailAST> possibleMethodDefs = getClassMethodDefsByName(
                 classNode,
-                getMethodCallName(methodCall),
-                getMethodCallParameterCount(methodCall));
-        if(possibleMethodDefs.size() > 1) {
-            //TODO if we have multiple methods with specified name and parameter count
-            // use some other signs to make more accurate gues.
-            // Currently we will just take first one
-            return possibleMethodDefs.get(0);
-        }
-        else if(possibleMethodDefs.size() == 1) {
-            return possibleMethodDefs.get(0);
+                getMethodCallName(methodCall));
+
+        if(possibleMethodDefs.isEmpty()) {
+            return null;
         }
         else {
+            for(final DetailAST methodDef : possibleMethodDefs) {
+                final int methodDefParameterCount = getMethodDefParameterCount(methodDef);
+                final int methodCallParameterCount = getMethodCallParameterCount(methodCall);
+                if(isVariableArgumentMethodDef(methodDef)) {
+                    if(methodCallParameterCount >= methodDefParameterCount - 1) {
+                        return methodDef;
+                    }
+                }
+                else if(methodCallParameterCount == methodDefParameterCount) {
+                    return methodDef;
+                }
+            }
             return null;
         }
     }
 
-    protected static List<DetailAST> getClassMethodDefsByNameAndParameterCount(
-            final DetailAST classDef, final String methodName, final int parameterCount)
+    private static boolean isVariableArgumentMethodDef(DetailAST methodDef) {
+        final DetailAST parameters = methodDef.findFirstToken(PARAMETERS);
+        final List<DetailAST> parameterDefs = getNodeChildren(parameters, PARAMETER_DEF);
+        if(parameterDefs.isEmpty()) {
+            return false;
+        }
+        else {
+            final DetailAST lastParameterDef = parameterDefs.get(parameterDefs.size() - 1);
+            return lastParameterDef.findFirstToken(ELLIPSIS) != null;
+        }
+    }
+
+    protected static List<DetailAST> getClassMethodDefsByName(
+            final DetailAST classDef, final String methodName)
     {
         return getClassDeclaredMethods(classDef).stream()
                 .filter(methodDef -> getMethodDefName(methodDef).equals(methodName))
-                .filter(methodDef -> getMethodDefParameterCount(methodDef) == parameterCount)
                 .collect(Collectors.toList());
     }
 
@@ -296,17 +313,6 @@ public class MethodCallDependencyCheck extends Check {
                 TokenUtils.getTokenName(node.getType()),
                 tokenTypeNames);
         throw new RuntimeException(msg);
-    }
-
-    protected static boolean isNestedInNodeOfTypes(final DetailAST node, final Integer... ofTypes) {
-        for(DetailAST parent = node.getParent();; parent = parent.getParent()) {
-            if(parent == null) {
-                return false;
-            }
-            else if(Arrays.asList(ofTypes).contains(parent.getType())) {
-                return true;
-            }
-        }
     }
 
     protected static RuntimeException unexpectedTokenTypeException(final DetailAST node) {
