@@ -246,13 +246,11 @@ public class MethodCallDependencyCheck extends Check {
     }
 
     protected static boolean isNestedInsideMethodDef(final DetailAST node) {
-        final DetailAST parent = getClosestParentOfTypes(node, METHOD_DEF, CTOR_DEF, VARIABLE_DEF, LAMBDA);
+        final DetailAST parent = getClosestParentOfTypes(node, METHOD_DEF, CTOR_DEF, VARIABLE_DEF);
         switch (parent.getType()) {
             case METHOD_DEF:
             case CTOR_DEF:
                 return true;
-            case LAMBDA:
-                return false;
             case VARIABLE_DEF:
                 if(isFieldDeclaration(parent)) {
                     return false;
