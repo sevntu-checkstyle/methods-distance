@@ -7,6 +7,7 @@ import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -74,6 +75,49 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
                 .dependsOn("method()")
                 .get();
         verifyGraph(dc, "InputRecursiveMethod.java", expected);
+    }
+
+    @Ignore
+    @Test
+    public void testTextStatistics() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        verifyGraph(dc, "InputTextStatistics.java", Dependencies.empty());
+    }
+
+    @Test
+    public void testMethodNameClashes() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Dependencies expected = Dependencies.builder()
+                .method("method()")
+                .method("format(String)")
+                .get();
+        verifyGraph(dc, "InputMethodNameClashes.java", expected);
+    }
+
+    @Test
+    public void testMethodSignatures() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Dependencies expected = Dependencies.builder()
+                .method("m()")
+                .method("m(boolean)")
+                .method("m(char)")
+                .method("m(byte)")
+                .method("m(short)")
+                .method("m(int)")
+                .method("m(long)")
+                .method("m(double)")
+                .method("m(String)")
+                .method("m(String,String)")
+                .method("m(String,Integer...)")
+                .method("m(Integer...)")
+                .method("m(int[])")
+                .method("m(Long[])")
+                .method("m(List)")
+                .method("m(String,List...)")
+                .method("m(List[])")
+                .method("m(List[]...)")
+                .get();
+        verifyGraph(dc, "InputMethodSignatures.java", expected);
     }
 
     protected void verifyGraph(final Configuration config, final String fileName, final Dependencies expected) throws Exception {

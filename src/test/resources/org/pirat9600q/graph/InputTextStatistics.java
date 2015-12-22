@@ -1,6 +1,5 @@
 package org.pirat9600q.graph;
 
-import com.google.common.collect.ImmutableSet;
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import static com.puppycrawl.tools.checkstyle.api.TokenTypes.*;
@@ -10,21 +9,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MethodCallDependencyCheck extends Check {
-
-    private static final Set<Integer> PRIMITIVE_TOKEN_TYPES = ImmutableSet.of(
-            LITERAL_VOID,
-            LITERAL_BOOLEAN,
-            LITERAL_CHAR,
-            LITERAL_BYTE,
-            LITERAL_SHORT,
-            LITERAL_INT,
-            LITERAL_LONG,
-            LITERAL_DOUBLE
-    );
+public class InputTextStatistics extends Check {
 
     private DependencyGraph graph;
 
@@ -77,7 +64,7 @@ public class MethodCallDependencyCheck extends Check {
             }
             break;
             default:
-                throw unexpectedTokenTypeException(ast);
+                throw unexpectedTokenTypeException(ast.getType());
         }
     }
 
@@ -100,42 +87,26 @@ public class MethodCallDependencyCheck extends Check {
      * @return signature text
      */
     protected static String getMethodSignature(final DetailAST methodDef) {
+        final List<String> parameterList = new ArrayList<>();
         final DetailAST parameters = methodDef.findFirstToken(PARAMETERS);
-        final String parametersText = getNodeChildren(parameters, PARAMETER_DEF).stream()
-                .map(MethodCallDependencyCheck::getMethodParameterDefText)
-                .collect(Collectors.joining(","));
-        return String.format("%s(%s)", getMethodDefName(methodDef), parametersText);
-    }
-
-    protected static String getMethodParameterDefText(final DetailAST parameterDef) {
-        final DetailAST type = parameterDef.findFirstToken(TYPE);
-        final DetailAST typeFirstChild = type.getFirstChild();
-        String typeName;
-        switch (typeFirstChild.getType()) {
-            case IDENT:
-                typeName = typeFirstChild.getText();
-                break;
-            case DOT:
-                typeName = typeFirstChild.getNextSibling().getText();
-                break;
-            case ARRAY_DECLARATOR:
-                typeName = typeFirstChild.getFirstChild().getText();
-                break;
-            default:
-                if(PRIMITIVE_TOKEN_TYPES.contains(typeFirstChild.getType())) {
-                    typeName = typeFirstChild.getText();
-                }
-                else {
-                    throw unexpectedTokenTypeException(typeFirstChild);
-                }
+        for(final DetailAST parameterDef : getNodeChildren(parameters, PARAMETER_DEF)) {
+            final DetailAST type = parameterDef.findFirstToken(TYPE);
+            final int typeFirstChildType = type.getFirstChild().getType();
+            final String typeName;
+            switch (typeFirstChildType) {
+                case IDENT:
+                    typeName = type.getFirstChild().getText();
+                    break;
+                case DOT:
+                    typeName = type.getFirstChild().getNextSibling().getText();
+                    break;
+                default:
+                    throw unexpectedTokenTypeException(typeFirstChildType);
+            }
+            parameterList.add(typeName);
         }
-        if(typeFirstChild.getType() == ARRAY_DECLARATOR) {
-            typeName += "[]";
-        }
-        if(parameterDef.findFirstToken(ELLIPSIS) != null) {
-            typeName += "...";
-        }
-        return typeName;
+        final String params = parameterList.stream().collect(Collectors.joining(","));
+        return String.format("%s(%s)", getMethodDefName(methodDef), params);
     }
 
     /**
@@ -206,7 +177,7 @@ public class MethodCallDependencyCheck extends Check {
             case DOT:
                 return methodCallFirstChild.getLastChild().getText();
             default:
-                throw unexpectedTokenTypeException(methodCallFirstChild);
+                throw unexpectedTokenTypeException(methodCallFirstChild.getType());
         }
     }
 
@@ -244,7 +215,7 @@ public class MethodCallDependencyCheck extends Check {
                     return isNestedInsideMethodDef(parent);
                 }
             default:
-                throw unexpectedTokenTypeException(parent);
+                throw unexpectedTokenTypeException(parent.getType());
         }
     }
 
@@ -257,7 +228,7 @@ public class MethodCallDependencyCheck extends Check {
             case INTERFACE_DEF:
                 return false;
             default:
-                throw unexpectedTokenTypeException(parent);
+                throw unexpectedTokenTypeException(parent.getType());
         }
     }
 
@@ -309,8 +280,7 @@ public class MethodCallDependencyCheck extends Check {
         }
     }
 
-    protected static RuntimeException unexpectedTokenTypeException(final DetailAST node) {
-        return new RuntimeException("Unexpected token " + node + " of type "
-                + TokenUtils.getTokenName(node.getType()));
+    protected static RuntimeException unexpectedTokenTypeException(final int type) {
+        return new RuntimeException("Unexpected token of type " + TokenUtils.getTokenName(type));
     }
 }
