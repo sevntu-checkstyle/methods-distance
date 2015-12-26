@@ -138,6 +138,17 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
         verifyGraph(dc, "InputMethodCallsInLambda.java", expected);
     }
 
+    @Test
+    public void testMethodCallThroughMethodReference() throws Exception {
+        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Dependencies expected = Dependencies.builder()
+                .method("a()")
+                .dependsOn("filter(Integer)")
+                .method("filter(Integer)")
+                .get();
+        verifyGraph(dc, "InputMethodCallThroughMethodReference.java", expected);
+    }
+
     protected void verifyGraph(final Configuration config, final String fileName, final Dependencies expected) throws Exception {
         verify(config, getInputPath(fileName));
         final MethodCallDependencyCheck check = moduleFactory.getLastCheckInstance();

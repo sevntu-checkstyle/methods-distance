@@ -42,7 +42,7 @@ public class MethodCallDependencyCheck extends Check {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[]{METHOD_CALL, CLASS_DEF};
+        return new int[]{METHOD_CALL, METHOD_REF, CLASS_DEF};
     }
 
     @Override
@@ -63,6 +63,20 @@ public class MethodCallDependencyCheck extends Check {
                         if(calledMethod != null) {
                             graph.setFromTo(enclosingMethod, calledMethod);
                         }
+                    }
+                }
+            }
+            break;
+            case METHOD_REF: {
+                if(isNestedInsideMethodDef(ast) &&
+                    isInsideClassDef(ast) &&
+                    isMethodRefToStaticMethodOfClass(ast, topLevelClass))
+                {
+                    final DetailAST calledMethod =
+                            getClassStaticDeclaredMethodByMethodRefCall(topLevelClass, ast);
+                    if(calledMethod != null) {
+                        final DetailAST caller = getEnclosingMethod(ast);
+                        graph.setFromTo(caller, calledMethod);
                     }
                 }
             }
@@ -159,7 +173,7 @@ public class MethodCallDependencyCheck extends Check {
     protected static DetailAST getClassDeclaredMethodByCallSignature(
             final DetailAST classNode, final DetailAST methodCall)
     {
-        final List<DetailAST> possibleMethodDefs = getClassMethodDefsByName(
+        final List<DetailAST> possibleMethodDefs = getClassDeclaredMethodDefsByName(
                 classNode,
                 getMethodCallName(methodCall));
 
@@ -183,6 +197,37 @@ public class MethodCallDependencyCheck extends Check {
         }
     }
 
+    protected static DetailAST getClassStaticDeclaredMethodByMethodRefCall(final DetailAST classDef, final DetailAST methodRef) {
+        final String calledMethodName = getMethodRefMethodName(methodRef);
+        final List<DetailAST> possibleMethods = getClassDeclaredStaticMethodsByName(classDef, calledMethodName);
+        if(possibleMethods.isEmpty()) {
+            return null;
+        }
+        else {
+            return possibleMethods.get(0);
+        }
+    }
+
+    protected static List<DetailAST> getClassDeclaredStaticMethodsByName(final DetailAST classDef, final String methodName) {
+        return getClassDeclaredMethodDefsByName(classDef, methodName).stream()
+                .filter(MethodCallDependencyCheck::isStaticMethodDef)
+                .collect(Collectors.toList());
+    }
+
+    private static boolean isStaticMethodDef(DetailAST methodDef) {
+        return methodDef.findFirstToken(MODIFIERS).findFirstToken(LITERAL_STATIC) != null;
+    }
+
+    protected static String getMethodRefMethodName(DetailAST methodRef) {
+        return methodRef.getLastChild().getText();
+    }
+
+    protected static boolean isMethodRefToStaticMethodOfClass(final DetailAST methodRef, final DetailAST classDef) {
+        final String calledClassName = methodRef.getFirstChild().getText();
+        final String enclosingClassName = classDef.findFirstToken(IDENT).getText();
+        return calledClassName.equals(enclosingClassName);
+    }
+
     private static boolean isVariableArgumentMethodDef(DetailAST methodDef) {
         final DetailAST parameters = methodDef.findFirstToken(PARAMETERS);
         final List<DetailAST> parameterDefs = getNodeChildren(parameters, PARAMETER_DEF);
@@ -195,7 +240,7 @@ public class MethodCallDependencyCheck extends Check {
         }
     }
 
-    protected static List<DetailAST> getClassMethodDefsByName(
+    protected static List<DetailAST> getClassDeclaredMethodDefsByName(
             final DetailAST classDef, final String methodName)
     {
         return getClassDeclaredMethods(classDef).stream()
