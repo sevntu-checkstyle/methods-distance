@@ -2,6 +2,8 @@ package org.pirat9600q.graph;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,16 +62,12 @@ public class DependencyGraph {
 
     @Override
     public boolean equals(Object o) {
-        if(o == null) {
-            return false;
-        }
-        else if(o instanceof DependencyGraph) {
-            final DependencyGraph dg = (DependencyGraph)o;
-            return matrix.equals(dg.matrix) && nodeToIndex.equals(dg.nodeToIndex);
-        }
-        else {
-            return false;
-        }
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     private static class IncidenceMatrix {
@@ -137,24 +135,12 @@ public class DependencyGraph {
 
         @Override
         public boolean equals(Object o) {
-            if(o == null) {
-                return false;
-            }
-            else if(o instanceof IncidenceMatrix) {
-                final IncidenceMatrix other = (IncidenceMatrix)o;
-                if(order == other.order) {
-                    boolean matricesAreEqual = true;
-                    for(int i = 0; i < matrix.length; ++i)
-                        matricesAreEqual = matricesAreEqual && Arrays.equals(matrix[i], other.matrix[i]);
-                    return matricesAreEqual;
-                }
-                else {
-                    return false;
-                }
-            }
-            else {
-                return false;
-            }
+            return EqualsBuilder.reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
         }
     }
 }
