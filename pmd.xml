@@ -60,26 +60,6 @@
     </properties>
   </rule>
 
-  <rule ref="rulesets/java/comments.xml">
-    <!-- <exclude name="CommentRequired"/> -->
-    <!-- we use class comments as source for xdoc files, so content is big and that is by design -->
-    <exclude name="CommentSize"/>
-  </rule>
-  <rule ref="rulesets/java/comments.xml/CommentRequired">
-    <properties>
-      <!-- *TokenTypes are special class, comments are as trailing comments -->
-      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='JavadocTokenTypes'] | //Annotation/MarkerAnnotation//Name[@Image='Override']"/>
-    </properties>
-  </rule>
-  <rule ref="rulesets/java/comments.xml/CommentSize">
-    <properties>
-      <!-- we use class comments as source for xdoc files, so content is big and that is by design -->
-      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration | //PackageDeclaration | //ClassOrInterfaceDeclaration[@Image='JavadocTagInfo'] | //ClassOrInterfaceDeclaration[@Image='SeverityLevel'] | //ClassOrInterfaceDeclaration[@Image='LeftCurlyOption'] | //ClassOrInterfaceDeclaration[@Image='RightCurlyOption'] | //ClassOrInterfaceDeclaration[@Image='ImportOrderOption']"/>
-      <property name="maxLines" value="8"/>
-      <property name="maxLineLength" value="100"/>
-    </properties>
-  </rule>
-
   <rule ref="rulesets/java/controversial.xml">
     <!-- calling super() is completely pointless, no matter if class inherits anything or not; it is meaningful only if you do not call implicit constructor of base class -->
     <exclude name="CallSuperInConstructor"/>

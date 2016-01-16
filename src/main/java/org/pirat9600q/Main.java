@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.*;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
-import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -289,13 +288,13 @@ public final class Main {
         // setup the output stream
         OutputStream out;
         boolean closeOutputStream;
-        if (outputLocation != null) {
-            out = new FileOutputStream(outputLocation);
-            closeOutputStream = true;
-        }
-        else {
+        if (outputLocation == null) {
             out = System.out;
             closeOutputStream = false;
+        }
+        else {
+            out = new FileOutputStream(outputLocation);
+            closeOutputStream = true;
         }
 
         // setup a listener

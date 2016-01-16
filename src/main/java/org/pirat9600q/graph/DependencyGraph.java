@@ -92,28 +92,32 @@ public class DependencyGraph {
         public void growOrder(final int by) {
             final int newOrder = order + by;
             final boolean[][] newMatrix = createMatrix(newOrder);
-            for(int i = 0; i < matrix.length; ++i)
-                for(int j = 0; j < matrix[i].length; ++j)
+            for(int i = 0; i < matrix.length; ++i) {
+                for(int j = 0; j < matrix[i].length; ++j) {
                     newMatrix[i][j] = matrix[i][j];
+                }
+            }
             order = newOrder;
             matrix = newMatrix;
         }
 
         public List<Integer> getSuccessorsOf(final int index) {
             final List<Integer> result = new ArrayList<>();
-            for(int j = 0; j < matrix[index].length; ++j)
+            for(int j = 0; j < matrix[index].length; ++j) {
                 if(matrix[index][j]) {
                     result.add(j);
                 }
+            }
             return result;
         }
 
         public List<Integer> getPredecessorsOf(final int index) {
             final List<Integer> result  = new ArrayList<>();
-            for(int i = 0; i < matrix.length; ++i)
+            for(int i = 0; i < matrix.length; ++i) {
                 if(matrix[i][index]) {
                     result.add(i);
                 }
+            }
             return result;
         }
 
