@@ -5,7 +5,11 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DependencyGraph {
@@ -48,11 +52,12 @@ public class DependencyGraph {
     }
 
     private int getNodeIndex(final DetailAST node) {
-        if(nodeToIndex.containsKey(node)) {
+        if (nodeToIndex.containsKey(node)) {
             return nodeToIndex.get(node);
         }
         else {
-            throw new RuntimeException("Method node " + node + "was not registered in dependency graph");
+            throw new RuntimeException(
+                    "Method node " + node + "was not registered in dependency graph");
         }
     }
 
@@ -76,11 +81,11 @@ public class DependencyGraph {
 
         private boolean[][] matrix;
 
-        public IncidenceMatrix() {
+        IncidenceMatrix() {
             this(0);
         }
 
-        public IncidenceMatrix(final int order) {
+        IncidenceMatrix(final int order) {
             matrix = createMatrix(order);
             this.order = order;
         }
@@ -92,8 +97,8 @@ public class DependencyGraph {
         public void growOrder(final int by) {
             final int newOrder = order + by;
             final boolean[][] newMatrix = createMatrix(newOrder);
-            for(int i = 0; i < matrix.length; ++i) {
-                for(int j = 0; j < matrix[i].length; ++j) {
+            for (int i = 0; i < matrix.length; ++i) {
+                for (int j = 0; j < matrix[i].length; ++j) {
                     newMatrix[i][j] = matrix[i][j];
                 }
             }
@@ -103,8 +108,8 @@ public class DependencyGraph {
 
         public List<Integer> getSuccessorsOf(final int index) {
             final List<Integer> result = new ArrayList<>();
-            for(int j = 0; j < matrix[index].length; ++j) {
-                if(matrix[index][j]) {
+            for (int j = 0; j < matrix[index].length; ++j) {
+                if (matrix[index][j]) {
                     result.add(j);
                 }
             }
@@ -112,9 +117,9 @@ public class DependencyGraph {
         }
 
         public List<Integer> getPredecessorsOf(final int index) {
-            final List<Integer> result  = new ArrayList<>();
-            for(int i = 0; i < matrix.length; ++i) {
-                if(matrix[i][index]) {
+            final List<Integer> result = new ArrayList<>();
+            for (int i = 0; i < matrix.length; ++i) {
+                if (matrix[i][index]) {
                     result.add(i);
                 }
             }

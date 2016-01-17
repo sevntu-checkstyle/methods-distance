@@ -11,11 +11,15 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-public class Main {
+public final class Main {
+
+    private Main() { }
+
     public static void main(String[] args) throws CheckstyleException {
-        final DefaultConfiguration mcdc = new DefaultConfiguration(MethodCallDependencyCheck.class.getCanonicalName());
+        final DefaultConfiguration mcdc = new DefaultConfiguration(
+                MethodCallDependencyCheck.class.getCanonicalName());
         mcdc.addAttribute("writeResult", "true");
-        final SimpleModuleFactory moduleFactory = new SimpleModuleFactory();
+        final ModuleFactoryImpl moduleFactory = new ModuleFactoryImpl();
         final TreeWalker tw = new TreeWalker();
         tw.setModuleFactory(moduleFactory);
         tw.finishLocalSetup();
@@ -28,13 +32,14 @@ public class Main {
         checker.process(files);
     }
 
-    public static class SimpleModuleFactory implements ModuleFactory {
+    public static final class ModuleFactoryImpl implements ModuleFactory {
 
         @Override
         public Object createModule(String name) throws CheckstyleException {
             try {
                 return Class.forName(name).newInstance();
-            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            }
+            catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 throw new CheckstyleException("Failed to instantiate module " + name, e);
             }
         }
