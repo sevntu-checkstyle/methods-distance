@@ -20,6 +20,13 @@ public class DependencyGraph {
 
     private final Map<DetailAST, Integer> nodeToIndex = new HashMap<>();
 
+    /**
+     * Add method to dependency graph. Nodes should be added in the order
+     * they appear in class body.
+     *
+     * @param method method definition node
+     * @param signatureText method definition signature text
+     */
     public void addMethod(final DetailAST method, final String signatureText) {
         matrix.growOrder(+1);
         nodeToIndex.put(method, nodeToIndex.size());
@@ -28,6 +35,19 @@ public class DependencyGraph {
 
     public String getMethodSignature(final DetailAST method) {
         return nodeToSignature.get(method);
+    }
+
+    /**
+     * Get distance between two method declarations in terms of separating method definitions count.
+     *
+     * @param firstMethod first method definition node
+     * @param secondMethod second method definition node
+     * @return number of separating method definitions
+     */
+    public int getMethodDistance(final DetailAST firstMethod, final DetailAST secondMethod) {
+        final int firstIndex = getNodeIndex(firstMethod);
+        final int secondIndex = getNodeIndex(secondMethod);
+        return Math.abs(firstIndex - secondIndex) - 1;
     }
 
     public void setFromTo(final DetailAST caller, final DetailAST callee) {
