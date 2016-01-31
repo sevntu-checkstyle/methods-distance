@@ -9,6 +9,9 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.pirat9600q.graph.MethodCallInfo.CallType;
+import org.pirat9600q.graph.MethodInfo.Accessibility;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -69,11 +72,26 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
     @Test
     public void testRecursiveMethod() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("method()")
-                .dependsOn("method()")
+        final DependencyInfo dependencyInfo = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder()
+                    .signature("method()")
+                    .isStatic(false)
+                    .isOverride(false)
+                    .isOverloaded(false)
+                    .isVarArg(false)
+                    .minArgCount(0)
+                    .index(0)
+                    .accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethodCall(MethodCallInfo.builder()
+                    .callerIndex(0)
+                    .calleeIndex(0)
+                    .lineNo(6)
+                    .columnNo(14)
+                    .callType(CallType.METHOD_CALL)
+                    .get())
                 .get();
-        verifyGraph(dc, "InputRecursiveMethod.java", expected);
+        verifyInfo(dc, "InputRecursiveMethod.java", dependencyInfo);
     }
 
     @Test
@@ -156,6 +174,13 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
         mustBeSame(expected, asDependencies(check.getGraph()));
     }
 
+    protected void verifyInfo(final Configuration config, final String fileName, final DependencyInfo expected) throws Exception {
+        verify(config, getInputPath(fileName));
+        final MethodCallDependencyCheck check = moduleFactory.getLastCheckInstance();
+        assertNotNull(MethodCallDependencyCheck.class.getSimpleName() + " was not instantiated", check);
+        mustBeSame(expected, check.getDependencyInfo());
+    }
+
     protected Checker createChecker(Configuration checkConfig)
             throws Exception {
         final DefaultConfiguration dc = createCheckerConfig(checkConfig);
@@ -171,6 +196,34 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
         checker.configure(dc);
         checker.addListener(new BriefLogger(stream));
         return checker;
+    }
+
+    public static void mustBeSame(final DependencyInfo expected, final DependencyInfo actual) {
+        for(final MethodInfo expectedMethod : expected.getMethods()) {
+            assertThat("Method " + expectedMethod.getSignature() + " is not present is actual info",
+                    actual.getMethods(), hasItem(expectedMethod));
+        }
+        for(final MethodInfo actualMethod : actual.getMethods()) {
+            assertThat("Method " + actualMethod.getSignature() + " is not present in expected info",
+                    expected.getMethods(), hasItem(actualMethod));
+        }
+        assertEquals("MethodCallInfo records count does not match",
+                expected.getMethodCalls().size(),
+                actual.getMethodCalls().size());
+        for(final MethodCallInfo expectedCall : expected.getMethodCalls()) {
+            final boolean existsInActual = actual.getMethodCalls().stream()
+                    .anyMatch(mci -> areIdentical(mci, expectedCall));
+            assertTrue("method call " + expectedCall + " is not reflected in actual method calls",
+                    existsInActual);
+        }
+    }
+
+    private static boolean areIdentical(final MethodCallInfo lhs, final MethodCallInfo rhs) {
+        return lhs.getCallerIndex() == rhs.getCallerIndex()
+                && lhs.getCalleeIndex() == rhs.getCalleeIndex()
+                && lhs.getLineNo() == rhs.getLineNo()
+                && lhs.getColumnNo() == rhs.getColumnNo()
+                && lhs.getCallType().equals(rhs.getCallType());
     }
 
     public static void mustBeSame(final Dependencies expectedDependencies, final Dependencies actualDependencies) {
