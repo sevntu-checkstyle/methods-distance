@@ -3,6 +3,7 @@ package org.pirat9600q.graph;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class MethodCallInfo {
 
@@ -65,6 +66,11 @@ public class MethodCallInfo {
                     .append(columnNo, rhs.columnNo)
                     .isEquals();
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     public static WithCallerIndex builder() {

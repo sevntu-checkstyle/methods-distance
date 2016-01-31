@@ -1,6 +1,7 @@
 package org.pirat9600q.graph;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class MethodInfo {
 
@@ -77,6 +78,11 @@ public class MethodInfo {
             final MethodInfo rhs = (MethodInfo) o;
             return index == rhs.index;
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     public static WithSignature builder() {
