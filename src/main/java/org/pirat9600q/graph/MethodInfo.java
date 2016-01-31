@@ -1,12 +1,8 @@
 package org.pirat9600q.graph;
 
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class MethodInfo {
-
-    private DetailAST methodDef;
 
     private String signature;
 
@@ -23,10 +19,6 @@ public class MethodInfo {
     private int index;
 
     private Accessibility accessibility;
-
-    public DetailAST getMethodDef() {
-        return methodDef;
-    }
 
     public String getSignature() {
         return signature;
@@ -60,19 +52,7 @@ public class MethodInfo {
         return accessibility;
     }
 
-    public MethodInfo(DetailAST methodDef, String signature, boolean isStatic, boolean isOverride,
-                      boolean isOverloaded, boolean isVarArg, int minArgCount, int index,
-                      Accessibility accessibility) {
-        this.methodDef = methodDef;
-        this.signature = signature;
-        this.isStatic = isStatic;
-        this.isOverride = isOverride;
-        this.isOverloaded = isOverloaded;
-        this.isVarArg = isVarArg;
-        this.minArgCount = minArgCount;
-        this.index = index;
-        this.accessibility = accessibility;
-    }
+    private MethodInfo() {}
 
     public int getDistanceTo(final MethodInfo other) {
         return Math.abs(index - other.index) - 1;
@@ -97,6 +77,118 @@ public class MethodInfo {
             final MethodInfo rhs = (MethodInfo) o;
             return index == rhs.index;
         }
+    }
+
+    public static WithSignature builder() {
+        return new Builder();
+    }
+
+    public static class Builder implements
+            WithSignature,
+            WithStatic,
+            WithOverride,
+            WithOverload,
+            WithVarArg,
+            WithMinArgCount,
+            WithIndex,
+            WithAccessibility,
+            WithBuildResult {
+
+        private MethodInfo methodInfo;
+
+        private Builder() {
+            methodInfo = new MethodInfo();
+        }
+
+        @Override
+        public WithStatic signature(String signature) {
+            methodInfo.signature = signature;
+            return this;
+        }
+
+        @Override
+        public WithOverride isStatic(boolean isStatic) {
+            methodInfo.isStatic = isStatic;
+            return this;
+        }
+
+        @Override
+        public WithOverload isOverride(boolean isOverride) {
+            methodInfo.isOverride = isOverride;
+            return this;
+        }
+
+        @Override
+        public WithVarArg isOverloaded(boolean isOverloaded) {
+            methodInfo.isOverloaded = isOverloaded;
+            return this;
+        }
+
+        @Override
+        public WithMinArgCount isVarArg(boolean isVarArg) {
+            methodInfo.isVarArg = isVarArg;
+            return this;
+        }
+
+        @Override
+        public WithIndex minArgCount(int minArgCount) {
+            methodInfo.minArgCount = minArgCount;
+            return this;
+        }
+
+        @Override
+        public WithAccessibility index(int index) {
+            methodInfo.index = index;
+            return this;
+        }
+
+        @Override
+        public WithBuildResult accessibility(Accessibility accessibility) {
+            methodInfo.accessibility = accessibility;
+            return this;
+        }
+
+        public MethodInfo get() {
+            final MethodInfo mi = methodInfo;
+            methodInfo = null;
+            return mi;
+        }
+    }
+
+    public interface WithSignature {
+        WithStatic signature(String signature);
+    }
+
+    public interface WithStatic {
+        WithOverride isStatic(boolean isStatic);
+    }
+
+    public interface WithOverride {
+        WithOverload isOverride(boolean isOverride);
+    }
+
+    public interface WithOverload {
+        WithVarArg isOverloaded(boolean isOverloaded);
+    }
+
+    public interface WithVarArg {
+        WithMinArgCount isVarArg(boolean isVarArg);
+    }
+
+    public interface WithMinArgCount {
+        WithIndex minArgCount(int minArgCount);
+    }
+
+    public interface WithIndex {
+        WithAccessibility index(int index);
+    }
+
+    public interface WithAccessibility {
+        WithBuildResult accessibility(Accessibility accessibility);
+    }
+
+    public interface WithBuildResult {
+        MethodInfo get();
     }
 
     public enum Accessibility {

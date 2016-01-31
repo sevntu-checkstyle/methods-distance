@@ -6,8 +6,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class MethodCallInfo {
 
-    private DetailAST callNode;
-
     private int callerIndex;
 
     private int calleeIndex;
@@ -20,10 +18,6 @@ public class MethodCallInfo {
 
     public int getCallerIndex() {
         return callerIndex;
-    }
-
-    public DetailAST getCallNode() {
-        return callNode;
     }
 
     public int getCalleeIndex() {
@@ -42,15 +36,7 @@ public class MethodCallInfo {
         return callType;
     }
 
-    public MethodCallInfo(DetailAST callNode, int callerIndex, int calleeIndex, int lineNo,
-                          int columnNo, CallType callType) {
-        this.callNode = callNode;
-        this.callerIndex = callerIndex;
-        this.calleeIndex = calleeIndex;
-        this.lineNo = lineNo;
-        this.columnNo = columnNo;
-        this.callType = callType;
-    }
+    private MethodCallInfo() {}
 
     @Override
     public int hashCode() {
@@ -79,6 +65,86 @@ public class MethodCallInfo {
                     .append(columnNo, rhs.columnNo)
                     .isEquals();
         }
+    }
+
+    public static WithCallerIndex builder() {
+        return new Builder();
+    }
+
+    public static class Builder implements
+            WithCallerIndex,
+            WithCalleeIndex,
+            WithLineNo,
+            WithColumnNo,
+            WithCallType,
+            WithBuildResult {
+
+        private MethodCallInfo methodCallInfo;
+
+        private Builder() {
+            methodCallInfo = new MethodCallInfo();
+        }
+
+        @Override
+        public WithCalleeIndex callerIndex(int callerIndex) {
+            methodCallInfo.callerIndex = callerIndex;
+            return this;
+        }
+
+        @Override
+        public WithLineNo calleeIndex(int calleeIndex) {
+            methodCallInfo.calleeIndex = calleeIndex;
+            return this;
+        }
+
+        @Override
+        public WithColumnNo lineNo(int lineNo) {
+            methodCallInfo.lineNo = lineNo;
+            return this;
+        }
+
+        @Override
+        public WithCallType columnNo(int columnNo) {
+            methodCallInfo.columnNo = columnNo;
+            return this;
+        }
+
+        @Override
+        public WithBuildResult callType(CallType callType) {
+            methodCallInfo.callType = callType;
+            return this;
+        }
+
+        @Override
+        public MethodCallInfo get() {
+            final MethodCallInfo mci = methodCallInfo;
+            methodCallInfo = null;
+            return mci;
+        }
+    }
+
+    public interface WithCallerIndex {
+        WithCalleeIndex callerIndex(int callerIndex);
+    }
+
+    public interface WithCalleeIndex {
+        WithLineNo calleeIndex(int calleeIndex);
+    }
+
+    public interface WithLineNo {
+        WithColumnNo lineNo(int lineNo);
+    }
+
+    public interface WithColumnNo {
+        WithCallType columnNo(int columnNo);
+    }
+
+    public interface WithCallType {
+        WithBuildResult callType(CallType callType);
+    }
+
+    public interface WithBuildResult {
+        MethodCallInfo get();
     }
 
     public enum CallType {

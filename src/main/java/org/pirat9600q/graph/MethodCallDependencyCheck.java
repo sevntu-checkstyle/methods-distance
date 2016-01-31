@@ -141,29 +141,29 @@ public class MethodCallDependencyCheck extends Check {
 
     private static MethodCallInfo getMethodCallInfoForMethodDef(final DetailAST callNode,
             final DetailAST callerDef, final DetailAST calleeDef, final CallType callType) {
-        return new MethodCallInfo(
-                callNode,
-                getMethodIndex(callerDef),
-                getMethodIndex(calleeDef),
-                callNode.getLineNo(),
-                callNode.getColumnNo(),
-                callType);
+        return MethodCallInfo.builder()
+                .callerIndex(getMethodIndex(callerDef))
+                .calleeIndex(getMethodIndex(calleeDef))
+                .lineNo(callNode.getLineNo())
+                .columnNo(callNode.getColumnNo())
+                .callType(callType)
+                .get();
     }
 
     private static MethodInfo getMethodInfoForMethodDef(final DetailAST methodDef) {
         final int minArgumentCount = isVariableArgumentMethodDef(methodDef)
                 ? getMethodDefParameterCount(methodDef) - 1
                 : getMethodDefParameterCount(methodDef);
-        return new MethodInfo(
-                methodDef,
-                getMethodSignature(methodDef),
-                isStaticMethodDef(methodDef),
-                isOverrideMethod(methodDef),
-                isOverloadedMethod(methodDef),
-                isVariableArgumentMethodDef(methodDef),
-                minArgumentCount,
-                getMethodIndex(methodDef),
-                getMethodAccessibility(methodDef));
+        return MethodInfo.builder()
+                .signature(getMethodSignature(methodDef))
+                .isStatic(isStaticMethodDef(methodDef))
+                .isOverride(isOverrideMethod(methodDef))
+                .isOverloaded(isOverloadedMethod(methodDef))
+                .isVarArg(isVariableArgumentMethodDef(methodDef))
+                .minArgCount(minArgumentCount)
+                .index(getMethodIndex(methodDef))
+                .accessibility(getMethodAccessibility(methodDef))
+                .get();
     }
 
     private static boolean isOverrideMethod(final DetailAST methodDef) {
