@@ -6,6 +6,9 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import org.pirat9600q.graph.DependencyInfo.DependencyInfoBuilder;
+import org.pirat9600q.graph.MethodCallInfo.CallType;
+import org.pirat9600q.graph.MethodInfo.Accessibility;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,12 +32,18 @@ public class MethodCallDependencyCheck extends Check {
 
     private DependencyGraph graph;
 
+    private DependencyInfoBuilder dependencyInfoBuilder;
+
     private DetailAST topLevelClass;
 
     private boolean writeResult;
 
     public DependencyGraph getGraph() {
         return graph;
+    }
+
+    public DependencyInfo getDependencyInfo() {
+        return dependencyInfoBuilder.get();
     }
 
     public void setWriteResult(final boolean wr) {
@@ -49,6 +58,7 @@ public class MethodCallDependencyCheck extends Check {
     @Override
     public void beginTree(DetailAST rootAST) {
         graph = new DependencyGraph();
+        dependencyInfoBuilder = DependencyInfo.builder();
         topLevelClass = null;
     }
 
@@ -80,6 +90,12 @@ public class MethodCallDependencyCheck extends Check {
                         getClassDeclaredMethodByCallSignature(enclosingClass, methodCall);
                 if (calledMethod != null) {
                     graph.setFromTo(enclosingMethod, calledMethod);
+                    dependencyInfoBuilder.addMethodCall(
+                            getMethodCallInfoForMethodDef(
+                                    methodCall,
+                                    enclosingMethod,
+                                    calledMethod,
+                                    CallType.METHOD_CALL));
                 }
             }
         }
@@ -94,6 +110,12 @@ public class MethodCallDependencyCheck extends Check {
             if (calledMethod != null) {
                 final DetailAST caller = getEnclosingMethod(methodRef);
                 graph.setFromTo(caller, calledMethod);
+                dependencyInfoBuilder.addMethodCall(
+                        getMethodCallInfoForMethodDef(
+                            methodRef,
+                            caller,
+                            calledMethod,
+                            CallType.METHOD_REFERENCE));
             }
         }
     }
@@ -103,6 +125,7 @@ public class MethodCallDependencyCheck extends Check {
             topLevelClass = classDef;
             for (final DetailAST method : getClassDeclaredMethods(classDef)) {
                 graph.addMethod(method, getMethodSignature(method));
+                dependencyInfoBuilder.addMethod(getMethodInfoForMethodDef(method));
             }
         }
     }
@@ -110,8 +133,70 @@ public class MethodCallDependencyCheck extends Check {
     @Override
     public void finishTree(DetailAST rootAST) {
         if (writeResult) {
-            final String fileName = new File(getFileContents().getFileName()).getName() + ".dot";
-            DependencyGraphSerializer.writeToFile(graph, fileName);
+            final String baseName = new File(getFileContents().getFileName()).getName();
+            DependencyGraphSerializer.writeToFile(graph, baseName + "_graph.dot");
+            DependencyInfoSerializer.writeToFile(getDependencyInfo(), baseName + "_info.dot");
+        }
+    }
+
+    private static MethodCallInfo getMethodCallInfoForMethodDef(final DetailAST callNode,
+            final DetailAST callerDef, final DetailAST calleeDef, final CallType callType) {
+        return new MethodCallInfo(
+                callNode,
+                getMethodIndex(callerDef),
+                getMethodIndex(calleeDef),
+                callNode.getLineNo(),
+                callNode.getColumnNo(),
+                callType);
+    }
+
+    private static MethodInfo getMethodInfoForMethodDef(final DetailAST methodDef) {
+        final int minArgumentCount = isVariableArgumentMethodDef(methodDef)
+                ? getMethodDefParameterCount(methodDef) - 1
+                : getMethodDefParameterCount(methodDef);
+        return new MethodInfo(
+                methodDef,
+                getMethodSignature(methodDef),
+                isStaticMethodDef(methodDef),
+                isOverrideMethod(methodDef),
+                isOverloadedMethod(methodDef),
+                isVariableArgumentMethodDef(methodDef),
+                minArgumentCount,
+                getMethodIndex(methodDef),
+                getMethodAccessibility(methodDef));
+    }
+
+    private static boolean isOverrideMethod(final DetailAST methodDef) {
+        final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
+        final List<DetailAST> annotations = getNodeChildren(modifiers, TokenTypes.ANNOTATION);
+        return annotations.stream()
+                .anyMatch(annotation ->
+                        "Override".equals(annotation.findFirstToken(TokenTypes.IDENT).getText()));
+    }
+
+    private static boolean isOverloadedMethod(final DetailAST methodDef) {
+        final String methodName = getMethodDefName(methodDef);
+        final DetailAST classDef = getEnclosingClass(methodDef);
+        return getClassDeclaredMethodDefsByName(classDef, methodName).size() > 1;
+    }
+
+    private static int getMethodIndex(final DetailAST methodDef) {
+        final DetailAST classDef = getEnclosingClass(methodDef);
+        return getClassDeclaredMethods(classDef).indexOf(methodDef);
+    }
+
+    private static Accessibility getMethodAccessibility(final DetailAST methodDef) {
+        if(isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PUBLIC)) {
+            return Accessibility.PUBLIC;
+        }
+        else if(isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PROTECTED)) {
+            return Accessibility.PROTECTED;
+        }
+        else if(isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PRIVATE)) {
+            return Accessibility.PRIVATE;
+        }
+        else {
+            return Accessibility.DEFAULT;
         }
     }
 
@@ -229,9 +314,14 @@ public class MethodCallDependencyCheck extends Check {
     }
 
     private static boolean isStaticMethodDef(DetailAST methodDef) {
+        return isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_STATIC);
+    }
+
+    private static boolean isMethodDefHasModifier(
+            final DetailAST methodDef, final int modifierTokenType) {
         return methodDef
                 .findFirstToken(TokenTypes.MODIFIERS)
-                .findFirstToken(TokenTypes.LITERAL_STATIC) != null;
+                .findFirstToken(modifierTokenType) != null;
     }
 
     protected static String getMethodRefMethodName(DetailAST methodRef) {
