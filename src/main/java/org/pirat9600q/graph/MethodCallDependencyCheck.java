@@ -85,7 +85,7 @@ public class MethodCallDependencyCheck extends Check {
                 && isThisClassMethodCall(methodCall)) {
             final DetailAST enclosingMethod = getEnclosingMethod(methodCall);
             final DetailAST enclosingClass = getEnclosingClass(methodCall);
-            if (enclosingClass.equals(topLevelClass)) {
+            if (enclosingClass == topLevelClass) {
                 final DetailAST calledMethod =
                         getClassDeclaredMethodByCallSignature(enclosingClass, methodCall);
                 if (calledMethod != null) {
@@ -105,17 +105,20 @@ public class MethodCallDependencyCheck extends Check {
         if (isNestedInsideMethodDef(methodRef)
                 && isInsideClassDef(methodRef)
                 && isMethodRefToStaticMethodOfClass(methodRef, topLevelClass)) {
-            final DetailAST calledMethod =
-                    getClassStaticDeclaredMethodByMethodRefCall(topLevelClass, methodRef);
-            if (calledMethod != null) {
-                final DetailAST caller = getEnclosingMethod(methodRef);
-                graph.setFromTo(caller, calledMethod);
-                dependencyInfoBuilder.addMethodCall(
-                        getMethodCallInfoForMethodDef(
-                            methodRef,
-                            caller,
-                            calledMethod,
-                            CallType.METHOD_REFERENCE));
+            final DetailAST enclosingClass = getEnclosingClass(methodRef);
+            if(enclosingClass == topLevelClass) {
+                final DetailAST calledMethod =
+                        getClassStaticDeclaredMethodByMethodRefCall(enclosingClass, methodRef);
+                if (calledMethod != null) {
+                    final DetailAST caller = getEnclosingMethod(methodRef);
+                    graph.setFromTo(caller, calledMethod);
+                    dependencyInfoBuilder.addMethodCall(
+                            getMethodCallInfoForMethodDef(
+                                    methodRef,
+                                    caller,
+                                    calledMethod,
+                                    CallType.METHOD_REFERENCE));
+                }
             }
         }
     }
@@ -135,7 +138,8 @@ public class MethodCallDependencyCheck extends Check {
         if (writeResult) {
             final String baseName = new File(getFileContents().getFileName()).getName();
             DependencyGraphSerializer.writeToFile(graph, baseName + "_graph.dot");
-            DependencyInfoSerializer.writeToFile(getDependencyInfo(), baseName + "_info.dot");
+            DependencyInfoSerializerWithSingleCluster.writeToFile(getDependencyInfo(), baseName + "_info_single.dot");
+            DependencyInfoSerializerWithTwoClusters.writeToFile(getDependencyInfo(), baseName + "_info_two.dot");
         }
     }
 
