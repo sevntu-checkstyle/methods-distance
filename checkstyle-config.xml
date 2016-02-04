@@ -29,9 +29,8 @@
       Use suppressions.xml for suppressions, this is only example.
       checkFormat will prevent suppression comments from being valid.
     -->
-    <property name="checkFormat" value="IGNORETHIS"/>
-    <property name="offCommentFormat" value="CSOFF\: .*"/>
-    <property name="onCommentFormat" value="CSON\: .*"/>
+    <property name="offCommentFormat" value="CSOFF\:"/>
+    <property name="onCommentFormat" value="CSON\:"/>
   </module>
   <module name="SuppressWarningsFilter"/>
   <module name="SuppressWithNearbyCommentFilter">
@@ -39,7 +38,6 @@
       Use suppressions.xml for suppressions, this is only example.
       checkFormat will prevent suppression comments from being valid.
     -->
-    <property name="checkFormat" value="IGNORETHIS"/>
     <property name="commentFormat" value="SUPPRESS CHECKSTYLE, (\w+)"/>
     <property name="messageFormat" value="$1"/>
     <property name="influenceFormat" value="-1"/>
@@ -152,7 +150,7 @@
 
     <!-- Coding -->
     <module name="ArrayTrailingComma"/>
-    <module name="AvoidInlineConditionals"/>
+    <!--<module name="AvoidInlineConditionals"/>-->
     <module name="CovariantEquals"/>
     <module name="DeclarationOrder"/>
     <module name="DefaultComesLast"/>

@@ -11,7 +11,10 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+//CSOFF:
 public class DependencyInfoSerializerWithSingleCluster {
+
+    private DependencyInfoSerializerWithSingleCluster() { }
 
     public static void writeToFile(final DependencyInfo info, final String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
@@ -29,19 +32,19 @@ public class DependencyInfoSerializerWithSingleCluster {
             graph.setRankdir(Graph.LR);
             final Map<MethodInfo, BasicNode> methodToNode = new HashMap<>();
             final Cluster simpleMethods = new Cluster(graph, "simple");
-            for(final MethodInfo method : info.getMethods()) {
+            for (final MethodInfo method : info.getMethods()) {
                 final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
                 methodToNode.put(method, node);
-                if(info.hasMethodDependencies(method)) {
+                if (info.hasMethodDependencies(method)) {
                     graph.addNode(node);
                 }
                 else {
                     simpleMethods.addNode(node);
                 }
             }
-            for(final MethodInfo caller : info.getMethods()) {
-                if(info.hasMethodDependencies(caller)) {
-                    for(final MethodInfo callee : info.getMethodDependencies(caller)) {
+            for (final MethodInfo caller : info.getMethods()) {
+                if (info.hasMethodDependencies(caller)) {
+                    for (final MethodInfo callee : info.getMethodDependencies(caller)) {
                         final BasicNode callerNode = methodToNode.get(caller);
                         final BasicNode calleeNode = methodToNode.get(callee);
                         final Edge edge = new Edge(graph, callerNode, calleeNode);

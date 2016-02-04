@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MethodCallDependencyCheck extends Check {
+public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, yes, its too big
 
     private static final Set<Integer> PRIMITIVE_TOKEN_TYPES = ImmutableSet.of(
             TokenTypes.LITERAL_VOID,
@@ -106,7 +106,7 @@ public class MethodCallDependencyCheck extends Check {
                 && isInsideClassDef(methodRef)
                 && isMethodRefToStaticMethodOfClass(methodRef, topLevelClass)) {
             final DetailAST enclosingClass = getEnclosingClass(methodRef);
-            if(enclosingClass == topLevelClass) {
+            if (enclosingClass == topLevelClass) {
                 final DetailAST calledMethod =
                         getClassStaticDeclaredMethodByMethodRefCall(enclosingClass, methodRef);
                 if (calledMethod != null) {
@@ -138,8 +138,10 @@ public class MethodCallDependencyCheck extends Check {
         if (writeResult) {
             final String baseName = new File(getFileContents().getFileName()).getName();
             DependencyGraphSerializer.writeToFile(graph, baseName + "_graph.dot");
-            DependencyInfoSerializerWithSingleCluster.writeToFile(getDependencyInfo(), baseName + "_info_single.dot");
-            DependencyInfoSerializerWithTwoClusters.writeToFile(getDependencyInfo(), baseName + "_info_two.dot");
+            DependencyInfoSerializerWithSingleCluster.writeToFile(
+                    getDependencyInfo(), baseName + "_info_single.dot");
+            DependencyInfoSerializerWithTwoClusters.writeToFile(
+                    getDependencyInfo(), baseName + "_info_two.dot");
         }
     }
 
@@ -190,13 +192,13 @@ public class MethodCallDependencyCheck extends Check {
     }
 
     private static Accessibility getMethodAccessibility(final DetailAST methodDef) {
-        if(isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PUBLIC)) {
+        if (isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PUBLIC)) {
             return Accessibility.PUBLIC;
         }
-        else if(isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PROTECTED)) {
+        else if (isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PROTECTED)) {
             return Accessibility.PROTECTED;
         }
-        else if(isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PRIVATE)) {
+        else if (isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PRIVATE)) {
             return Accessibility.PRIVATE;
         }
         else {

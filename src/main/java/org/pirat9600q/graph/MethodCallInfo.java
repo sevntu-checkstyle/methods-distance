@@ -1,11 +1,10 @@
 package org.pirat9600q.graph;
 
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class MethodCallInfo {
+public final class MethodCallInfo {
 
     private int callerIndex;
 
@@ -16,6 +15,8 @@ public class MethodCallInfo {
     private int columnNo;
 
     private CallType callType;
+
+    private MethodCallInfo() { }
 
     public int getCallerIndex() {
         return callerIndex;
@@ -37,8 +38,6 @@ public class MethodCallInfo {
         return callType;
     }
 
-    private MethodCallInfo() {}
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
@@ -51,10 +50,10 @@ public class MethodCallInfo {
 
     @Override
     public boolean equals(Object o) {
-        if(o == null || o.getClass() != this.getClass()) {
+        if (o == null || o.getClass() != this.getClass()) {
             return false;
         }
-        else if(o == this) {
+        else if (o == this) {
             return true;
         }
         else {
@@ -77,7 +76,7 @@ public class MethodCallInfo {
         return new Builder();
     }
 
-    public static class Builder implements
+    public static final class Builder implements
             WithCallerIndex,
             WithCalleeIndex,
             WithLineNo,

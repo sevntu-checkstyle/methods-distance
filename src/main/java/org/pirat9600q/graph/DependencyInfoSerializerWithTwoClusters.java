@@ -11,7 +11,10 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+//CSOFF:
 public class DependencyInfoSerializerWithTwoClusters {
+
+    private DependencyInfoSerializerWithTwoClusters() { }
 
     public static void writeToFile(final DependencyInfo info, final String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
@@ -30,14 +33,14 @@ public class DependencyInfoSerializerWithTwoClusters {
             final Map<MethodInfo, BasicNode> methodToNode = new HashMap<>();
             final Cluster simpleInterfaceMethods = new Cluster(graph, "interface");
             final Cluster simpleInternalMethods = new Cluster(graph, "implementation");
-            for(final MethodInfo method : info.getMethods()) {
+            for (final MethodInfo method : info.getMethods()) {
                 final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
                 methodToNode.put(method, node);
-                if(info.hasMethodDependencies(method)) {
+                if (info.hasMethodDependencies(method)) {
                     graph.addNode(node);
                 }
                 else {
-                    if(method.getAccessibility() == MethodInfo.Accessibility.PUBLIC) {
+                    if (method.getAccessibility() == MethodInfo.Accessibility.PUBLIC) {
                         simpleInterfaceMethods.addNode(node);
                     }
                     else {
@@ -45,9 +48,9 @@ public class DependencyInfoSerializerWithTwoClusters {
                     }
                 }
             }
-            for(final MethodInfo caller : info.getMethods()) {
-                if(info.hasMethodDependencies(caller)) {
-                    for(final MethodInfo callee : info.getMethodDependencies(caller)) {
+            for (final MethodInfo caller : info.getMethods()) {
+                if (info.hasMethodDependencies(caller)) {
+                    for (final MethodInfo callee : info.getMethodDependencies(caller)) {
                         final BasicNode callerNode = methodToNode.get(caller);
                         final BasicNode calleeNode = methodToNode.get(callee);
                         final Edge edge = new Edge(graph, callerNode, calleeNode);

@@ -6,11 +6,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DependencyInfo {
+public final class DependencyInfo {
 
     private Set<MethodInfo> methods;
 
     private Set<MethodCallInfo> methodCalls;
+
+    private DependencyInfo(final Set<MethodInfo> methods, final Set<MethodCallInfo> methodCalls) {
+        this.methods = methods;
+        this.methodCalls = methodCalls;
+    }
 
     public Set<MethodInfo> getMethods() {
         return methods;
@@ -35,16 +40,11 @@ public class DependencyInfo {
         return !getMethodDependencies(caller).isEmpty();
     }
 
-    private DependencyInfo(final Set<MethodInfo> methods, final Set<MethodCallInfo> methodCalls) {
-        this.methods = methods;
-        this.methodCalls = methodCalls;
-    }
-
     public static DependencyInfoBuilder builder() {
         return new DependencyInfoBuilder();
     }
 
-    public static class DependencyInfoBuilder {
+    public static final class DependencyInfoBuilder {
 
         private Set<MethodInfo> methods = new HashSet<>();
 
@@ -63,7 +63,8 @@ public class DependencyInfo {
         }
 
         public DependencyInfo get() {
-            return new DependencyInfo(ImmutableSet.copyOf(methods), ImmutableSet.copyOf(methodCalls));
+            return new DependencyInfo(
+                    ImmutableSet.copyOf(methods), ImmutableSet.copyOf(methodCalls));
         }
     }
 }

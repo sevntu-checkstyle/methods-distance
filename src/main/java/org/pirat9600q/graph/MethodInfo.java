@@ -3,7 +3,7 @@ package org.pirat9600q.graph;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class MethodInfo {
+public final class MethodInfo {
 
     private String signature;
 
@@ -20,6 +20,8 @@ public class MethodInfo {
     private int index;
 
     private Accessibility accessibility;
+
+    private MethodInfo() { }
 
     public String getSignature() {
         return signature;
@@ -53,8 +55,6 @@ public class MethodInfo {
         return accessibility;
     }
 
-    private MethodInfo() {}
-
     public int getDistanceTo(final MethodInfo other) {
         return Math.abs(index - other.index) - 1;
     }
@@ -68,10 +68,10 @@ public class MethodInfo {
 
     @Override
     public boolean equals(Object o) {
-        if(o == null || o.getClass() != this.getClass()) {
+        if (o == null || o.getClass() != this.getClass()) {
             return false;
         }
-        else if(o == this) {
+        else if (o == this) {
             return true;
         }
         else {
@@ -89,7 +89,7 @@ public class MethodInfo {
         return new Builder();
     }
 
-    public static class Builder implements
+    public static final class Builder implements
             WithSignature,
             WithStatic,
             WithOverride,
