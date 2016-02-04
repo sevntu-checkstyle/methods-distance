@@ -31,63 +31,101 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
     @Test
     public void testSimpleDependency() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("InputSimpleDependency()")
-                .dependsOn("dependant()")
-                .method("dependant()")
-                .dependsOn("dependency()")
-                .method("dependency()")
-                .dependsOn("dependencyDependency1()")
-                .dependsOn("dependencyDependency2()")
-                .method("dependencyDependency1()")
-                .method("dependencyDependency2()")
+        final DependencyInfo expected = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder().signature("InputSimpleDependency()")
+                    .isStatic(false).isOverride(false).isOverloaded(false).isVarArg(false)
+                    .minArgCount(0)
+                    .index(0)
+                    .accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("dependant()")
+                    .isStatic(false).isOverride(false).isOverloaded(false).isVarArg(false)
+                    .minArgCount(0)
+                    .index(1)
+                    .accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("dependency()")
+                    .isStatic(false).isOverride(false).isOverloaded(false).isVarArg(false)
+                    .minArgCount(0)
+                    .index(2)
+                    .accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("dependencyDependency1()")
+                    .isStatic(false).isOverride(false).isOverloaded(false).isVarArg(false)
+                    .minArgCount(0)
+                    .index(3)
+                    .accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("dependencyDependency1()")
+                    .isStatic(false).isOverride(false).isOverloaded(false).isVarArg(false)
+                    .minArgCount(0)
+                    .index(4)
+                    .accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethodCall(MethodCallInfo.builder()
+                    .callerIndex(0).calleeIndex(1).lineNo(6).columnNo(17)
+                    .callType(CallType.METHOD_CALL).get())
+                .addMethodCall(MethodCallInfo.builder()
+                    .callerIndex(1).calleeIndex(2).lineNo(10).columnNo(18)
+                    .callType(CallType.METHOD_CALL).get())
+                .addMethodCall(MethodCallInfo.builder()
+                    .callerIndex(2).calleeIndex(3).lineNo(14).columnNo(29)
+                    .callType(CallType.METHOD_CALL).get())
+                .addMethodCall(MethodCallInfo.builder()
+                        .callerIndex(2).calleeIndex(4).lineNo(15).columnNo(29)
+                        .callType(CallType.METHOD_CALL).get())
                 .get();
-        verifyGraph(dc, "InputSimpleDependency.java", expected);
+        verifyInfo(dc, "InputSimpleDependency.java", expected);
     }
 
     @Test
     public void testEmptyInterface() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        verifyGraph(dc, "InputEmptyInterface.java", Dependencies.empty());
+        verifyInfo(dc, "InputEmptyInterface.java", DependencyInfo.builder().get());
     }
 
     @Test
     public void testMethodCallInInitialization() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        verifyGraph(dc, "InputMethodCallInInitialization.java", Dependencies.empty());
+        verifyInfo(dc, "InputMethodCallInInitialization.java", DependencyInfo.builder().get());
     }
 
     @Test
     public void testAnonymousClasses() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("method()")
-                .method("a()")
-                .method("a(String)")
-                .method("topLevelMethod()")
+        final DependencyInfo expected = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder().signature("method()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(0).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("a()")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(0).index(1).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("a(String)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(2).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("topLevelMethod()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(3).accessibility(Accessibility.PUBLIC)
+                    .get())
                 .get();
-        verifyGraph(dc, "InputAnonymousClasses.java", expected);
+        verifyInfo(dc, "InputAnonymousClasses.java", expected);
     }
 
     @Test
     public void testRecursiveMethod() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
         final DependencyInfo dependencyInfo = DependencyInfo.builder()
-                .addMethod(MethodInfo.builder()
-                    .signature("method()")
-                    .isStatic(false)
-                    .isOverride(false)
-                    .isOverloaded(false)
-                    .isVarArg(false)
+                .addMethod(MethodInfo.builder().signature("method()")
+                    .isStatic(false).isOverride(false).isOverloaded(false).isVarArg(false)
                     .minArgCount(0)
                     .index(0)
                     .accessibility(Accessibility.PUBLIC)
                     .get())
                 .addMethodCall(MethodCallInfo.builder()
-                    .callerIndex(0)
-                    .calleeIndex(0)
-                    .lineNo(6)
-                    .columnNo(14)
+                    .callerIndex(0).calleeIndex(0).lineNo(6).columnNo(14)
                     .callType(CallType.METHOD_CALL)
                     .get())
                 .get();
@@ -97,74 +135,155 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
     @Test
     public void testMethodNameClashes() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("method()")
-                .method("format(String)")
+        final DependencyInfo expected = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder().signature("method()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(0).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("format(String)")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(1).index(1).accessibility(Accessibility.PUBLIC)
+                    .get())
                 .get();
-        verifyGraph(dc, "InputMethodNameClashes.java", expected);
+        verifyInfo(dc, "InputMethodNameClashes.java", expected);
     }
 
     @Test
     public void testMethodSignatures() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("m()")
-                .method("m(boolean)")
-                .method("m(char)")
-                .method("m(byte)")
-                .method("m(short)")
-                .method("m(int)")
-                .method("m(long)")
-                .method("m(double)")
-                .method("m(String)")
-                .method("m(String,String)")
-                .method("m(String,Integer...)")
-                .method("m(Integer...)")
-                .method("m(int[])")
-                .method("m(Long[])")
-                .method("m(List)")
-                .method("m(String,List...)")
-                .method("m(List[])")
-                .method("m(List[]...)")
+        final DependencyInfo expected = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder().signature("m()")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(0).index(0).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(boolean)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(1).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(char)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(2).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(byte)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(3).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(short)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(4).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(int)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(5).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(long)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(6).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(double)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(7).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(String)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(8).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(String,String)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(2).index(9).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(String,Integer...)")
+                    .notStatic().notOverride().isOverloaded().isVarArg()
+                    .minArgCount(2).index(10).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(Integer...)")
+                    .notStatic().notOverride().isOverloaded().isVarArg()
+                    .minArgCount(0).index(11).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(int[])")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(12).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(Long[])")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(13).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(List)")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(14).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(String,List...)")
+                    .notStatic().notOverride().isOverloaded().isVarArg()
+                    .minArgCount(1).index(15).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(List[])")
+                    .notStatic().notOverride().isOverloaded().notVarArg()
+                    .minArgCount(1).index(16).accessibility(Accessibility.PUBLIC)
+                    .get())
+                .addMethod(MethodInfo.builder().signature("m(List[]...)")
+                    .notStatic().notOverride().isOverloaded().isVarArg()
+                    .minArgCount(0).index(17).accessibility(Accessibility.PUBLIC)
+                    .get())
                 .get();
-        verifyGraph(dc, "InputMethodSignatures.java", expected);
+        verifyInfo(dc, "InputMethodSignatures.java", expected);
     }
 
     @Test
     public void testVarargMethodCall() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("varargMethod(Integer...)")
-                .method("c1()")
-                .dependsOn("varargMethod(Integer...)")
-                .method("c2()")
-                .dependsOn("varargMethod(Integer...)")
-                .method("c3()")
-                .dependsOn("varargMethod(Integer...)")
+        final DependencyInfo expected = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder().signature("c1()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(0).accessibility(Accessibility.PUBLIC).get())
+                .addMethod(MethodInfo.builder().signature("c2()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(1).accessibility(Accessibility.PUBLIC).get())
+                .addMethod(MethodInfo.builder().signature("c3()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(2).accessibility(Accessibility.PUBLIC).get())
+                .addMethod(MethodInfo.builder().signature("varargMethod(Integer...)")
+                        .notStatic().notOverride().notOverloaded().isVarArg()
+                        .minArgCount(0).index(3).accessibility(Accessibility.PUBLIC).get())
+                .addMethodCall(MethodCallInfo.builder().callFromTo(0, 3).at(6, 20)
+                    .callType(CallType.METHOD_CALL).get())
+                .addMethodCall(MethodCallInfo.builder().callFromTo(1, 3).at(10, 20)
+                    .callType(CallType.METHOD_CALL).get())
+                .addMethodCall(MethodCallInfo.builder().callFromTo(2, 3).at(14, 20)
+                    .callType(CallType.METHOD_CALL).get())
                 .get();
-        verifyGraph(dc, "InputVarargMethodCall.java", expected);
+        verifyInfo(dc, "InputVarargMethodCall.java", expected);
     }
 
     @Test
     public void testMethodCallsInLambda() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("dependency()")
-                .method("m()")
-                .dependsOn("dependency()")
+        final DependencyInfo info = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder().signature("m()")
+                        .notStatic().notOverride().notOverloaded().notVarArg()
+                        .minArgCount(0).index(0).accessibility(Accessibility.PUBLIC).get())
+                .addMethod(MethodInfo.builder().signature("dependency()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(1).accessibility(Accessibility.PUBLIC).get())
+                .addMethodCall(MethodCallInfo.builder().callFromTo(0,1).at(8, 43)
+                    .callType(CallType.METHOD_CALL).get())
                 .get();
-        verifyGraph(dc, "InputMethodCallsInLambda.java", expected);
+        verifyInfo(dc, "InputMethodCallsInLambda.java", info);
     }
 
     @Test
     public void testMethodCallThroughMethodReference() throws Exception {
         final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        final Dependencies expected = Dependencies.builder()
-                .method("a()")
-                .dependsOn("filter(Integer)")
-                .method("filter(Integer)")
+        final DependencyInfo expected = DependencyInfo.builder()
+                .addMethod(MethodInfo.builder().signature("a()")
+                    .notStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(0).index(0).accessibility(Accessibility.PUBLIC).get())
+                .addMethod(MethodInfo.builder().signature("filter(Integer)")
+                    .isStatic().notOverride().notOverloaded().notVarArg()
+                    .minArgCount(1).index(1).accessibility(Accessibility.PUBLIC).get())
+                .addMethodCall(MethodCallInfo.builder().callFromTo(0, 1).at(11, 61)
+                        .callType(CallType.METHOD_REFERENCE).get())
                 .get();
-        verifyGraph(dc, "InputMethodCallThroughMethodReference.java", expected);
+        verifyInfo(dc, "InputMethodCallThroughMethodReference.java", expected);
     }
 
     protected void verifyGraph(final Configuration config, final String fileName, final Dependencies expected) throws Exception {
