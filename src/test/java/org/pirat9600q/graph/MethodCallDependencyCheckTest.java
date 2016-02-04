@@ -7,6 +7,7 @@ import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.pirat9600q.graph.MethodCallInfo.CallType;
@@ -56,7 +57,7 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
                     .index(3)
                     .accessibility(Accessibility.PUBLIC)
                     .get())
-                .addMethod(MethodInfo.builder().signature("dependencyDependency1()")
+                .addMethod(MethodInfo.builder().signature("dependencyDependency2()")
                     .isStatic(false).isOverride(false).isOverloaded(false).isVarArg(false)
                     .minArgCount(0)
                     .index(4)
@@ -194,7 +195,7 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
                     .get())
                 .addMethod(MethodInfo.builder().signature("m(String,Integer...)")
                     .notStatic().notOverride().isOverloaded().isVarArg()
-                    .minArgCount(2).index(10).accessibility(Accessibility.PUBLIC)
+                    .minArgCount(1).index(10).accessibility(Accessibility.PUBLIC)
                     .get())
                 .addMethod(MethodInfo.builder().signature("m(Integer...)")
                     .notStatic().notOverride().isOverloaded().isVarArg()
@@ -312,12 +313,12 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
 
     public static void mustBeSame(final DependencyInfo expected, final DependencyInfo actual) {
         for(final MethodInfo expectedMethod : expected.getMethods()) {
-            assertThat("Method " + expectedMethod.getSignature() + " is not present is actual info",
-                    actual.getMethods(), hasItem(expectedMethod));
+            assertTrue("Method " + expectedMethod.getSignature() + " is not present is actual info",
+                    actual.getMethods().stream().anyMatch(mi -> areIdentical(mi, expectedMethod)));
         }
         for(final MethodInfo actualMethod : actual.getMethods()) {
-            assertThat("Method " + actualMethod.getSignature() + " is not present in expected info",
-                    expected.getMethods(), hasItem(actualMethod));
+            assertTrue("Method " + actualMethod.getSignature() + " is not present in expected info",
+                    expected.getMethods().stream().anyMatch(mi -> areIdentical(mi, actualMethod)));
         }
         assertEquals("MethodCallInfo records count does not match",
                 expected.getMethodCalls().size(),
@@ -330,12 +331,12 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
         }
     }
 
+    private static boolean areIdentical(final MethodInfo lhs, final MethodInfo rhs) {
+        return EqualsBuilder.reflectionEquals(lhs, rhs);
+    }
+
     private static boolean areIdentical(final MethodCallInfo lhs, final MethodCallInfo rhs) {
-        return lhs.getCallerIndex() == rhs.getCallerIndex()
-                && lhs.getCalleeIndex() == rhs.getCalleeIndex()
-                && lhs.getLineNo() == rhs.getLineNo()
-                && lhs.getColumnNo() == rhs.getColumnNo()
-                && lhs.getCallType().equals(rhs.getCallType());
+        return EqualsBuilder.reflectionEquals(lhs, rhs);
     }
 
     private static String getInputPath(final String fileName) {
