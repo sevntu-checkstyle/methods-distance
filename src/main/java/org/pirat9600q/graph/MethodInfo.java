@@ -166,40 +166,52 @@ public final class MethodInfo {
     }
 
     public interface WithStatic {
+
         WithOverride isStatic(boolean isStatic);
+
         default WithOverride isStatic() {
             return isStatic(true);
         }
+
         default WithOverride notStatic() {
             return isStatic(false);
         }
     }
 
     public interface WithOverride {
+
         WithOverload isOverride(boolean isOverride);
+
         default WithOverload isOverride() {
             return isOverride(true);
         }
+
         default WithOverload notOverride() {
             return isOverride(false);
         }
     }
 
     public interface WithOverload {
+
         WithVarArg isOverloaded(boolean isOverloaded);
+
         default WithVarArg isOverloaded() {
             return isOverloaded(true);
         }
+
         default WithVarArg notOverloaded() {
             return isOverloaded(false);
         }
     }
 
     public interface WithVarArg {
+
         WithMinArgCount isVarArg(boolean isVarArg);
+
         default WithMinArgCount isVarArg() {
             return isVarArg(true);
         }
+
         default WithMinArgCount notVarArg() {
             return isVarArg(false);
         }

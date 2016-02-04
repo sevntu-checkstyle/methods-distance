@@ -144,6 +144,7 @@ public final class MethodCallInfo {
 
     public interface WithCallerIndex {
         WithCalleeIndex callerIndex(int callerIndex);
+
         WithLineNo callFromTo(int callerIndex, int calleeIndex);
     }
 
@@ -153,6 +154,7 @@ public final class MethodCallInfo {
 
     public interface WithLineNo {
         WithColumnNo lineNo(int lineNo);
+
         WithCallType at(int lineNo, int columnNo);
     }
 
