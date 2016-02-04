@@ -91,6 +91,13 @@ public final class MethodCallInfo {
         }
 
         @Override
+        public WithLineNo callFromTo(int callerIndex, int calleeIndex) {
+            methodCallInfo.callerIndex = callerIndex;
+            methodCallInfo.calleeIndex = calleeIndex;
+            return this;
+        }
+
+        @Override
         public WithCalleeIndex callerIndex(int callerIndex) {
             methodCallInfo.callerIndex = callerIndex;
             return this;
@@ -99,6 +106,13 @@ public final class MethodCallInfo {
         @Override
         public WithLineNo calleeIndex(int calleeIndex) {
             methodCallInfo.calleeIndex = calleeIndex;
+            return this;
+        }
+
+        @Override
+        public WithCallType at(int lineNo, int columnNo) {
+            methodCallInfo.lineNo = lineNo;
+            methodCallInfo.columnNo = columnNo;
             return this;
         }
 
@@ -130,6 +144,7 @@ public final class MethodCallInfo {
 
     public interface WithCallerIndex {
         WithCalleeIndex callerIndex(int callerIndex);
+        WithLineNo callFromTo(int callerIndex, int calleeIndex);
     }
 
     public interface WithCalleeIndex {
@@ -138,6 +153,7 @@ public final class MethodCallInfo {
 
     public interface WithLineNo {
         WithColumnNo lineNo(int lineNo);
+        WithCallType at(int lineNo, int columnNo);
     }
 
     public interface WithColumnNo {
