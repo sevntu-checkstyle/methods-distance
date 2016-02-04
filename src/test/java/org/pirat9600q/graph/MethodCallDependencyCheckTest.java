@@ -353,7 +353,7 @@ public class MethodCallDependencyCheckTest extends BaseCheckTestSupport {
         @Override
         public Object createModule(String name) throws CheckstyleException {
             try {
-                final Object object = getClass().forName(name).newInstance();
+                final Object object = Class.forName(name).newInstance();
                 if(object instanceof MethodCallDependencyCheck) {
                     check = (MethodCallDependencyCheck) object;
                 }
