@@ -30,17 +30,11 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
             TokenTypes.LITERAL_DOUBLE
     );
 
-    private DependencyGraph graph;
-
     private DependencyInfoBuilder dependencyInfoBuilder;
 
     private DetailAST topLevelClass;
 
     private boolean writeResult;
-
-    public DependencyGraph getGraph() {
-        return graph;
-    }
 
     public DependencyInfo getDependencyInfo() {
         return dependencyInfoBuilder.get();
@@ -57,7 +51,6 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        graph = new DependencyGraph();
         dependencyInfoBuilder = DependencyInfo.builder();
         topLevelClass = null;
     }
@@ -89,7 +82,6 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
                 final DetailAST calledMethod =
                         getClassDeclaredMethodByCallSignature(enclosingClass, methodCall);
                 if (calledMethod != null) {
-                    graph.setFromTo(enclosingMethod, calledMethod);
                     dependencyInfoBuilder.addMethodCall(
                             getMethodCallInfoForMethodDef(
                                     methodCall,
@@ -111,7 +103,6 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
                         getClassStaticDeclaredMethodByMethodRefCall(enclosingClass, methodRef);
                 if (calledMethod != null) {
                     final DetailAST caller = getEnclosingMethod(methodRef);
-                    graph.setFromTo(caller, calledMethod);
                     dependencyInfoBuilder.addMethodCall(
                             getMethodCallInfoForMethodDef(
                                     methodRef,
@@ -127,7 +118,6 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
         if (topLevelClass == null) {
             topLevelClass = classDef;
             for (final DetailAST method : getClassDeclaredMethods(classDef)) {
-                graph.addMethod(method, getMethodSignature(method));
                 dependencyInfoBuilder.addMethod(getMethodInfoForMethodDef(method));
             }
         }
@@ -137,7 +127,6 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
     public void finishTree(DetailAST rootAST) {
         if (writeResult) {
             final String baseName = new File(getFileContents().getFileName()).getName();
-            DependencyGraphSerializer.writeToFile(graph, baseName + "_graph.dot");
             DependencyInfoSerializerWithSingleCluster.writeToFile(
                     getDependencyInfo(), baseName + "_info_single.dot");
             DependencyInfoSerializerWithTwoClusters.writeToFile(
