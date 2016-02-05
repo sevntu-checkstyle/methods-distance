@@ -33,23 +33,23 @@ public class BasicNode extends CommonNode {
     /**
      * No node, only the label (or ID) of the node
      */
-    final static int      NONE           = 1;
+    public final static int      NONE           = 1;
     /**
      * Ellipse node shape
      */
-    final static int      ELLIPSE        = 2;
+    public final static int      ELLIPSE        = 2;
     /**
      * Polygon node shape
      */
-    final static int      POLYGON        = 3;
+    public final static int      POLYGON        = 3;
     /**
      * Point node shape
      */
-    final static int      POINT          = 4;
+    public final static int      POINT          = 4;
     /**
      * Egg node shape
      */
-    final static int      EGG            = 5;
+    public final static int      EGG            = 5;
     /**
      * Diamond node shape
      */
@@ -57,23 +57,23 @@ public class BasicNode extends CommonNode {
     /**
      * Trapezium node shape
      */
-    final static int      TRAPEZIUM      = 6;
+    public final static int      TRAPEZIUM      = 6;
     /**
      * House node shape
      */
-    final static int      HOUSE          = 7;
+    public final static int      HOUSE          = 7;
     /**
      * Inverted triangle node shape
      */
-    final static int      INVTRIANGLE    = 8;
+    public final static int      INVTRIANGLE    = 8;
     /**
      * Inverted trapezium node shape
      */
-    final static int      INVTRAPEZIUM   = 9;
+    public final static int      INVTRAPEZIUM   = 9;
     /**
      * Inverted house node shape
      */
-    final static int      INVHOUSE       = 10;
+    public final static int      INVHOUSE       = 10;
 
     private final static String[] attributeNames = { "user", "none", "ellipse",
             "polygon", "point", "egg", /*"diamond",*/"trapezium", "house",
