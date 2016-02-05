@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //CSOFF:
 public class DependencyInfoSerializerWithSingleCluster {
@@ -32,7 +34,13 @@ public class DependencyInfoSerializerWithSingleCluster {
             graph.setRankdir(Graph.LR);
             final Map<MethodInfo, BasicNode> methodToNode = new HashMap<>();
             final Cluster simpleMethods = new Cluster(graph, "simple");
-            for (final MethodInfo method : info.getMethods()) {
+            final Set<MethodInfo> nonInterfaceMethods = info.getMethods().stream()
+                    .filter(method ->
+                            !(method.getAccessibility() == MethodInfo.Accessibility.PUBLIC
+                            && !info.hasMethodDependencies(method)
+                            && !info.isSomeMethodDependsOn(method)))
+                    .collect(Collectors.toSet());
+            for (final MethodInfo method : nonInterfaceMethods) {
                 final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
                 methodToNode.put(method, node);
                 if (info.hasMethodDependencies(method)) {
@@ -42,7 +50,7 @@ public class DependencyInfoSerializerWithSingleCluster {
                     simpleMethods.addNode(node);
                 }
             }
-            for (final MethodInfo caller : info.getMethods()) {
+            for (final MethodInfo caller : nonInterfaceMethods) {
                 if (info.hasMethodDependencies(caller)) {
                     for (final MethodInfo callee : info.getMethodDependencies(caller)) {
                         final BasicNode callerNode = methodToNode.get(caller);
