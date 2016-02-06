@@ -43,6 +43,13 @@ public final class DependencyInfo {
                 .collect(Collectors.toSet());
     }
 
+    public boolean isMethodDependsOn(final MethodInfo caller, final MethodInfo callee) {
+        return methodCalls.stream()
+                .anyMatch(mci ->
+                    mci.getCallerIndex() == caller.getIndex()
+                    && mci.getCalleeIndex() == callee.getIndex());
+    }
+
     public boolean hasMethodDependencies(final MethodInfo caller) {
         return !getMethodDependencies(caller).isEmpty();
     }
