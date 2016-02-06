@@ -1,10 +1,9 @@
 package org.pirat9600q.graph;
 
-import net.claribole.zgrviewer.dot.BasicNode;
-import net.claribole.zgrviewer.dot.Cluster;
-import net.claribole.zgrviewer.dot.Edge;
-import net.claribole.zgrviewer.dot.Graph;
+import net.claribole.zgrviewer.dot.*;
+import org.pirat9600q.graph.MethodInfo.Accessibility;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -36,12 +35,14 @@ public class DependencyInfoSerializerWithSingleCluster {
             final Cluster simpleMethods = new Cluster(graph, "simple");
             final Set<MethodInfo> nonInterfaceMethods = info.getMethods().stream()
                     .filter(method ->
-                            !(method.getAccessibility() == MethodInfo.Accessibility.PUBLIC
+                            !(method.getAccessibility() == Accessibility.PUBLIC
                             && !info.hasMethodDependencies(method)
                             && !info.isSomeMethodDependsOn(method)))
                     .collect(Collectors.toSet());
             for (final MethodInfo method : nonInterfaceMethods) {
                 final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
+                node.setColor(getColorForMethod(method));
+                node.setShape(getShapeForMethod(method));
                 methodToNode.put(method, node);
                 if (info.hasMethodDependencies(method)) {
                     graph.addNode(node);
@@ -66,6 +67,31 @@ public class DependencyInfoSerializerWithSingleCluster {
         }
         catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static Color getColorForMethod(final MethodInfo methodInfo) {
+        switch (methodInfo.getAccessibility()) {
+            case PUBLIC: return Color.GREEN;
+            case PROTECTED: return Color.YELLOW;
+            case PRIVATE: return Color.RED;
+            case DEFAULT: return Color.BLACK;
+            default: throw new RuntimeException("Unexpected accessibility type " + methodInfo.getAccessibility());
+        }
+    }
+
+    private static int getShapeForMethod(final MethodInfo methodInfo) {
+        if(methodInfo.isStatic()) {
+            return BasicNode.POLYGON;
+        }
+        else if(methodInfo.isOverride()) {
+            return BasicNode.TRAPEZIUM;
+        }
+        else if(methodInfo.isOverloaded()) {
+            return BasicNode.INVTRIANGLE;
+        }
+        else {
+            return BasicNode.ELLIPSE;
         }
     }
 
