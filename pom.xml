@@ -36,26 +36,6 @@
             <version>1.7</version>
         </dependency>
         <dependency>
-            <groupId>antlr</groupId>
-            <artifactId>antlr</artifactId>
-            <version>2.7.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache</groupId>
-            <artifactId>lucene</artifactId>
-            <version>1.4.3</version>
-        </dependency>
-        <dependency>
-            <groupId>prefuse</groupId>
-            <artifactId>prefuse</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>parsemis</groupId>
-            <artifactId>parsemis</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
