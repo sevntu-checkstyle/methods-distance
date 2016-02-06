@@ -128,9 +128,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
         if (writeResult) {
             final String baseName = new File(getFileContents().getFileName()).getName();
             DependencyInfoSerializerWithSingleCluster.writeToFile(
-                    getDependencyInfo(), baseName + "_info_single.dot");
-            DependencyInfoSerializerWithTwoClusters.writeToFile(
-                    getDependencyInfo(), baseName + "_info_two.dot");
+                    getDependencyInfo(), baseName + ".dot");
         }
     }
 
