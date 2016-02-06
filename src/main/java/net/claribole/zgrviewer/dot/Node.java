@@ -275,6 +275,8 @@ abstract public class Node {
             o += printOption("peripheries", this.getPeripheries());
         if (this.isNojustify())
             o += printOption("nojustify", this.isNojustify());
+        if (this.getFillcolor() != null)
+            o += printOption("fillcolor", this.getFillcolor());
 
         if(this.getStyle() != null)
         o += printOption("style", this.getStyle());

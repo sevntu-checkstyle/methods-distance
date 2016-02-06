@@ -63,35 +63,35 @@ public class Style {
     /**
      * Dashed style modifier
      */
-    final static int      DASHED             = 0;
+    public final static int      DASHED             = 0;
     /**
      * Dotted style modifier
      */
-    final static int      DOTTED             = 1;
+    public final static int      DOTTED             = 1;
     /**
      * Solid style modifier
      */
-    final static int      SOLID              = 2;
+    public final static int      SOLID              = 2;
     /**
      * Invisible style modifier
      */
-    final static int      INVIS              = 3;
+    public final static int      INVIS              = 3;
     /**
      * Bold style modifier
      */
-    final static int      BOLD               = 4;
+    public final static int      BOLD               = 4;
     /**
      * Filled style modifier
      */
-    final static int      FILLED             = 5;
+    public final static int      FILLED             = 5;
     /**
      * Diagonals style modifier
      */
-    final static int      DIAGONALS          = 6;
+    public final static int      DIAGONALS          = 6;
     /**
      * Rounded style modifier
      */
-    final static int      ROUNDED            = 7;
+    public final static int      ROUNDED            = 7;
     /**
      * Values of node styles
      */
