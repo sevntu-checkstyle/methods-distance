@@ -23,3 +23,7 @@ td.cell {
     text-align: center;
     border: solid 2px black
 }
+.centered {
+    margin-left: auto;
+    margin-right: auto;
+}
