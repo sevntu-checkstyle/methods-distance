@@ -127,7 +127,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
     public void finishTree(DetailAST rootAST) {
         if (writeResult) {
             final String baseName = new File(getFileContents().getFileName()).getName();
-            DependencyInfoSerializerWithSingleCluster.writeToFile(
+            DependencyInfoGraphSerializer.writeToFile(
                     getDependencyInfo(), baseName + ".dot");
             DependencyInfoMatrixSerializer.writeToFile(getDependencyInfo(), baseName + ".html");
         }

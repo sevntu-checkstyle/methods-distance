@@ -16,9 +16,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 //CSOFF:
-public class DependencyInfoSerializerWithSingleCluster {
+public class DependencyInfoGraphSerializer {
 
-    private DependencyInfoSerializerWithSingleCluster() { }
+    private DependencyInfoGraphSerializer() { }
 
     public static void writeToFile(final DependencyInfo info, final String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
