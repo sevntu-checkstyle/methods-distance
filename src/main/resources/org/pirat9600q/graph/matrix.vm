@@ -19,7 +19,7 @@
                 <tr class="horizontal-heading">
                     <td></td>
                     #foreach($method in $info.methodsSortedByIndex)
-                        <td>
+                        <td data-accessibility="$method.accessibility" data-static="$method.static">
                             <div class="rotated">
                                 $method.signature
                             </div>
@@ -28,7 +28,9 @@
                 </tr>
                     #foreach($caller in $info.methodsSortedByIndex)
                         <tr>
-                            <td>$caller.signature</td>
+                            <td data-accessibility="$caller.accessibility" data-static="$caller.static">
+                                $caller.signature
+                            </td>
                             #foreach($callee in $info.methodsSortedByIndex)
                                 #if($callee.index == $caller.index)
                                     <td class="cell diagonal">-</td>
@@ -42,11 +44,19 @@
                     #end
             </tbody>
         </table>
-        <p class="centered">
+        <div class="centered">
             In the matrix above, methods situated in the order they appear
             in class definition(first method occupies first row and first column,
-            second method occupies second row and second column an so on).
-        </p>
+            second method occupies second row and second column an so on). Text color
+            indicates accessibility of methods in the following way:
+            <ul>
+                <li>public - GREEN</li>
+                <li>protected - yellow</li>
+                <li>private - black</li>
+                <li>default - blue</li>
+            </ul>
+            Grey background color indicates that method is static.
+        </div>
         <p>
             If some method depends on another method(by calling it), then matrix
             cell situated at intersection of caller`s row and callee`s column is displayed

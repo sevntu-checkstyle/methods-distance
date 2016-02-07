@@ -23,6 +23,21 @@ td.cell {
     text-align: center;
     border: solid 2px black
 }
+td[data-accessibility=PUBLIC] {
+    color: green;
+}
+td[data-accessibility=PROTECTED] {
+    color: yellow;
+}
+td[data-accessibility=PRIVATE] {
+    color: black;
+}
+td[data-accessibility=DEFAULT] {
+    color: blue;
+}
+td[data-static=true] {
+    background-color: #D0D0D0;
+}
 .centered {
     margin-left: auto;
     margin-right: auto;
