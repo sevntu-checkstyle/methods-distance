@@ -24,8 +24,8 @@ public final class DependencyInfo {
     }
 
     public SortedSet<MethodInfo> getMethodsSortedByIndex() {
-        final SortedSet<MethodInfo> set
-                = new TreeSet<>((ml, mr) -> Integer.compare(ml.getIndex(), mr.getIndex()));
+        final SortedSet<MethodInfo> set =
+                new TreeSet<>((ml, mr) -> Integer.compare(ml.getIndex(), mr.getIndex()));
         set.addAll(methods);
         return set;
     }
