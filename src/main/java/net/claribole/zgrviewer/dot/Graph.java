@@ -1075,11 +1075,20 @@ public class Graph {
         g += graphOptions();
         if (this.nodes != null)
             for (int i = 0; i < this.nodes.length; i++) {
-                g += this.nodes[i];
+                if(!(this.nodes[i] instanceof Comment))
+                    g += this.nodes[i];
             }
         if (this.edges != null) {
             for (int i = 0; i < this.edges.length; i++) {
                 g += this.edges[i];
+            }
+        }
+        // make comment nodes appear at the bottom of the file
+        if (this.nodes != null) {
+            for (final Node node : this.nodes) {
+                if (node instanceof Comment) {
+                    g += node;
+                }
             }
         }
         return g + "}";

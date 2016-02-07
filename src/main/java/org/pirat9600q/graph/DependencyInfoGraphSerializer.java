@@ -1,9 +1,6 @@
 package org.pirat9600q.graph;
 
-import net.claribole.zgrviewer.dot.BasicNode;
-import net.claribole.zgrviewer.dot.Cluster;
-import net.claribole.zgrviewer.dot.Edge;
-import net.claribole.zgrviewer.dot.Graph;
+import net.claribole.zgrviewer.dot.*;
 import org.pirat9600q.graph.MethodInfo.Accessibility;
 
 import java.awt.Color;
@@ -17,6 +14,18 @@ import java.util.stream.Collectors;
 
 //CSOFF:
 public class DependencyInfoGraphSerializer {
+
+    private static final String GRAPH_LEGEND = "Legend\n" +
+            "Node border color:\n" +
+            "    a) GREEN - public\n" +
+            "    b) YELLOW - protected\n" +
+            "    c) BLACK - private\n" +
+            "    d) BLUE - default\n" +
+            "Node shape:\n" +
+            "    if static - rectangle\n" +
+            "    otherwise if override - trapezium\n" +
+            "    otherwise if overloaded - triangle\n" +
+            "    otherwise ellipse\n";
 
     private DependencyInfoGraphSerializer() { }
 
@@ -66,6 +75,9 @@ public class DependencyInfoGraphSerializer {
                 }
             }
             graph.addGenericNode(simpleMethods);
+            final Comment comment = new Comment(graph);
+            comment.setText(GRAPH_LEGEND);
+            graph.addNode(comment);
             return graph.toString();
         }
         catch (Exception e) {
