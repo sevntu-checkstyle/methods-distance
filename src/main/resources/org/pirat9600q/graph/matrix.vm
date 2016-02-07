@@ -2,36 +2,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <style>
-            .horizontal-heading td .rotated {
-                margin-bottom: 10px;
-                position: relative;
-                -webkit-transform: rotate(-90deg);
-                -moz-transform: rotate(-90deg);
-                -ms-transform: rotate(-90deg);
-                -o-transform: rotate(-90deg);
-                transform: rotate(-90deg);
-            }
-            .horizontal-heading td {
-                max-width: 30px;
-            }
-            .diagonal {
-                background-color: darkgray;
-            }
-            .depends-on {
-                background-color: red;
-            }
-            table {
-                border-collapse: collapse;
-            }
-            td.cell {
-                text-align: center;
-                border: solid 2px black
-            }
-        </style>
+        <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
+        <script>$javaScript</script>
+        <style>$css</style>
     </head>
     <body>
-        <table style="margin-top: 300px">
+        <table id="matrixTable" style="margin-top: 300px">
             <thead></thead>
             <tbody>
                 <tr class="horizontal-heading">

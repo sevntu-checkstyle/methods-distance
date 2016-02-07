@@ -8,8 +8,10 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Scanner;
 
 //CSOFF:
 public final class DependencyInfoMatrixSerializer {
@@ -33,8 +35,29 @@ public final class DependencyInfoMatrixSerializer {
         final Template template = engine.getTemplate("org/pirat9600q/graph/matrix.vm");
         final VelocityContext context = new VelocityContext();
         context.put("info", info);
+        context.put("javaScript", getJavaScript());
+        context.put("css", getStyles());
         final StringWriter writer = new StringWriter();
         template.merge(context, writer);
         return writer.toString();
+    }
+
+    private static String getStyles() {
+        return readEntireStream(
+                DependencyInfoMatrixSerializer.class.getResourceAsStream("styles.css"));
+    }
+
+    private static String getJavaScript() {
+        return readEntireStream(
+                DependencyInfoMatrixSerializer.class.getResourceAsStream("interactive.js"));
+    }
+
+    private static String readEntireStream(final InputStream stream) {
+        try (final Scanner scanner = new Scanner(stream).useDelimiter("\\Z")) {
+            return scanner.next();
+        }
+        catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
