@@ -36,7 +36,7 @@
             <tbody>
                 <tr class="horizontal-heading">
                     <td></td>
-                    #foreach($method in $info.methods)
+                    #foreach($method in $info.methodsSortedByIndex)
                         <td>
                             <div class="rotated">
                                 $method.signature
@@ -44,10 +44,10 @@
                         </td>
                     #end
                 </tr>
-                    #foreach($caller in $info.methods)
+                    #foreach($caller in $info.methodsSortedByIndex)
                         <tr>
                             <td>$caller.signature</td>
-                            #foreach($callee in $info.methods)
+                            #foreach($callee in $info.methodsSortedByIndex)
                                 #if($callee.index == $caller.index)
                                     <td class="cell diagonal">-</td>
                                 #elseif($info.isMethodDependsOn($caller, $callee))

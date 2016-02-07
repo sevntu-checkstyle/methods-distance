@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public final class DependencyInfo {
@@ -19,6 +21,13 @@ public final class DependencyInfo {
 
     public Set<MethodInfo> getMethods() {
         return methods;
+    }
+
+    public SortedSet<MethodInfo> getMethodsSortedByIndex() {
+        final SortedSet<MethodInfo> set
+                = new TreeSet<>((ml, mr) -> Integer.compare(ml.getIndex(), mr.getIndex()));
+        set.addAll(methods);
+        return set;
     }
 
     public Set<MethodCallInfo> getMethodCalls() {
