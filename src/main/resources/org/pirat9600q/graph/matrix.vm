@@ -25,6 +25,7 @@
                 border-collapse: collapse;
             }
             td.cell {
+                text-align: center;
                 border: solid 2px black
             }
         </style>
@@ -48,9 +49,9 @@
                             <td>$caller.signature</td>
                             #foreach($callee in $info.methods)
                                 #if($callee.index == $caller.index)
-                                    <td class="cell diagonal"></td>
+                                    <td class="cell diagonal">-</td>
                                 #elseif($info.isMethodDependsOn($caller, $callee))
-                                    <td class="cell depends-on"></td>
+                                    <td class="cell depends-on">$caller.getDistanceTo($callee)</td>
                                 #else
                                     <td class="cell"></td>
                                 #end
