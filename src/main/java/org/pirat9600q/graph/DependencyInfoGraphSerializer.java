@@ -1,6 +1,10 @@
 package org.pirat9600q.graph;
 
-import net.claribole.zgrviewer.dot.*;
+import net.claribole.zgrviewer.dot.BasicNode;
+import net.claribole.zgrviewer.dot.Cluster;
+import net.claribole.zgrviewer.dot.Comment;
+import net.claribole.zgrviewer.dot.Edge;
+import net.claribole.zgrviewer.dot.Graph;
 import org.pirat9600q.graph.MethodInfo.Accessibility;
 
 import java.awt.Color;
