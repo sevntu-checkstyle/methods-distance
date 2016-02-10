@@ -18,16 +18,16 @@ public final class DependencyInfoMatrixSerializer {
 
     private DependencyInfoMatrixSerializer() { }
 
-    public static void writeToFile(final DependencyInfo info, final String fileName) {
+    public static void writeToFile(final String javaSource, final DependencyInfo info, final String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
-            file.write(serialize(info));
+            file.write(serialize(info, javaSource));
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private static String serialize(final DependencyInfo info) {
+    private static String serialize(final DependencyInfo info, final String javaSource) {
         final VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
@@ -37,6 +37,7 @@ public final class DependencyInfoMatrixSerializer {
         context.put("info", info);
         context.put("javaScript", getJavaScript());
         context.put("css", getStyles());
+        context.put("javaSource", javaSource);
         final StringWriter writer = new StringWriter();
         template.merge(context, writer);
         return writer.toString();

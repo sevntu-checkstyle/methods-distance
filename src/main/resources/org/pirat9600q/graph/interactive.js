@@ -9,7 +9,16 @@ jQuery(function($) {
             return parseInt(l) - parseInt(r);
         })
         .pop();
-    console.log('Max width:' + maxWidth);
     table.css('marginTop', maxWidth + 50 + 'px');
     table.find('.horizontal-heading td').css('maxWidth', '30px');
+    table.find('td.cell').click(function(e) {
+        table.find('td.cell').removeClass('highlighted');
+        var td = e.target;
+        var column = $(td).index();
+        var row = $(td).parent().index();
+        console.log('Column: ' + column, 'Row: ' + row);
+        var selector = `td.cell:nth-child(${column + 1}),tr:nth-child(${row + 1})>td.cell`;
+        console.log('Selector: "' + selector + '"');
+        table.find(selector).addClass('highlighted');
+    });
 });

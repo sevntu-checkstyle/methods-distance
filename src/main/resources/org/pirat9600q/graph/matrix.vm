@@ -1,3 +1,4 @@
+#* @vtlvariable name="javaSource" type="java.lang.String" *#
 #* @vtlvariable name="css" type="java.lang.String" *#
 #* @vtlvariable name="javaScript" type="java.lang.String" *#
 #* @vtlvariable name="info" type="org.pirat9600q.graph.DependencyInfo" *#
@@ -63,5 +64,16 @@
             in red and number in this cell indicates distance between methods.
             Diagonal cells are always displayed in grey.
         </p>
+        <h4>Source file</h4>
+        <!-- Library -->
+        <link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+        <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js" type="text/javascript"></script>
+        <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shAutoloader.js" type="text/javascript"></script>
+        <script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"></script>
+        <!-- Source code -->
+        <script type="syntaxhighlighter" class="brush: java"><![CDATA[$javaSource]]></script>
+        <script type="text/javascript">
+            SyntaxHighlighter.all()
+        </script>
     </body>
 </html>

@@ -11,10 +11,10 @@
     /*max-width: 30px;*/
 }
 .diagonal {
-    background-color: darkgray;
+    background-color: darkgray !important;
 }
 .depends-on {
-    background-color: red;
+    background-color: red !important;
 }
 table {
     border-collapse: collapse;
@@ -41,4 +41,7 @@ td[data-static=true] {
 .centered {
     margin-left: auto;
     margin-right: auto;
+}
+.highlighted {
+    background-color: yellow;
 }

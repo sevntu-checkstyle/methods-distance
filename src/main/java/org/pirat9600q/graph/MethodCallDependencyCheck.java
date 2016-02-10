@@ -129,7 +129,10 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
             final String baseName = new File(getFileContents().getFileName()).getName();
             DependencyInfoGraphSerializer.writeToFile(
                     getDependencyInfo(), baseName + ".dot");
-            DependencyInfoMatrixSerializer.writeToFile(getDependencyInfo(), baseName + ".html");
+            final String source = Arrays.stream(getFileContents().getLines())
+                    .collect(Collectors.joining("\n"));
+            DependencyInfoMatrixSerializer.writeToFile(
+                    source, getDependencyInfo(), baseName + ".html");
         }
     }
 
