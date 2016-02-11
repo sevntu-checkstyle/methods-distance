@@ -93,8 +93,8 @@ public class DependencyInfoGraphSerializer {
         switch (methodInfo.getAccessibility()) {
             case PUBLIC: return Color.GREEN;
             case PROTECTED: return Color.YELLOW;
-            case PRIVATE: return Color.RED;
-            case DEFAULT: return Color.BLACK;
+            case PRIVATE: return Color.BLACK;
+            case DEFAULT: return Color.BLUE;
             default: throw new RuntimeException("Unexpected accessibility type " + methodInfo.getAccessibility());
         }
     }
