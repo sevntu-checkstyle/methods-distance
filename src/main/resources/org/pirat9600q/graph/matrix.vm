@@ -20,7 +20,7 @@
                 <tr class="horizontal-heading">
                     <td></td>
                     #foreach($method in $info.methodsSortedByIndex)
-                        <td data-accessibility="$method.accessibility" data-static="$method.static">
+                        <td class="highlightable" data-accessibility="$method.accessibility" data-static="$method.static">
                             <div class="rotated">
                                 $method.signature
                             </div>
@@ -29,16 +29,16 @@
                 </tr>
                     #foreach($caller in $info.methodsSortedByIndex)
                         <tr>
-                            <td data-accessibility="$caller.accessibility" data-static="$caller.static">
+                            <td class="highlightable" data-accessibility="$caller.accessibility" data-static="$caller.static">
                                 $caller.signature
                             </td>
                             #foreach($callee in $info.methodsSortedByIndex)
                                 #if($callee.index == $caller.index)
-                                    <td class="cell diagonal">-</td>
+                                    <td class="highlightable cell diagonal">-</td>
                                 #elseif($info.isMethodDependsOn($caller, $callee))
-                                    <td class="cell depends-on">$caller.getDistanceTo($callee)</td>
+                                    <td class="highlightable cell depends-on">$caller.getDistanceTo($callee)</td>
                                 #else
-                                    <td class="cell"></td>
+                                    <td class="highlightable cell"></td>
                                 #end
                             #end
                         </tr>

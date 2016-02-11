@@ -12,12 +12,12 @@ jQuery(function($) {
     table.css('marginTop', maxWidth + 50 + 'px');
     table.find('.horizontal-heading td').css('maxWidth', '30px');
     table.find('td.cell').click(function(e) {
-        table.find('td.cell').removeClass('highlighted');
+        table.find('td.highlightable').removeClass('highlighted');
         var td = e.target;
         var column = $(td).index();
         var row = $(td).parent().index();
         console.log('Column: ' + column, 'Row: ' + row);
-        var selector = `td.cell:nth-child(${column + 1}),tr:nth-child(${row + 1})>td.cell`;
+        var selector = `td.highlightable:nth-child(${column + 1}),tr:nth-child(${row + 1})>td.highlightable`;
         console.log('Selector: "' + selector + '"');
         table.find(selector).addClass('highlighted');
     });
