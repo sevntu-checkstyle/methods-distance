@@ -9,8 +9,9 @@ jQuery(function($) {
             return parseInt(l) - parseInt(r);
         })
         .pop();
-    table.css('marginTop', maxWidth + 50 + 'px');
     table.find('.horizontal-heading td').css('maxWidth', '30px');
+    table.find('tr.horizontal-heading>td').css('height', maxWidth);
+
     table.find('td.cell').click(function(e) {
         table.find('td.highlightable').removeClass('highlighted');
         var td = e.target;
