@@ -48,3 +48,6 @@ td[data-static=true] {
 .highlightable.highlighted {
     background-color: yellow;
 }
+.highlightable.dependency {
+    background-color: #D09CDC;
+}
