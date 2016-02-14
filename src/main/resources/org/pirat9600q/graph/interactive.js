@@ -7,11 +7,13 @@ jQuery(function($) {
             allHighlightableCells.removeClass('highlighted');
             firstColumnCells.removeClass('dependency');
             var td = $(e.target);
-            var clickedColumn = td.index();
-            var clickedRow = td.parent().index();
-            var cellsInRowOrColumn = `td.highlightable:nth-child(${clickedColumn + 1}),tr:nth-child(${clickedRow + 1})>td.highlightable`;
+            var clickedColumn = td.index() + 1;
+            var clickedRow = td.parent().index() + 1;
+            var cellsInRowOrColumn =
+                'td.highlightable:nth-child(' + clickedColumn + '),tr:nth-child(' + clickedRow + ')>td.highlightable';
             table.find(cellsInRowOrColumn).addClass('highlighted');
-            table.find(`tr:nth-child(${clickedColumn + 1})>td:first-child`).addClass('dependency');
+            var depenencyMethodInFirstColumn = 'tr:nth-child(' + clickedColumn + ')>td:first-child';
+            table.find(depenencyMethodInFirstColumn).addClass('dependency');
         });
     }
 
