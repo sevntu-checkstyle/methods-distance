@@ -22,7 +22,9 @@
                     #foreach($method in $info.methodsSortedByIndex)
                         <td class="highlightable" data-accessibility="$method.accessibility" data-static="$method.static">
                             <div class="rotated">
-                                $method.signature
+                                <span class="signature">
+                                    $method.signature
+                                </span>
                             </div>
                         </td>
                     #end
@@ -30,7 +32,13 @@
                     #foreach($caller in $info.methodsSortedByIndex)
                         <tr>
                             <td class="highlightable" data-accessibility="$caller.accessibility" data-static="$caller.static">
-                                $caller.signature
+                                <span class="horizontal-content" data-overloaded="$caller.overloaded">
+                                    <span class="horizontal-content" data-override="$caller.override">
+                                        <span class="signature">
+                                            $caller.signature
+                                        </span>
+                                    </span>
+                                </span>
                             </td>
                             #foreach($callee in $info.methodsSortedByIndex)
                                 #if($callee.index == $caller.index)
@@ -50,13 +58,21 @@
             in class definition(first method occupies first row and first column,
             second method occupies second row and second column an so on). Text color
             indicates accessibility of methods in the following way:
-            <ul>
-                <li>public - GREEN</li>
-                <li>protected - yellow</li>
-                <li>private - black</li>
-                <li>default - blue</li>
+            <ul style="background-color: lightgray">
+                <li>public - <span style="color: green;">GREEN</span></li>
+                <li>protected - <span style="color: yellow;">YELLOW</span></li>
+                <li>private - <span>BLACK</span></li>
+                <li>default - <span style="color: blue;">BLUE</span></li>
             </ul>
-            Grey background color indicates that method is static.
+            <p>
+                <span style="background-color: lightgrey;">Grey</span> background color indicates that method is static.
+            </p>
+            <p>
+                <span style="background-color: orange;">Orange</span> strip indicates that method overrides some method.
+            </p>
+            <p>
+                <span style="background-color: purple;">Purple</span> strip indicates that method is overloaded.
+            </p>
         </div>
         <p>
             If some method depends on another method(by calling it), then matrix
