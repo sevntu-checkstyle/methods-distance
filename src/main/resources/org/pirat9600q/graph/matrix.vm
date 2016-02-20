@@ -31,7 +31,11 @@
                 </tr>
                     #foreach($caller in $info.methodsSortedByIndex)
                         <tr>
-                            <td class="highlightable" data-accessibility="$caller.accessibility" data-static="$caller.static">
+                            <td class="highlightable"
+                                data-accessibility="$caller.accessibility"
+                                data-static="$caller.static"
+                                data-dependencies-indices="[#foreach($index in $info.getMethodDependenciesIndicesOrderedByAppearance($caller))$index,#end]">
+                                <span class="relative-dependency"></span>
                                 <span class="horizontal-content" data-overloaded="$caller.overloaded">
                                     <span class="horizontal-content" data-override="$caller.override">
                                         <span class="signature">
@@ -73,13 +77,29 @@
             <p>
                 <span style="background-color: purple;">Purple</span> strip indicates that method is overloaded.
             </p>
+            <p>
+                If some method depends on another method(by calling it), then matrix
+                cell situated at intersection of caller`s row and callee`s column is displayed
+                in red and number in this cell indicates distance between methods.
+                Diagonal cells are always displayed in grey.
+            <p>
+                When some table cell gets clicked:
+                <ul>
+                    <li>
+                        corresponding table row and column become highlighted in
+                        <span style="background-color: yellow;">yellow</span>yellow
+                    </li>
+                    <li>
+                        method signature of method with index corresponding
+                        to highlighted column become highlighted in
+                        <span style="background-color: #D09CDC;">lightpurple</span>
+                    </li>
+                    <li>
+                        order of calls to methods called from method in selected row
+                        appears aside from first column of table in round parenthesis
+                    </li>
+                </ul
         </div>
-        <p>
-            If some method depends on another method(by calling it), then matrix
-            cell situated at intersection of caller`s row and callee`s column is displayed
-            in red and number in this cell indicates distance between methods.
-            Diagonal cells are always displayed in grey.
-        </p>
         <h4>Source file</h4>
         <!-- Library -->
         <link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />

@@ -6,6 +6,7 @@ jQuery(function($) {
         table.find('td.cell').click(function(e) {
             allHighlightableCells.removeClass('highlighted');
             firstColumnCells.removeClass('dependency');
+            table.find('.relative-dependency').text('');
             var td = $(e.target);
             var clickedColumn = td.index() + 1;
             var clickedRow = td.parent().index() + 1;
@@ -14,6 +15,11 @@ jQuery(function($) {
             table.find(cellsInRowOrColumn).addClass('highlighted');
             var depenencyMethodInFirstColumn = 'tr:nth-child(' + clickedColumn + ')>td:first-child';
             table.find(depenencyMethodInFirstColumn).addClass('dependency');
+            var dependenciesList = eval(td.parent().children().first().data('dependencies-indices'));
+            dependenciesList.forEach(function(dependency, index) {
+                var selector = 'tr:nth-child(' + (dependency + 2) + ')>td:first-child .relative-dependency';
+                table.find(selector).text('('+ (index + 1) + ')');
+            });
         });
     }
 

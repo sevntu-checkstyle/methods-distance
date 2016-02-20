@@ -1,6 +1,9 @@
 #matrixTable {
     margin-top: 20px;
 }
+#matrixTable td {
+    position: relative;
+}
 .horizontal-heading td .rotated {
     margin-bottom: 7px;
     position: relative;
@@ -64,4 +67,8 @@ td[data-static=true] .signature {
     margin-left: -30px;
     padding-left: 30px;
     background-color: purple;
+}
+.relative-dependency {
+    position: absolute;
+    left: -30px;
 }
