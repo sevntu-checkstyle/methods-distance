@@ -1,8 +1,10 @@
 package org.pirat9600q.graph;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -60,6 +62,11 @@ public class DependencyInfoTest {
         assertArrayEquals(expectedSet.toArray(), actualSet.toArray());
     }
 
-    public void testReturnsCorrect() throws Exception {
+    @Test
+    public void testReturnsCorrectDependenciesByAppearance() throws Exception {
+        final MethodInfo dependency = di.getMethodByIndex(2);
+        final List<Integer> actualList = di.getMethodDependenciesIndicesOrderedByAppearance(dependency);
+        final List<Integer> expectedList = ImmutableList.of(3,4);
+        assertArrayEquals(expectedList.toArray(), actualList.toArray());
     }
 }

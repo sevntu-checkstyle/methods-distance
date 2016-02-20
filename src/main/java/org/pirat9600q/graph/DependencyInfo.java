@@ -1,11 +1,9 @@
 package org.pirat9600q.graph;
 
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang.builder.CompareToBuilder;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class DependencyInfo {
@@ -59,6 +57,15 @@ public final class DependencyInfo {
                     && mci.getCalleeIndex() == callee.getIndex());
     }
 
+    public List<Integer> getMethodDependenciesIndicesOrderedByAppearance(final MethodInfo caller) {
+        return methodCalls.stream()
+                .filter(mci -> mci.getCallerIndex() == caller.getIndex())
+                .sorted(new AppearanceOrderComparator())
+                .map(MethodCallInfo::getCalleeIndex)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     public boolean hasMethodDependencies(final MethodInfo caller) {
         return !getMethodDependencies(caller).isEmpty();
     }
@@ -69,6 +76,17 @@ public final class DependencyInfo {
 
     public static DependencyInfoBuilder builder() {
         return new DependencyInfoBuilder();
+    }
+
+    private static final class AppearanceOrderComparator implements Comparator<MethodCallInfo> {
+
+        @Override
+        public int compare(final MethodCallInfo left, final MethodCallInfo right) {
+            return new CompareToBuilder()
+                    .append(left.getLineNo(), right.getLineNo())
+                    .append(left.getColumnNo(), right.getColumnNo())
+                    .toComparison();
+        }
     }
 
     public static final class DependencyInfoBuilder {
