@@ -109,7 +109,7 @@
         <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shAutoloader.js" type="text/javascript"></script>
         <script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"></script>
         <!-- Source code -->
-        <script type="syntaxhighlighter" class="brush: java"><![CDATA[$javaSource]]></script>
+        <script type="syntaxhighlighter" class="brush: java; quick-code: false;"><![CDATA[$javaSource]]></script>
         <script type="text/javascript">
             SyntaxHighlighter.all()
         </script>
