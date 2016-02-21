@@ -159,6 +159,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
                 .isVarArg(isVariableArgumentMethodDef(methodDef))
                 .minArgCount(minArgumentCount)
                 .index(getMethodIndex(methodDef))
+                .atLine(methodDef.getLineNo())
                 .accessibility(getMethodAccessibility(methodDef))
                 .get();
     }

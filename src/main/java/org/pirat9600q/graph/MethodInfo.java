@@ -19,6 +19,8 @@ public final class MethodInfo {
 
     private int index;
 
+    private int lineNo;
+
     private Accessibility accessibility;
 
     private MethodInfo() { }
@@ -97,6 +99,7 @@ public final class MethodInfo {
             WithVarArg,
             WithMinArgCount,
             WithIndex,
+            WithLineNo,
             WithAccessibility,
             WithBuildResult {
 
@@ -143,8 +146,13 @@ public final class MethodInfo {
         }
 
         @Override
-        public WithAccessibility index(int index) {
+        public WithLineNo index(int index) {
             methodInfo.index = index;
+            return this;
+        }
+
+        public WithAccessibility atLine(int lineNo) {
+            methodInfo.lineNo = lineNo;
             return this;
         }
 
@@ -222,7 +230,11 @@ public final class MethodInfo {
     }
 
     public interface WithIndex {
-        WithAccessibility index(int index);
+        WithLineNo index(int index);
+    }
+
+    public interface WithLineNo {
+        WithAccessibility atLine(int lineNo);
     }
 
     public interface WithAccessibility {
