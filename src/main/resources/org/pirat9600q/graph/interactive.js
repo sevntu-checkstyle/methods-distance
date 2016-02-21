@@ -34,7 +34,7 @@ jQuery(function($) {
                 return parseInt(l) - parseInt(r);
             })
             .pop();
-        table.find('.horizontal-heading td').css('maxWidth', '30px');
+        table.find('.horizontal-heading td').css('maxWidth', '35px');
         table.find('tr.horizontal-heading>td').css('height', maxWidth);
     }
 

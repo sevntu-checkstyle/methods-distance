@@ -53,12 +53,20 @@ public final class MethodInfo {
         return index;
     }
 
+    public int getLineNo() {
+        return lineNo;
+    }
+
     public Accessibility getAccessibility() {
         return accessibility;
     }
 
-    public int getDistanceTo(final MethodInfo other) {
+    public int getIndexDistanceTo(final MethodInfo other) {
         return Math.abs(index - other.index) - 1;
+    }
+
+    public int getLineDistanceTo(final MethodInfo other) {
+        return Math.abs(lineNo - other.lineNo) - 1;
     }
 
     @Override

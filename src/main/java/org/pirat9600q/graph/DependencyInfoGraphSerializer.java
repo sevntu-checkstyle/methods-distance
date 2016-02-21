@@ -73,7 +73,7 @@ public class DependencyInfoGraphSerializer {
                         final BasicNode callerNode = methodToNode.get(caller);
                         final BasicNode calleeNode = methodToNode.get(callee);
                         final Edge edge = new Edge(graph, callerNode, calleeNode);
-                        edge.setLabel(String.valueOf(caller.getDistanceTo(callee)));
+                        edge.setLabel(String.valueOf(caller.getIndexDistanceTo(callee)));
                         graph.addEdge(edge);
                     }
                 }

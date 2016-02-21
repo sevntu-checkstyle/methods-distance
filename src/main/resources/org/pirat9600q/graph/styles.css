@@ -70,5 +70,11 @@ td[data-static=true] .signature {
 }
 .relative-dependency {
     position: absolute;
-    left: -30px;
+    left: -60px;
+}
+.index-distance {
+    font-size: 14px;
+}
+.line-distance {
+    font-size: 10px;
 }

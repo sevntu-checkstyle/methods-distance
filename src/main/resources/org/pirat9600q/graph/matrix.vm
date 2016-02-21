@@ -48,7 +48,9 @@
                                 #if($callee.index == $caller.index)
                                     <td class="highlightable cell diagonal">-</td>
                                 #elseif($info.isMethodDependsOn($caller, $callee))
-                                    <td class="highlightable cell depends-on">$caller.getDistanceTo($callee)</td>
+                                    <td class="highlightable cell depends-on">
+                                        <span class="index-distance">$caller.getIndexDistanceTo($callee)</span>/<span class="line-distance">$caller.getLineDistanceTo($callee)</span>
+                                    </td>
                                 #else
                                     <td class="highlightable cell"></td>
                                 #end
@@ -87,12 +89,12 @@
                 <ul>
                     <li>
                         corresponding table row and column become highlighted in
-                        <span style="background-color: yellow;">yellow</span>yellow
+                        <span style="background-color: yellow;">yellow</span>
                     </li>
                     <li>
                         method signature of method with index corresponding
                         to highlighted column become highlighted in
-                        <span style="background-color: #D09CDC;">lightpurple</span>
+                        <span style="background-color: #D09CDC;">light purple</span>
                     </li>
                     <li>
                         order of calls to methods called from method in selected row
