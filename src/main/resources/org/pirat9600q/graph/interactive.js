@@ -7,7 +7,8 @@ jQuery(function($) {
             allHighlightableCells.removeClass('highlighted');
             firstColumnCells.removeClass('dependency');
             table.find('.relative-dependency').text('');
-            var td = $(e.target);
+            var clickedElem = $(e.target);
+            var td = clickedElem.is('td') ? clickedElem : clickedElem.parent('td');
             var clickedColumn = td.index() + 1;
             var clickedRow = td.parent().index() + 1;
             var cellsInRowOrColumn =
