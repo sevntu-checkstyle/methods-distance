@@ -57,7 +57,9 @@ td[data-static=true] .signature {
 .highlightable.dependency, .highlightable.dependency .signature {
     background-color: #D09CDC;
 }
-
+tr:first-child td {
+    padding-bottom: 5px;
+}
 [data-override=true].horizontal-content {
     margin-left: -15px;
     padding-left: 15px;
