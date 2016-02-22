@@ -73,7 +73,9 @@ public class DependencyInfoGraphSerializer {
                         final BasicNode callerNode = methodToNode.get(caller);
                         final BasicNode calleeNode = methodToNode.get(callee);
                         final Edge edge = new Edge(graph, callerNode, calleeNode);
-                        edge.setLabel(String.valueOf(caller.getIndexDistanceTo(callee)));
+                        final int indexDistance = caller.getIndexDistanceTo(callee);
+                        final int lineDistance = caller.getLineDistanceTo(callee);
+                        edge.setLabel(getFormattedEdgeLabel(indexDistance, lineDistance));
                         graph.addEdge(edge);
                     }
                 }
@@ -87,6 +89,10 @@ public class DependencyInfoGraphSerializer {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static String getFormattedEdgeLabel(final int indexDistance, final int lineDistance) {
+        return String.format("%d/%d", indexDistance, lineDistance);
     }
 
     private static Color getColorForMethod(final MethodInfo methodInfo) {
