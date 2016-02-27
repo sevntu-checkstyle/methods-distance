@@ -62,11 +62,11 @@ public final class MethodInfo {
     }
 
     public int getIndexDistanceTo(final MethodInfo other) {
-        return Math.abs(index - other.index);
+        return other.index - index;
     }
 
     public int getLineDistanceTo(final MethodInfo other) {
-        return Math.abs(lineNo - other.lineNo);
+        return other.lineNo - lineNo;
     }
 
     @Override
