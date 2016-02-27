@@ -3,6 +3,7 @@
 }
 #matrixTable td {
     position: relative;
+    background-clip: padding-box;
 }
 .horizontal-heading td .rotated {
     margin-bottom: 7px;
