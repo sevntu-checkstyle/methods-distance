@@ -6,13 +6,21 @@ import java.util.stream.Collectors;
 public class InputMethodCallThroughMethodReference {
 
 
-    public long a() {
-        return Arrays.stream(new Integer[]{1,2,3})
-                .filter(InputMethodCallThroughMethodReference::filter)
-                .collect(Collectors.counting());
+    public void a() {
+        Arrays.stream(new Integer[]{1,2,3})
+            .filter(InputMethodCallThroughMethodReference::a1);
     }
 
-    public static boolean filter(final Integer i) {
-        return true;
+    public boolean a1() { return true; }
+
+    public static boolean a1(Integer i) { return true; }
+
+    public void b() {
+        Arrays.stream(new Integer[]{1,2,3})
+            .filter(this::b1);
     }
+
+    public static boolean b1() { return true; }
+
+    public boolean b1(Integer i) { return true; }
 }

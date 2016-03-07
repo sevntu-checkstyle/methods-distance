@@ -1,7 +1,7 @@
 #* @vtlvariable name="javaSource" type="java.lang.String" *#
 #* @vtlvariable name="css" type="java.lang.String" *#
 #* @vtlvariable name="javaScript" type="java.lang.String" *#
-#* @vtlvariable name="info" type="org.pirat9600q.graph.DependencyInfo" *#
+#* @vtlvariable name="info" type="org.pirat9600q.graph.Dependencies" *#
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,7 +19,7 @@
             <tbody>
                 <tr class="horizontal-heading">
                     <td></td>
-                    #foreach($method in $info.methodsSortedByIndex)
+                    #foreach($method in $info.methods)
                         <td class="highlightable" data-accessibility="$method.accessibility" data-static="$method.static">
                             <div class="rotated">
                                 <span class="signature">
@@ -29,12 +29,12 @@
                         </td>
                     #end
                 </tr>
-                    #foreach($caller in $info.methodsSortedByIndex)
+                    #foreach($caller in $info.methods)
                         <tr>
                             <td class="highlightable"
                                 data-accessibility="$caller.accessibility"
                                 data-static="$caller.static"
-                                data-dependencies-indices="[#foreach($index in $info.getMethodDependenciesIndicesOrderedByAppearance($caller))$index,#end]">
+                                data-dependencies-indices="[#foreach($index in $info.getMethodDependenciesAsIndices($caller))$index,#end]">
                                 <span class="relative-dependency"></span>
                                 <span class="horizontal-content" data-overloaded="$caller.overloaded">
                                     <span class="horizontal-content" data-override="$caller.override">
@@ -44,7 +44,7 @@
                                     </span>
                                 </span>
                             </td>
-                            #foreach($callee in $info.methodsSortedByIndex)
+                            #foreach($callee in $info.methods)
                                 #if($callee.index == $caller.index)
                                     <td class="highlightable cell diagonal">-</td>
                                 #elseif($info.isMethodDependsOn($caller, $callee))

@@ -5,7 +5,7 @@ import net.claribole.zgrviewer.dot.Cluster;
 import net.claribole.zgrviewer.dot.Comment;
 import net.claribole.zgrviewer.dot.Edge;
 import net.claribole.zgrviewer.dot.Graph;
-import org.pirat9600q.graph.MethodInfo.Accessibility;
+import org.pirat9600q.graph.MethodDefinition.Accessibility;
 
 import java.awt.Color;
 import java.io.File;
@@ -33,7 +33,7 @@ public class DependencyInfoGraphSerializer {
 
     private DependencyInfoGraphSerializer() { }
 
-    public static void writeToFile(final DependencyInfo info, final String fileName) {
+    public static void writeToFile(final Dependencies info, final String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serialize(info));
         }
@@ -42,20 +42,20 @@ public class DependencyInfoGraphSerializer {
         }
     }
 
-    private static String serialize(DependencyInfo info) {
+    private static String serialize(final Dependencies info) {
         try {
             final Graph graph = new Graph("dependencies");
             graph.setDirected(true);
             graph.setRankdir(Graph.LR);
-            final Map<MethodInfo, BasicNode> methodToNode = new HashMap<>();
+            final Map<MethodDefinition, BasicNode> methodToNode = new HashMap<>();
             final Cluster simpleMethods = new Cluster(graph, "simple");
-            final Set<MethodInfo> nonInterfaceMethods = info.getMethods().stream()
+            final Set<MethodDefinition> nonInterfaceMethods = info.getMethods().stream()
                     .filter(method ->
                             !(method.getAccessibility() == Accessibility.PUBLIC
                             && !info.hasMethodDependencies(method)
-                            && !info.isSomeMethodDependsOn(method)))
+                            && !info.hasMethodDependants(method)))
                     .collect(Collectors.toSet());
-            for (final MethodInfo method : nonInterfaceMethods) {
+            for (final MethodDefinition method : nonInterfaceMethods) {
                 final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
                 node.setColor(getColorForMethod(method));
                 node.setShape(getShapeForMethod(method));
@@ -67,9 +67,9 @@ public class DependencyInfoGraphSerializer {
                     simpleMethods.addNode(node);
                 }
             }
-            for (final MethodInfo caller : nonInterfaceMethods) {
+            for (final MethodDefinition caller : nonInterfaceMethods) {
                 if (info.hasMethodDependencies(caller)) {
-                    for (final MethodInfo callee : info.getMethodDependencies(caller)) {
+                    for (final MethodDefinition callee : info.getMethodDependencies(caller)) {
                         final BasicNode callerNode = methodToNode.get(caller);
                         final BasicNode calleeNode = methodToNode.get(callee);
                         final Edge edge = new Edge(graph, callerNode, calleeNode);
@@ -95,24 +95,24 @@ public class DependencyInfoGraphSerializer {
         return String.format("%d/%d", indexDistance, lineDistance);
     }
 
-    private static Color getColorForMethod(final MethodInfo methodInfo) {
-        switch (methodInfo.getAccessibility()) {
+    private static Color getColorForMethod(final MethodDefinition method) {
+        switch (method.getAccessibility()) {
             case PUBLIC: return Color.GREEN;
             case PROTECTED: return Color.YELLOW;
             case PRIVATE: return Color.BLACK;
             case DEFAULT: return Color.BLUE;
-            default: throw new RuntimeException("Unexpected accessibility type " + methodInfo.getAccessibility());
+            default: throw new RuntimeException("Unexpected accessibility type " + method.getAccessibility());
         }
     }
 
-    private static int getShapeForMethod(final MethodInfo methodInfo) {
-        if(methodInfo.isStatic()) {
+    private static int getShapeForMethod(final MethodDefinition method) {
+        if(method.isStatic()) {
             return BasicNode.POLYGON;
         }
-        else if(methodInfo.isOverride()) {
+        else if(method.isOverride()) {
             return BasicNode.TRAPEZIUM;
         }
-        else if(methodInfo.isOverloaded()) {
+        else if(method.isOverloaded()) {
             return BasicNode.INVTRIANGLE;
         }
         else {
