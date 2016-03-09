@@ -4,7 +4,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class MethodCallOccurrence extends AnalysisSubject {
+public class ResolvedCall extends AnalysisSubject {
 
     private final DetailAST methodInvocation;
 
@@ -12,7 +12,7 @@ public class MethodCallOccurrence extends AnalysisSubject {
 
     private final MethodDefinition callee;
 
-    public MethodCallOccurrence(
+    public ResolvedCall(
             final DetailAST methodInvocation,
             final MethodDefinition caller,
             final MethodDefinition callee) {
@@ -46,7 +46,7 @@ public class MethodCallOccurrence extends AnalysisSubject {
             return true;
         }
         else {
-            final MethodCallOccurrence rhs = (MethodCallOccurrence) o;
+            final ResolvedCall rhs = (ResolvedCall) o;
             return methodInvocation.getLineNo() == rhs.methodInvocation.getLineNo()
                     && methodInvocation.getColumnNo() == rhs.methodInvocation.getColumnNo();
         }

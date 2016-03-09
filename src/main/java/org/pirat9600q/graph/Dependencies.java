@@ -13,12 +13,12 @@ public class Dependencies {
 
     private final ClassDefinition classDefinition;
 
-    private final List<MethodCallOccurrence> methodCallOccurrences;
+    private final List<ResolvedCall> resolvedCalls;
 
     public Dependencies(final ClassDefinition classDefinition,
-                        final List<MethodCallOccurrence> methodCallOccurrences) {
+                        final List<ResolvedCall> resolvedCalls) {
         this.classDefinition = classDefinition;
-        this.methodCallOccurrences = methodCallOccurrences;
+        this.resolvedCalls = resolvedCalls;
     }
 
     public ClassDefinition getClassDefinition() {
@@ -34,13 +34,13 @@ public class Dependencies {
     }
 
     public List<MethodDefinition> getMethodDependencies(final MethodDefinition caller) {
-        final Set<MethodCallOccurrence> uniqueOccurrences =
+        final Set<ResolvedCall> uniqueOccurrences =
                 new TreeSet<>(new UniqueCallerCalleeCallOccurrencesComparator());
-        return methodCallOccurrences.stream()
+        return resolvedCalls.stream()
                 .filter(mco -> mco.getCaller().equals(caller))
                 .sorted(new AppearanceOrderMethodCallOccurrenceComparator())
                 .filter(uniqueOccurrences::add)
-                .map(MethodCallOccurrence::getCallee)
+                .map(ResolvedCall::getCallee)
                 .collect(Collectors.toList());
     }
 
@@ -59,23 +59,23 @@ public class Dependencies {
     }
 
     public List<MethodDefinition> getMethodDependants(final MethodDefinition callee) {
-        final Set<MethodCallOccurrence> unique =
+        final Set<ResolvedCall> unique =
                 new TreeSet<>(new UniqueCallerCalleeCallOccurrencesComparator());
-        return methodCallOccurrences.stream()
+        return resolvedCalls.stream()
                 .filter(mco -> mco.getCallee().equals(callee) && unique.add(mco))
-                .map(MethodCallOccurrence::getCaller)
+                .map(ResolvedCall::getCaller)
                 .collect(Collectors.toList());
     }
 
     public boolean isMethodDependsOn(final MethodDefinition caller, final MethodDefinition callee) {
-        return methodCallOccurrences.stream()
+        return resolvedCalls.stream()
                 .anyMatch(mco -> mco.getCaller().equals(caller) && mco.getCallee().equals(callee));
     }
 
     private static class AppearanceOrderMethodCallOccurrenceComparator implements
-            Comparator<MethodCallOccurrence> {
+            Comparator<ResolvedCall> {
         @Override
-        public int compare(MethodCallOccurrence left, MethodCallOccurrence right) {
+        public int compare(ResolvedCall left, ResolvedCall right) {
             if (isNestedInside(left.getAstNode(), right.getAstNode())) {
                 return -1;
             }
@@ -102,9 +102,9 @@ public class Dependencies {
     }
 
     private class UniqueCallerCalleeCallOccurrencesComparator implements
-            Comparator<MethodCallOccurrence> {
+            Comparator<ResolvedCall> {
         @Override
-        public int compare(final MethodCallOccurrence left, final MethodCallOccurrence right) {
+        public int compare(final ResolvedCall left, final ResolvedCall right) {
             return new CompareToBuilder()
                     .append(left.getCaller().getIndex(), right.getCaller().getIndex())
                     .append(left.getCallee().getIndex(), right.getCallee().getIndex())

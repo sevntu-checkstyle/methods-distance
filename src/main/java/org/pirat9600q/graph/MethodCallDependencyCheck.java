@@ -85,10 +85,10 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
     private static Dependencies buildDependencies(final DetailAST topLevelClass,
             final List<DetailAST> methodInvocations) {
         final ClassDefinition  classDefinition = new ClassDefinition(topLevelClass);
-        final List<MethodCallOccurrence> callOccurrences = new ArrayList<>();
+        final List<ResolvedCall> callOccurrences = new ArrayList<>();
         for (final DetailAST invocation : methodInvocations) {
             if (classDefinition.isInsideMethodOfClass(invocation)) {
-                final MethodCallOccurrence occurrence = tryResolveCall(classDefinition, invocation);
+                final ResolvedCall occurrence = tryResolveCall(classDefinition, invocation);
                 if (occurrence != null) {
                     callOccurrences.add(occurrence);
                 }
@@ -97,9 +97,9 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
         return new Dependencies(classDefinition, callOccurrences);
     }
 
-    private static MethodCallOccurrence tryResolveCall(
+    private static ResolvedCall tryResolveCall(
             final ClassDefinition classDefinition, final DetailAST invocation) {
-        MethodCallOccurrence callOccurrence = null;
+        ResolvedCall callOccurrence = null;
         switch (invocation.getType()) {
             case TokenTypes.METHOD_CALL:
                 final MethodCall mc = new MethodCall(classDefinition, invocation);
@@ -113,7 +113,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
                         .map(callee -> {
                             final MethodDefinition caller = classDefinition.getMethodByAstNode(
                                     mc.getEnclosingMethod());
-                            return new MethodCallOccurrence(invocation, caller, callee);
+                            return new ResolvedCall(invocation, caller, callee);
                         })
                         .orElse(null);
                 }
@@ -129,7 +129,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
                         final MethodDefinition callee = possibleMethods.get(0);
                         final MethodDefinition caller =
                                 classDefinition.getMethodByAstNode(call.getEnclosingMethod());
-                        callOccurrence = new MethodCallOccurrence(invocation, caller, callee);
+                        callOccurrence = new ResolvedCall(invocation, caller, callee);
                     }
                 }
                 break;
