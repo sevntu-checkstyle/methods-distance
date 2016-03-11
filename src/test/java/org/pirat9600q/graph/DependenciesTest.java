@@ -3,22 +3,22 @@ package org.pirat9600q.graph;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DependenciesTest extends MethodCallDependenciesCheckTestSupport {
 
-    private final Dependencies ds;
-
-    public DependenciesTest() throws Exception {
-        final Configuration dc = createCheckConfig(MethodCallDependencyCheck.class);
-        ds = invokeCheckAndGetDependencies(dc, "InputDependencies.java");
-    }
-
     @Test
     public void testDependencies() throws Exception {
+        final Configuration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Dependencies ds = invokeCheckAndGetDependencies(dc, "InputDependencies.java");
         final MethodDefinition methodB = ds.getMethodByIndex(1);
         final List<MethodDefinition> dependencies = ds.getMethodDependencies(methodB);
         assertTrue(dependencies.size() == 1);
@@ -32,5 +32,66 @@ public class DependenciesTest extends MethodCallDependenciesCheckTestSupport {
         final MethodDefinition methodA = ds.getMethodByIndex(0);
         assertTrue(ds.isMethodDependsOn(methodA, methodB));
         assertFalse(ds.isMethodDependsOn(methodA, methodD));
+    }
+
+    @Test
+    public void testTotalSumOfMethodDistances() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesDistance.java");
+        assertEquals(12, ds.getTotalSumOfMethodDistances());
+    }
+
+    @Test
+    public void testDeclarationBeforeUsageCases() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesDeclarationBeforeUsage.java");
+        assertEquals(2, ds.getDeclarationBeforeUsageCases());
+    }
+
+    @Test
+    public void testOverloadSplit1() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesOverloadSplit1.java");
+        assertEquals(5, ds.getOverloadGroupSplitCases());
+    }
+
+    @Test
+    public void testOverloadSplit2() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesOverloadSplit2.java");
+        assertEquals(14, ds.getOverloadGroupSplitCases());
+    }
+
+    @Test
+    public void testOverrideSplit1() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesOverrideSplit1.java");
+        assertEquals(3, ds.getOverrideGroupSplitCases());
+    }
+
+    @Test
+    public void testOverrideSplit2() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesOverrideSplit2.java");
+        assertEquals(0, ds.getOverrideGroupSplitCases());
+    }
+
+    @Test
+    public void testOverrideSplit3() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesOverrideSplit3.java");
+        assertEquals(0, ds.getOverrideGroupSplitCases());
+    }
+
+    @Test
+    public void testRelativeOrderInconsistency() throws Exception {
+        final Map<String, Integer> expected = new TreeMap<>();
+        expected.put("InputDependenciesOrderInconsistency1.java", 0);
+        expected.put("InputDependenciesOrderInconsistency2.java", 1);
+        expected.put("InputDependenciesOrderInconsistency3.java", 1);
+        expected.put("InputDependenciesOrderInconsistency4.java", 1);
+        expected.put("InputDependenciesOrderInconsistency5.java", 1);
+        expected.put("InputDependenciesOrderInconsistency6.java", 0);
+        for(final Map.Entry<String,Integer> e : expected.entrySet()) {
+            final String msg = String.format("Incorrect result for input \"%s\"", e.getKey());
+            assertEquals(msg, e.getValue().longValue(), withDefaultConfig(e.getKey()).getRelativeOrderInconsistencyCases());
+        }
+    }
+
+    private Dependencies withDefaultConfig(final String fileName) throws Exception {
+        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyCheck.class), fileName);
     }
 }

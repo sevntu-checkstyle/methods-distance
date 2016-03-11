@@ -3,10 +3,15 @@ package org.pirat9600q.graph;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Dependencies {
@@ -34,12 +39,10 @@ public class Dependencies {
     }
 
     public List<MethodDefinition> getMethodDependencies(final MethodDefinition caller) {
-        final Set<ResolvedCall> uniqueOccurrences =
-                new TreeSet<>(new UniqueCallerCalleeCallOccurrencesComparator());
         return resolvedCalls.stream()
                 .filter(mco -> mco.getCaller().equals(caller))
                 .sorted(new AppearanceOrderMethodCallOccurrenceComparator())
-                .filter(uniqueOccurrences::add)
+                .filter(new UniqueCallerCalleeCallsFilter())
                 .map(ResolvedCall::getCallee)
                 .collect(Collectors.toList());
     }
@@ -59,10 +62,9 @@ public class Dependencies {
     }
 
     public List<MethodDefinition> getMethodDependants(final MethodDefinition callee) {
-        final Set<ResolvedCall> unique =
-                new TreeSet<>(new UniqueCallerCalleeCallOccurrencesComparator());
         return resolvedCalls.stream()
-                .filter(mco -> mco.getCallee().equals(callee) && unique.add(mco))
+                .filter(mco -> mco.getCallee().equals(callee))
+                .filter(new UniqueCallerCalleeCallsFilter())
                 .map(ResolvedCall::getCaller)
                 .collect(Collectors.toList());
     }
@@ -70,6 +72,104 @@ public class Dependencies {
     public boolean isMethodDependsOn(final MethodDefinition caller, final MethodDefinition callee) {
         return resolvedCalls.stream()
                 .anyMatch(mco -> mco.getCaller().equals(caller) && mco.getCallee().equals(callee));
+    }
+
+    public int getTotalSumOfMethodDistances() {
+        return classDefinition.getMethods().stream()
+                .map(caller ->
+                    getMethodDependencies(caller).stream()
+                        .map(caller::getIndexDistanceTo)
+                        .reduce(0, (a1, a2) -> a1 + a2))
+                .reduce(0, (a1, a2) -> a1 + a2);
+    }
+
+    public int getDeclarationBeforeUsageCases() {
+        return (int) resolvedCalls.stream()
+                .filter(new UniqueCallerCalleeCallsFilter())
+                .filter(rc -> rc.getCaller().getIndexDistanceTo(rc.getCallee()) < 0)
+                .count();
+    }
+
+    public int getOverrideGroupSplitCases() {
+        final List<Integer> overrideMethodIndices = classDefinition.getMethods().stream()
+                .filter(MethodDefinition::isOverride)
+                .map(MethodDefinition::getIndex)
+                .collect(Collectors.toList());
+        if (overrideMethodIndices.isEmpty()) {
+            return 0;
+        }
+        else {
+            final MinMax<Integer> firstLastIndices = minMax(overrideMethodIndices);
+            final int firstLastDistance = firstLastIndices.getMax() - firstLastIndices.getMin();
+            final int totalOverrideMethods = overrideMethodIndices.size();
+            return firstLastDistance - totalOverrideMethods + 1;
+        }
+    }
+
+    public int getOverloadGroupSplitCases() {
+        return classDefinition.getMethods()
+                .stream()
+                .collect(
+                    HashMap<String, List<MethodDefinition>>::new,
+                    (grouping, method) -> {
+                        final List<MethodDefinition> maybeList = grouping.get(method.getName());
+                        final List<MethodDefinition> list =
+                                maybeList == null ? new ArrayList<>() : maybeList;
+                        list.add(method);
+                        grouping.put(method.getName(), list);
+                    },
+                    HashMap::putAll).entrySet().stream()
+                .map(e -> {
+                    final List<Integer> overloadGroupIndices = e.getValue().stream()
+                            .map(MethodDefinition::getIndex).collect(Collectors.toList());
+                    final MinMax<Integer> bounds = minMax(overloadGroupIndices);
+                    return bounds.getMax() - bounds.getMin() - overloadGroupIndices.size() + 1;
+                })
+                .reduce(0, (a1, a2) -> a1 + a2);
+    }
+
+    public int getRelativeOrderInconsistencyCases() {
+        return classDefinition.getMethods().stream()
+                .map(caller -> {
+                    int maxCalleeIndex = 0;
+                    int orderViolations = 0;
+                    for (final MethodDefinition callee : getMethodDependencies(caller)) {
+                        final int calleeIndex = callee.getIndex();
+                        if (calleeIndex < maxCalleeIndex) {
+                            ++orderViolations;
+                        }
+                        else {
+                            maxCalleeIndex = calleeIndex;
+                        }
+                    }
+                    return orderViolations;
+                })
+                .reduce(0, (a1, a2) -> a1 + a2);
+    }
+
+    private static <T> MinMax<T> minMax(final Collection<T> elements) {
+        final SortedSet<T> sortedSet = new TreeSet<>(elements);
+        return new MinMax<>(sortedSet.first(), sortedSet.last());
+    }
+
+    private static final class MinMax<T> {
+
+        private final T min;
+
+        private final T max;
+
+        private MinMax(final T min, final T max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public T getMin() {
+            return min;
+        }
+
+        public T getMax() {
+            return max;
+        }
     }
 
     private static class AppearanceOrderMethodCallOccurrenceComparator implements
@@ -98,6 +198,17 @@ public class Dependencies {
                 }
             }
             return false;
+        }
+    }
+
+    private class UniqueCallerCalleeCallsFilter implements Predicate<ResolvedCall> {
+
+        private final Set<ResolvedCall> unique =
+                new TreeSet<>(new UniqueCallerCalleeCallOccurrencesComparator());
+
+        @Override
+        public boolean test(ResolvedCall resolvedCall) {
+            return unique.add(resolvedCall);
         }
     }
 
