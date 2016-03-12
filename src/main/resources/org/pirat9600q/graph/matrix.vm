@@ -2,6 +2,7 @@
 #* @vtlvariable name="css" type="java.lang.String" *#
 #* @vtlvariable name="javaScript" type="java.lang.String" *#
 #* @vtlvariable name="info" type="org.pirat9600q.graph.Dependencies" *#
+#* @vtlvariable name="calculator" type="org.pirat9600q.graph.PenaltyCalculator" *#
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,6 +15,16 @@
         </style>
     </head>
     <body>
+        <div>
+            <span>Panalty function value: $calculator.getPenalty($info)</span>
+            <p>Penalty calculation parameters:</p>
+            <ul>
+                <li>declaration before first usage penalty - $calculator.declarationBeforeFirstUsagePenalty</li>
+                <li>overload group division penalty - $calculator.overloadGroupDivisionPenalty</li>
+                <li>override group division penalty - $calculator.overrideGroupDivisionPenalty</li>
+                <li>relative order inconsistency penalty - $calculator.relativeOrderInconsistencyPenalty</li>
+            </ul>
+        </div>
         <table id="matrixTable" class="centered">
             <thead></thead>
             <tbody>

@@ -38,9 +38,14 @@ public final class DependencyInfoMatrixSerializer {
         context.put("javaScript", getJavaScript());
         context.put("css", getStyles());
         context.put("javaSource", javaSource);
+        context.put("calculator", getPenaltyCalculator());
         final StringWriter writer = new StringWriter();
         template.merge(context, writer);
         return writer.toString();
+    }
+
+    private static PenaltyCalculator getPenaltyCalculator() {
+        return new PenaltyCalculator();
     }
 
     private static String getStyles() {
