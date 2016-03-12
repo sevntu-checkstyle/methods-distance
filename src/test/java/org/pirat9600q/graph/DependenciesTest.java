@@ -35,9 +35,15 @@ public class DependenciesTest extends MethodCallDependenciesCheckTestSupport {
     }
 
     @Test
-    public void testTotalSumOfMethodDistances() throws Exception {
-        final Dependencies ds = withDefaultConfig("InputDependenciesDistance.java");
+    public void testTotalSumOfMethodDistances1() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesDistance1.java");
         assertEquals(12, ds.getTotalSumOfMethodDistances());
+    }
+
+    @Test
+    public void testTotalSumOfMethodDistances2() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesDistance2.java");
+        assertEquals(3, ds.getTotalSumOfMethodDistances());
     }
 
     @Test

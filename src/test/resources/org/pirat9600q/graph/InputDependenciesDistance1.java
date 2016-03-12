@@ -1,6 +1,6 @@
 package pirat9600q.graph;
 
-public class InputDependenciesDistance {
+public class InputDependenciesDistance1 {
 
     void a() {
         a1(); //1

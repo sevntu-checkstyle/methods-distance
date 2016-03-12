@@ -78,7 +78,7 @@ public class Dependencies {
         return classDefinition.getMethods().stream()
                 .map(caller ->
                     getMethodDependencies(caller).stream()
-                        .map(caller::getIndexDistanceTo)
+                        .map(callee -> Math.abs(caller.getIndexDistanceTo(callee)))
                         .reduce(0, (a1, a2) -> a1 + a2))
                 .reduce(0, (a1, a2) -> a1 + a2);
     }
