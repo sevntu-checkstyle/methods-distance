@@ -3,10 +3,8 @@ package org.pirat9600q.graph;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -76,11 +74,9 @@ public class Dependencies {
 
     public int getTotalSumOfMethodDistances() {
         return classDefinition.getMethods().stream()
-                .map(caller ->
-                    getMethodDependencies(caller).stream()
-                        .map(callee -> Math.abs(caller.getIndexDistanceTo(callee)))
-                        .reduce(0, (a1, a2) -> a1 + a2))
-                .reduce(0, (a1, a2) -> a1 + a2);
+                .collect(Collectors.summingInt(caller -> getMethodDependencies(caller).stream()
+                        .collect(Collectors.summingInt(callee ->
+                                Math.abs(caller.getIndexDistanceTo(callee))))));
     }
 
     public int getDeclarationBeforeUsageCases() {
@@ -109,16 +105,8 @@ public class Dependencies {
     public int getOverloadGroupSplitCases() {
         return classDefinition.getMethods()
                 .stream()
-                .collect(
-                    HashMap<String, List<MethodDefinition>>::new,
-                    (grouping, method) -> {
-                        final List<MethodDefinition> maybeList = grouping.get(method.getName());
-                        final List<MethodDefinition> list =
-                                maybeList == null ? new ArrayList<>() : maybeList;
-                        list.add(method);
-                        grouping.put(method.getName(), list);
-                    },
-                    HashMap::putAll).entrySet().stream()
+                .collect(Collectors.groupingBy(MethodDefinition::getName))
+                .entrySet().stream()
                 .map(e -> {
                     final List<Integer> overloadGroupIndices = e.getValue().stream()
                             .map(MethodDefinition::getIndex).collect(Collectors.toList());
