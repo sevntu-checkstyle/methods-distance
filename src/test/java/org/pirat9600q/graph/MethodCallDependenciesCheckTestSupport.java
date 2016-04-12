@@ -77,6 +77,10 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
         return MethodCallDependencyCheckTest.class.getResource(fileName).getPath();
     }
 
+    protected Dependencies withDefaultConfig(final String fileName) throws Exception {
+        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyCheck.class), fileName);
+    }
+
     private static class DependencyInformationCollector implements DependencyInformationConsumer {
 
         private Map<String, Dependencies> filePathToDependencies = new HashMap<>();

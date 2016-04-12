@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class MethodDefinition extends AnalysisSubject {
@@ -21,6 +22,12 @@ public class MethodDefinition extends AnalysisSubject {
             TokenTypes.LITERAL_LONG,
             TokenTypes.LITERAL_DOUBLE
     );
+
+    private static final Pattern GETTER_METHOD_REGEX = Pattern.compile("get[A-Z]\\w*");
+
+    private static final Pattern BOOLEAN_GETTER_METHOD_REGEX = Pattern.compile("is[A-Z]\\w*");
+
+    private static final Pattern SETTER_METHOD_REGEX = Pattern.compile("set[A-Z]\\w*");
 
     private final ClassDefinition classDefinition;
 
@@ -166,6 +173,36 @@ public class MethodDefinition extends AnalysisSubject {
 
     public int getLineDistanceTo(final MethodDefinition other) {
         return other.getLineNo() - getLineNo();
+    }
+
+    public boolean isSetter() {
+        return getAccessibility().equals(Accessibility.PUBLIC)
+            && getArgCount() == 1
+            && !isVarArg()
+            && isVoid()
+            && SETTER_METHOD_REGEX.matcher(getName()).matches();
+    }
+
+    public boolean isGetter() {
+        return getAccessibility().equals(Accessibility.PUBLIC)
+            && getArgCount() == 0
+            && !isVoid()
+            && ( GETTER_METHOD_REGEX.matcher(getName()).matches()
+                || BOOLEAN_GETTER_METHOD_REGEX.matcher(getName()).matches() && isReturnsBoolean());
+    }
+
+    public boolean isVoid() {
+        return getReturnType(methodDef).getType() == TokenTypes.LITERAL_VOID;
+    }
+
+    private boolean isReturnsBoolean() {
+        final DetailAST returnType = getReturnType(methodDef);
+        return returnType.getType() == TokenTypes.LITERAL_BOOLEAN
+            || returnType.getText().equals("Boolean");
+    }
+
+    private static DetailAST getReturnType(final DetailAST methodDef) {
+        return methodDef.findFirstToken(TokenTypes.TYPE).getFirstChild();
     }
 
     @Override

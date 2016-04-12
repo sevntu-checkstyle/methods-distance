@@ -96,8 +96,4 @@ public class DependenciesTest extends MethodCallDependenciesCheckTestSupport {
             assertEquals(msg, e.getValue().longValue(), withDefaultConfig(e.getKey()).getRelativeOrderInconsistencyCases());
         }
     }
-
-    private Dependencies withDefaultConfig(final String fileName) throws Exception {
-        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyCheck.class), fileName);
-    }
 }
