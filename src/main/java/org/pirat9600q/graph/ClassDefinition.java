@@ -4,6 +4,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ClassDefinition extends AnalysisSubject {
@@ -81,5 +82,11 @@ public class ClassDefinition extends AnalysisSubject {
         return getMethodsByName(methodName).stream()
                 .filter(MethodDefinition::isInstance)
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, List<MethodDefinition>> getPropertiesAccessors() {
+        return getMethods().stream()
+                .filter(m -> m.isGetter() || m.isSetter())
+                .collect(Collectors.groupingBy(MethodDefinition::getAccessiblePropertyName));
     }
 }

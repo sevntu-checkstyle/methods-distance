@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,8 @@ public class MethodDefinition extends AnalysisSubject {
     private static final Pattern BOOLEAN_GETTER_METHOD_REGEX = Pattern.compile("is[A-Z]\\w*");
 
     private static final Pattern SETTER_METHOD_REGEX = Pattern.compile("set[A-Z]\\w*");
+
+    private static final Pattern ACCESSOR_METHOD_REGEX = Pattern.compile("(set|get|is)([A-Z]\\w*)");
 
     private final ClassDefinition classDefinition;
 
@@ -173,6 +176,22 @@ public class MethodDefinition extends AnalysisSubject {
 
     public int getLineDistanceTo(final MethodDefinition other) {
         return other.getLineNo() - getLineNo();
+    }
+
+    public String getAccessiblePropertyName() {
+        if(isGetter() || isSetter()) {
+            final Matcher matcher = ACCESSOR_METHOD_REGEX.matcher(getName());
+            if(matcher.matches()) {
+                final String methodNamePart = matcher.group(2);
+                return methodNamePart.substring(0, 1).toLowerCase() + methodNamePart.substring(1);
+            }
+            else {
+                throw new IllegalArgumentException("Property accessor name does not matches regex");
+            }
+        }
+        else {
+            throw new IllegalStateException("The method " + getName() + " is not accessor");
+        }
     }
 
     public boolean isSetter() {
