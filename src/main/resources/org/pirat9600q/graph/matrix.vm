@@ -22,6 +22,7 @@
                 <li>declaration before first usage penalty - $calculator.declarationBeforeFirstUsagePenalty</li>
                 <li>overload group division penalty - $calculator.overloadGroupDivisionPenalty</li>
                 <li>override group division penalty - $calculator.overrideGroupDivisionPenalty</li>
+                <li>accessors group division penalty - $calculator.accessorsGroupDivisionPenalty</li>
                 <li>relative order inconsistency penalty - $calculator.relativeOrderInconsistencyPenalty</li>
             </ul>
         </div>

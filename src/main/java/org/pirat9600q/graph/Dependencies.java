@@ -87,19 +87,12 @@ public class Dependencies {
     }
 
     public int getOverrideGroupSplitCases() {
-        final List<Integer> overrideMethodIndices = classDefinition.getMethods().stream()
+        final List<MethodDefinition> overrideMethodIndices = classDefinition.getMethods().stream()
                 .filter(MethodDefinition::isOverride)
-                .map(MethodDefinition::getIndex)
                 .collect(Collectors.toList());
-        if (overrideMethodIndices.isEmpty()) {
-            return 0;
-        }
-        else {
-            final MinMax<Integer> firstLastIndices = minMax(overrideMethodIndices);
-            final int firstLastDistance = firstLastIndices.getMax() - firstLastIndices.getMin();
-            final int totalOverrideMethods = overrideMethodIndices.size();
-            return firstLastDistance - totalOverrideMethods + 1;
-        }
+        return overrideMethodIndices.isEmpty()
+                ? 0
+                : getMethodGroupSplitCount(overrideMethodIndices);
     }
 
     public int getOverloadGroupSplitCases() {
@@ -107,12 +100,7 @@ public class Dependencies {
                 .stream()
                 .collect(Collectors.groupingBy(MethodDefinition::getName))
                 .entrySet().stream()
-                .map(e -> {
-                    final List<Integer> overloadGroupIndices = e.getValue().stream()
-                            .map(MethodDefinition::getIndex).collect(Collectors.toList());
-                    final MinMax<Integer> bounds = minMax(overloadGroupIndices);
-                    return bounds.getMax() - bounds.getMin() - overloadGroupIndices.size() + 1;
-                })
+                .map(e -> getMethodGroupSplitCount(e.getValue()))
                 .reduce(0, (a1, a2) -> a1 + a2);
     }
 
@@ -133,6 +121,19 @@ public class Dependencies {
                     return orderViolations;
                 })
                 .reduce(0, (a1, a2) -> a1 + a2);
+    }
+
+    public int getAccessorsSplitCases() {
+        return classDefinition.getPropertiesAccessors().entrySet().stream()
+                .map(propertyAccessors -> getMethodGroupSplitCount(propertyAccessors.getValue()))
+                .reduce(0, (a1, a2) -> a1 + a2);
+    }
+
+    private static int getMethodGroupSplitCount(final Collection<MethodDefinition> methodGroup) {
+        final List<Integer> overloadGroupIndices = methodGroup.stream()
+                .map(MethodDefinition::getIndex).collect(Collectors.toList());
+        final MinMax<Integer> bounds = minMax(overloadGroupIndices);
+        return bounds.getMax() - bounds.getMin() - overloadGroupIndices.size() + 1;
     }
 
     private static <T> MinMax<T> minMax(final Collection<T> elements) {

@@ -96,4 +96,10 @@ public class DependenciesTest extends MethodCallDependenciesCheckTestSupport {
             assertEquals(msg, e.getValue().longValue(), withDefaultConfig(e.getKey()).getRelativeOrderInconsistencyCases());
         }
     }
+
+    @Test
+    public void testAccessorsSplit() throws Exception {
+        final Dependencies ds = withDefaultConfig("InputDependenciesAccessorsSplit.java");
+        assertEquals(3, ds.getAccessorsSplitCases());
+    }
 }

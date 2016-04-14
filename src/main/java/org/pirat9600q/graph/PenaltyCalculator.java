@@ -7,6 +7,8 @@ public class PenaltyCalculator {
 
     private float overloadGroupDivisionPenalty = 5;
 
+    private float accessorsGroupDivisionPenalty = 3;
+
     private float declarationBeforeFirstUsagePenalty = 4;
 
     private float relativeOrderInconsistencyPenalty = 1;
@@ -16,6 +18,7 @@ public class PenaltyCalculator {
             + dep.getDeclarationBeforeUsageCases() * declarationBeforeFirstUsagePenalty
             + dep.getOverloadGroupSplitCases() * overloadGroupDivisionPenalty
             + dep.getOverrideGroupSplitCases() * overrideGroupDivisionPenalty
+            + dep.getAccessorsSplitCases() * accessorsGroupDivisionPenalty
             + dep.getRelativeOrderInconsistencyCases() * relativeOrderInconsistencyPenalty;
     }
 
@@ -49,5 +52,13 @@ public class PenaltyCalculator {
 
     public void setRelativeOrderInconsistencyPenalty(float relativeOrderInconsistencyPenalty) {
         this.relativeOrderInconsistencyPenalty = relativeOrderInconsistencyPenalty;
+    }
+
+    public float getAccessorsGroupDivisionPenalty() {
+        return accessorsGroupDivisionPenalty;
+    }
+
+    public void setAccessorsGroupDivisionPenalty(float accessorsGroupDivisionPenalty) {
+        this.accessorsGroupDivisionPenalty = accessorsGroupDivisionPenalty;
     }
 }
