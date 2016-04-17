@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/alex-zuy/method-call-graph.svg?branch=master)](https://travis-ci.org/alex-zuy/method-call-graph)
 # method-call-graph
 
 Running:
