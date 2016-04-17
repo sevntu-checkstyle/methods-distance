@@ -179,9 +179,9 @@ public class MethodDefinition extends AnalysisSubject {
     }
 
     public String getAccessiblePropertyName() {
-        if(isGetter() || isSetter()) {
+        if (isGetter() || isSetter()) {
             final Matcher matcher = ACCESSOR_METHOD_REGEX.matcher(getName());
-            if(matcher.matches()) {
+            if (matcher.matches()) {
                 final String methodNamePart = matcher.group(2);
                 return methodNamePart.substring(0, 1).toLowerCase() + methodNamePart.substring(1);
             }
@@ -206,7 +206,7 @@ public class MethodDefinition extends AnalysisSubject {
         return getAccessibility().equals(Accessibility.PUBLIC)
             && getArgCount() == 0
             && !isVoid()
-            && ( GETTER_METHOD_REGEX.matcher(getName()).matches()
+            && (GETTER_METHOD_REGEX.matcher(getName()).matches()
                 || BOOLEAN_GETTER_METHOD_REGEX.matcher(getName()).matches() && isReturnsBoolean());
     }
 
