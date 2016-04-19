@@ -5,6 +5,7 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.pirat9600q.graph.Dependencies;
 import org.pirat9600q.graph.DependencyInfoGraphSerializer;
 import org.pirat9600q.graph.DependencyInfoMatrixSerializer;
@@ -26,7 +27,8 @@ public final class Main {
     public static void main(String[] args) throws CheckstyleException {
         final DefaultConfiguration mcdc = new DefaultConfiguration(
                 MethodCallDependencyCheck.class.getCanonicalName());
-        final DependencyInformationSerializer consumer = new DependencyInformationSerializer();
+        mcdc.addAttribute("screenLinesCount", "50");
+        final DependencyInformationSerializer consumer = new DependencyInformationSerializer(mcdc);
         final ModuleFactoryImpl moduleFactory = new ModuleFactoryImpl(consumer);
         final TreeWalker tw = new TreeWalker();
         tw.setModuleFactory(moduleFactory);
@@ -43,12 +45,19 @@ public final class Main {
     private static final class DependencyInformationSerializer implements
             DependencyInformationConsumer {
 
+        private final Configuration config;
+
+        private DependencyInformationSerializer(final Configuration config) {
+            this.config = config;
+        }
+
         @Override
         public void accept(String filePath, Dependencies dependencies) {
             final String baseName = new File(filePath).getName();
             DependencyInfoGraphSerializer.writeToFile(dependencies, baseName + ".dot");
             final String source = getFileContents(filePath);
-            DependencyInfoMatrixSerializer.writeToFile(source, dependencies, baseName + ".html");
+            DependencyInfoMatrixSerializer.writeToFile(source, dependencies, config,
+                baseName + ".html");
         }
 
         private static String getFileContents(final String filePath) {

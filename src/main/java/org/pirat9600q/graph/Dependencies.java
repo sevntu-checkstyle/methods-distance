@@ -18,10 +18,13 @@ public class Dependencies {
 
     private final List<ResolvedCall> resolvedCalls;
 
+    private final int screenLinesCount;
+
     public Dependencies(final ClassDefinition classDefinition,
-                        final List<ResolvedCall> resolvedCalls) {
+                        final List<ResolvedCall> resolvedCalls, final int screenLinesCount) {
         this.classDefinition = classDefinition;
         this.resolvedCalls = resolvedCalls;
+        this.screenLinesCount = screenLinesCount;
     }
 
     public ClassDefinition getClassDefinition() {
@@ -121,6 +124,14 @@ public class Dependencies {
                     return orderViolations;
                 })
                 .reduce(0, (a1, a2) -> a1 + a2);
+    }
+
+    public int getDependenciesBetweenDistantMethodsCases() {
+        return (int) resolvedCalls.stream()
+            .filter(call ->
+                Math.abs(call.getCaller().getLineDistanceTo(call.getCallee())) > screenLinesCount)
+            .filter(new UniqueCallerCalleeCallsFilter())
+            .count();
     }
 
     public int getAccessorsSplitCases() {

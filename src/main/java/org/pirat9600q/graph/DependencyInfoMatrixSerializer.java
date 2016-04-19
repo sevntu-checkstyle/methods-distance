@@ -1,5 +1,6 @@
 package org.pirat9600q.graph;
 
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -18,16 +19,18 @@ public final class DependencyInfoMatrixSerializer {
 
     private DependencyInfoMatrixSerializer() { }
 
-    public static void writeToFile(final String javaSource, final Dependencies dependencies, final String fileName) {
+    public static void writeToFile(final String javaSource, final Dependencies dependencies,
+       final Configuration config, final String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
-            file.write(serialize(dependencies, javaSource));
+            file.write(serialize(dependencies, javaSource, config));
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private static String serialize(final Dependencies dependencies, final String javaSource) {
+    private static String serialize(final Dependencies dependencies, final String javaSource,
+        final Configuration config) {
         final VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
@@ -39,6 +42,7 @@ public final class DependencyInfoMatrixSerializer {
         context.put("css", getStyles());
         context.put("javaSource", javaSource);
         context.put("calculator", getPenaltyCalculator());
+        context.put("configuration", config);
         final StringWriter writer = new StringWriter();
         template.merge(context, writer);
         return writer.toString();

@@ -1,5 +1,6 @@
 package org.pirat9600q.graph;
 
+import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.junit.Test;
 
@@ -101,5 +102,21 @@ public class DependenciesTest extends MethodCallDependenciesCheckTestSupport {
     public void testAccessorsSplit() throws Exception {
         final Dependencies ds = withDefaultConfig("InputDependenciesAccessorsSplit.java");
         assertEquals(3, ds.getAccessorsSplitCases());
+    }
+
+    @Test
+    public void testCallsBetweenDistantMethods() throws Exception {
+        final DefaultConfiguration config = createCheckConfig(MethodCallDependencyCheck.class);
+        config.addAttribute("screenLinesCount", "5");
+        final Map<String, Integer> expected = new TreeMap<>();
+        expected.put("InputDependenciesDistantMethodCall1.java", 1);
+        expected.put("InputDependenciesDistantMethodCall2.java", 2);
+        expected.put("InputDependenciesDistantMethodCall3.java", 1);
+        expected.put("InputDependenciesDistantMethodCall4.java", 0);
+        for(final Map.Entry<String, Integer> e : expected.entrySet()) {
+            final Dependencies dependencies = invokeCheckAndGetDependencies(config, e.getKey());
+            final String msg = String.format("Incorrect result for input \"%s\"", e.getKey());
+            assertEquals(msg, e.getValue().intValue(), dependencies.getDependenciesBetweenDistantMethodsCases());
+        }
     }
 }

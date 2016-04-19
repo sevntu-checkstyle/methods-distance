@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, yes, its too big
+public class MethodCallDependencyCheck extends Check {
+
+    private static final int DEFAULT_SCREEN_LINES_COUNT = 50;
 
     private static final Set<Integer> PRIMITIVE_TOKEN_TYPES = ImmutableSet.of(
             TokenTypes.LITERAL_VOID,
@@ -32,12 +34,18 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
 
     private final Optional<DependencyInformationConsumer> consumer;
 
+    private int screenLinesCount = DEFAULT_SCREEN_LINES_COUNT;
+
     public MethodCallDependencyCheck() {
         consumer = Optional.empty();
     }
 
     public MethodCallDependencyCheck(final DependencyInformationConsumer dic) {
         consumer = Optional.of(dic);
+    }
+
+    public void setScreenLinesCount(final int screenLinesCount) {
+        this.screenLinesCount = screenLinesCount;
     }
 
     @Override
@@ -72,7 +80,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
     @Override
     public void finishTree(DetailAST rootAST) {
         if (topLevelClass != null) {
-            dependencies = buildDependencies(topLevelClass, methodInvocations);
+            dependencies = buildDependencies(topLevelClass, methodInvocations, screenLinesCount);
             final String inputFilePath = getFileContents().getFileName();
             consumer.ifPresent(dic -> dic.accept(inputFilePath, dependencies));
         }
@@ -83,7 +91,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
     }
 
     private static Dependencies buildDependencies(final DetailAST topLevelClass,
-            final List<DetailAST> methodInvocations) {
+            final List<DetailAST> methodInvocations, final int screenLinesCount) {
         final ClassDefinition  classDefinition = new ClassDefinition(topLevelClass);
         final List<ResolvedCall> callOccurrences = new ArrayList<>();
         for (final DetailAST invocation : methodInvocations) {
@@ -94,7 +102,7 @@ public class MethodCallDependencyCheck extends Check { //SUPPRESS CHECKSTYLE, ye
                 }
             }
         }
-        return new Dependencies(classDefinition, callOccurrences);
+        return new Dependencies(classDefinition, callOccurrences, screenLinesCount);
     }
 
     private static ResolvedCall tryResolveCall(

@@ -13,13 +13,16 @@ public class PenaltyCalculator {
 
     private float relativeOrderInconsistencyPenalty = 1;
 
+    private float dependenciesBetweenDistantMethodsPenalty = 3;
+
     public float getPenalty(final Dependencies dep) {
         return dep.getTotalSumOfMethodDistances()
             + dep.getDeclarationBeforeUsageCases() * declarationBeforeFirstUsagePenalty
             + dep.getOverloadGroupSplitCases() * overloadGroupDivisionPenalty
             + dep.getOverrideGroupSplitCases() * overrideGroupDivisionPenalty
             + dep.getAccessorsSplitCases() * accessorsGroupDivisionPenalty
-            + dep.getRelativeOrderInconsistencyCases() * relativeOrderInconsistencyPenalty;
+            + dep.getRelativeOrderInconsistencyCases() * relativeOrderInconsistencyPenalty
+            + dep.getDependenciesBetweenDistantMethodsCases() * dependenciesBetweenDistantMethodsPenalty;
     }
 
     public float getOverrideGroupDivisionPenalty() {
@@ -60,5 +63,14 @@ public class PenaltyCalculator {
 
     public void setAccessorsGroupDivisionPenalty(float accessorsGroupDivisionPenalty) {
         this.accessorsGroupDivisionPenalty = accessorsGroupDivisionPenalty;
+    }
+
+    public float getDependenciesBetweenDistantMethodsPenalty() {
+        return dependenciesBetweenDistantMethodsPenalty;
+    }
+
+    public void setDependenciesBetweenDistantMethodsPenalty(
+            float dependenciesBetweenDistantMethodsPenalty) {
+        this.dependenciesBetweenDistantMethodsPenalty = dependenciesBetweenDistantMethodsPenalty;
     }
 }

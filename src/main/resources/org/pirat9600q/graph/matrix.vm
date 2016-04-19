@@ -1,3 +1,4 @@
+#* @vtlvariable name="configuration" type="com.puppycrawl.tools.checkstyle.api.Configuration" *#
 #* @vtlvariable name="javaSource" type="java.lang.String" *#
 #* @vtlvariable name="css" type="java.lang.String" *#
 #* @vtlvariable name="javaScript" type="java.lang.String" *#
@@ -24,6 +25,11 @@
                 <li>override group division penalty - $calculator.overrideGroupDivisionPenalty</li>
                 <li>accessors group division penalty - $calculator.accessorsGroupDivisionPenalty</li>
                 <li>relative order inconsistency penalty - $calculator.relativeOrderInconsistencyPenalty</li>
+                <li>dependencies between distant methods penalty - $calculator.dependenciesBetweenDistantMethodsPenalty</li>
+            </ul>
+            <p>Configuration parameters:</p>
+            <ul>
+                <li>screen lines count - $configuration.getAttribute("screenLinesCount")</li>
             </ul>
         </div>
         <table id="matrixTable" class="centered">
