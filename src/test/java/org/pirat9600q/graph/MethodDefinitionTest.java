@@ -26,4 +26,15 @@ public class MethodDefinitionTest extends MethodCallDependenciesCheckTestSupport
             assertFalse(method.isSetter());
         }
     }
+
+    @Test
+    public void testGetterSetterRecognitionsWithCtors() throws Exception {
+        final Dependencies dc = withDefaultConfig("InputMethodDefinition2.java");
+        final MethodDefinition noArgCtor = dc.getMethodByIndex(0);
+        assertFalse(noArgCtor.isGetter());
+        assertFalse(noArgCtor.isSetter());
+        final MethodDefinition singleArgCtor = dc.getMethodByIndex(1);
+        assertFalse(singleArgCtor.isGetter());
+        assertFalse(singleArgCtor.isSetter());
+    }
 }

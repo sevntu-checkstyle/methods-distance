@@ -196,6 +196,7 @@ public class MethodDefinition extends AnalysisSubject {
 
     public boolean isSetter() {
         return getAccessibility().equals(Accessibility.PUBLIC)
+            && !isCtor()
             && getArgCount() == 1
             && !isVarArg()
             && isVoid()
@@ -204,10 +205,15 @@ public class MethodDefinition extends AnalysisSubject {
 
     public boolean isGetter() {
         return getAccessibility().equals(Accessibility.PUBLIC)
+            && !isCtor()
             && getArgCount() == 0
             && !isVoid()
             && (GETTER_METHOD_REGEX.matcher(getName()).matches()
                 || BOOLEAN_GETTER_METHOD_REGEX.matcher(getName()).matches() && isReturnsBoolean());
+    }
+
+    public boolean isCtor() {
+        return methodDef.getType() == TokenTypes.CTOR_DEF;
     }
 
     public boolean isVoid() {
