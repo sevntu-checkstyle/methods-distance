@@ -1,9 +1,6 @@
 package org.pirat9600q;
 
-import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.ModuleFactory;
-import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.pirat9600q.graph.Dependencies;
@@ -23,20 +20,13 @@ public final class Main {
 
     public static void main(String[] args) throws CheckstyleException {
         final DefaultConfiguration mcdc = new DefaultConfiguration(
-                MethodCallDependencyCheck.class.getCanonicalName());
+            MethodCallDependencyCheck.class.getCanonicalName());
         mcdc.addAttribute("screenLinesCount", "50");
         final DependencyInformationSerializer consumer = new DependencyInformationSerializer(mcdc);
-        final ModuleFactory moduleFactory = new DependencyInformationConsumerInjector(consumer);
-        final TreeWalker tw = new TreeWalker();
-        tw.setModuleFactory(moduleFactory);
-        tw.finishLocalSetup();
-        tw.setupChild(mcdc);
         final List<File> files = Collections.singletonList(new File(args[0]));
-        final Checker checker = new Checker();
-        checker.setModuleFactory(moduleFactory);
-        checker.finishLocalSetup();
-        checker.addFileSetCheck(tw);
-        checker.process(files);
+        final MethodCallDependencyCheckInvoker runner =
+            new MethodCallDependencyCheckInvoker(mcdc, consumer);
+        runner.invoke(files);
     }
 
     private static final class DependencyInformationSerializer implements
