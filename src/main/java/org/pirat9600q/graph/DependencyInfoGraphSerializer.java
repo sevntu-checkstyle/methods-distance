@@ -42,7 +42,7 @@ public class DependencyInfoGraphSerializer {
         }
     }
 
-    private static String serialize(final Dependencies info) {
+    public static String serialize(final Dependencies info) {
         try {
             final Graph graph = new Graph("dependencies");
             graph.setDirected(true);

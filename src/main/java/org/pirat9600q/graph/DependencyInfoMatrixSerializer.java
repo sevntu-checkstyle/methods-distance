@@ -29,7 +29,7 @@ public final class DependencyInfoMatrixSerializer {
         }
     }
 
-    private static String serialize(final Dependencies dependencies, final String javaSource,
+    public static String serialize(final Dependencies dependencies, final String javaSource,
         final Configuration config) {
         final VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
