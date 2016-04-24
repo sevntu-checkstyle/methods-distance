@@ -11,13 +11,11 @@ import org.pirat9600q.graph.DependencyInfoGraphSerializer;
 import org.pirat9600q.graph.DependencyInfoMatrixSerializer;
 import org.pirat9600q.graph.DependencyInformationConsumer;
 import org.pirat9600q.graph.MethodCallDependencyCheck;
+import org.pirat9600q.utils.FileUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 public final class Main {
 
@@ -54,19 +52,9 @@ public final class Main {
         public void accept(String filePath, Dependencies dependencies) {
             final String baseName = new File(filePath).getName();
             DependencyInfoGraphSerializer.writeToFile(dependencies, baseName + ".dot");
-            final String source = getFileContents(filePath);
+            final String source = FileUtils.getFileContents(filePath);
             DependencyInfoMatrixSerializer.writeToFile(source, dependencies, config,
                 baseName + ".html");
-        }
-
-        private static String getFileContents(final String filePath) {
-            try (final Scanner scanner = new Scanner(new FileInputStream(filePath))) {
-                scanner.useDelimiter("\\Z");
-                return scanner.next();
-            }
-            catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }
