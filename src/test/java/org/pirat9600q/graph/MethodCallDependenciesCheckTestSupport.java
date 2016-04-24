@@ -2,11 +2,9 @@ package org.pirat9600q.graph;
 
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.ModuleFactory;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import org.pirat9600q.DependencyInformationConsumerInjector;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -40,7 +38,7 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
         checker.setLocaleCountry(locale.getCountry());
         checker.setLocaleLanguage(locale.getLanguage());
         // following line is the only difference to super-class implementation of this method.
-        checker.setModuleFactory(new StatefulModuleFactory(collector));
+        checker.setModuleFactory(new DependencyInformationConsumerInjector(collector));
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(dc);
         checker.addListener(new BriefLogger(stream));
@@ -92,32 +90,6 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
 
         public Dependencies getForFile(final String filePath) {
             return filePathToDependencies.get(filePath);
-        }
-    }
-
-    private static class StatefulModuleFactory implements ModuleFactory {
-
-        private final DependencyInformationConsumer consumer;
-
-        private StatefulModuleFactory(final DependencyInformationConsumer consumer) {
-            this.consumer = consumer;
-        }
-
-        @Override
-        public Object createModule(String name) throws CheckstyleException {
-            try {
-                final Class<?> moduleClass = Class.forName(name);
-                if(moduleClass.equals(MethodCallDependencyCheck.class)) {
-                    final Constructor constructor = moduleClass.getConstructor(DependencyInformationConsumer.class);
-                    return constructor.newInstance(consumer);
-                }
-                else {
-                    return moduleClass.newInstance();
-                }
-            }
-            catch (Exception e) {
-                throw new CheckstyleException("Cannot instantiate module " + name, e);
-            }
         }
     }
 }
