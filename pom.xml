@@ -7,14 +7,18 @@
     <groupId>org.pirat9600q</groupId>
     <artifactId>method-call-graph</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>${packaging.type}</packaging>
 
     <properties>
+        <packaging.type>jar</packaging.type>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle-version>6.13</checkstyle-version>
         <java.version>1.8</java.version>
         <maven.checktyle-plugin.version>2.17</maven.checktyle-plugin.version>
         <checkstyle.configLocation>checkstyle-config.xml</checkstyle.configLocation>
         <jetty.maven.plugin.version>9.3.8.v20160314</jetty.maven.plugin.version>
+        <maven.war.plugin.version>2.3</maven.war.plugin.version>
+        <maven.dependency.plugin.version>2.3</maven.dependency.plugin.version>
     </properties>
 
     <repositories>
@@ -47,7 +51,49 @@
             <version>2.5</version>
         </dependency>
     </dependencies>
-
+    <profiles>
+        <profile>
+            <!-- used during deployment to heroku -->
+            <id>heroku</id>
+            <properties>
+                <packaging.type>war</packaging.type>
+            </properties>
+            <build>
+                <finalName>${project.artifactId}</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${maven.war.plugin.version}</version>
+                        <configuration>
+                            <warName>app</warName>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven.dependency.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals><goal>copy</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.eclipse.jetty</groupId>
+                                            <artifactId>jetty-runner</artifactId>
+                                            <version>9.3.3.v20150827</version>
+                                            <destFileName>jetty-runner.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <build>
         <pluginManagement>
             <plugins>
@@ -162,7 +208,6 @@
             </plugin>
         </plugins>
     </build>
-
     <reporting>
         <plugins>
             <plugin>

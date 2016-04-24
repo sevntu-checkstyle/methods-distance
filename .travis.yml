@@ -4,3 +4,8 @@ jdk:
 branches:
   only:
     - master
+deploy:
+  provider: heroku
+  app: method-graph
+  api_key:
+    secure: OFCvPY2aPJ2J61M67JA7C0Fz73oolMNFtv1CS24E0lanwUG+y3rd9xAtyTSi7MyE3SAKm6fXR7fBvCaSlWORpHEel5x+i3z2v8X92V19vzLnHT0+of4AczWHAf5I5y6adNkJMCUe66IySjzrDzDBOMVD+c2ZETwlva2j/DYzFDnbHW/XTXjjJmP3yAcYXV53KMzNfmLNRSgR6FGb/s1dXjK/CbS7q/XqtFPPctuKrRDGLj6hAdFIft1EQs7H/RDtXDWs5F0C52CS+m1L2W+ugKeKPKROKjH9lOU6g2I2/vldXruAHOiWYcRt14ROhZqmZwZkIbHU22ffmYsvyZpYDkgG2TEG/rKbRNCfQiQKd+r3oSAjbT5KbV5BCWLxsrGbo0Lt5JbzOrdoTIWwVEPuKx0O0XyPL1SIBSx+TyUVERbhIN0/RG5+WevSc6JPS1ZtlauJ+FbuPCuRYVyC+nOQ7s+qAc9fp8edafbu0muda7P0bCFaDj1VvznnE/JhPbXGxiJQlqLWgbW1VYQ+XMhyQ/qbBab4SgA+N0tvCmNfyQIi/EzsudBGXGBCrKQlvk8yz0M9SZq2T1iLcSPtFqDJuWGc2PSIFwJWAKVlhO2Efl4Qn3x6zwbSpfsmoufcemSJEiWYhesrd2cMKo5xGU02W+x2mIh7aNflBQvYKW+4olI=
