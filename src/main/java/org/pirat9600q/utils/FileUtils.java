@@ -1,7 +1,8 @@
 package org.pirat9600q.utils;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Scanner;
 
 public final class FileUtils {
@@ -9,12 +10,17 @@ public final class FileUtils {
     private FileUtils() { }
 
     public static String getFileContents(final String filePath) {
-        try (final Scanner scanner = new Scanner(new FileInputStream(filePath))) {
-            scanner.useDelimiter("\\Z");
-            return scanner.next();
+        try (final InputStream stream = new FileInputStream(filePath)) {
+            return getTextStreamContents(stream);
         }
-        catch (FileNotFoundException e) {
+        catch (final IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getTextStreamContents(final InputStream input) {
+        final Scanner scanner = new Scanner(input);
+        scanner.useDelimiter("\\Z");
+        return scanner.next();
     }
 }

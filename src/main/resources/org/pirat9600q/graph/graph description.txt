@@ -1,0 +1,11 @@
+Legend
+Node border color:
+    a) GREEN - public
+    b) YELLOW - protected
+    c) BLACK - private
+    d) BLUE - default
+Node shape:
+    if static - rectangle
+    otherwise if override - trapezium
+    otherwise if overloaded - triangle
+    otherwise ellipse

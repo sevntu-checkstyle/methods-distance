@@ -6,32 +6,17 @@ import net.claribole.zgrviewer.dot.Comment;
 import net.claribole.zgrviewer.dot.Edge;
 import net.claribole.zgrviewer.dot.Graph;
 import net.claribole.zgrviewer.dot.Node;
-import org.pirat9600q.graph.MethodDefinition.Accessibility;
+import org.pirat9600q.utils.FileUtils;
 
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-//CSOFF:
-public class DependencyInfoGraphSerializer {
-
-    private static final String GRAPH_LEGEND = "Legend\n" +
-            "Node border color:\n" +
-            "    a) GREEN - public\n" +
-            "    b) YELLOW - protected\n" +
-            "    c) BLACK - private\n" +
-            "    d) BLUE - default\n" +
-            "Node shape:\n" +
-            "    if static - rectangle\n" +
-            "    otherwise if override - trapezium\n" +
-            "    otherwise if overloaded - triangle\n" +
-            "    otherwise ellipse\n";
+public final class DependencyInfoGraphSerializer {
 
     private DependencyInfoGraphSerializer() { }
 
@@ -69,9 +54,14 @@ public class DependencyInfoGraphSerializer {
             }
         }
         final Comment comment = new Comment(graph);
-        comment.setText(GRAPH_LEGEND);
+        comment.setText(getDescription());
         graph.addNode(comment);
         return graph.toString();
+    }
+
+    private static String getDescription() {
+        return FileUtils.getTextStreamContents(
+            DependencyInfoGraphSerializer.class.getResourceAsStream("graph description.txt"));
     }
 
     private static Edge createEdge(final Graph graph, final MethodDefinition caller,
@@ -102,18 +92,19 @@ public class DependencyInfoGraphSerializer {
             case PROTECTED: return Color.YELLOW;
             case PRIVATE: return Color.BLACK;
             case DEFAULT: return Color.BLUE;
-            default: throw new RuntimeException("Unexpected accessibility type " + method.getAccessibility());
+            default: throw new RuntimeException(
+                "Unexpected accessibility type " + method.getAccessibility());
         }
     }
 
     private static int getShapeForMethod(final MethodDefinition method) {
-        if(method.isStatic()) {
+        if (method.isStatic()) {
             return BasicNode.POLYGON;
         }
-        else if(method.isOverride()) {
+        else if (method.isOverride()) {
             return BasicNode.TRAPEZIUM;
         }
-        else if(method.isOverloaded()) {
+        else if (method.isOverloaded()) {
             return BasicNode.INVTRIANGLE;
         }
         else {
@@ -122,6 +113,6 @@ public class DependencyInfoGraphSerializer {
     }
 
     private static String quote(final String str) {
-        return "\"" + str + "\"";
+        return String.format("\"%s\"", str);
     }
 }
