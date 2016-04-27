@@ -2,6 +2,7 @@ package org.pirat9600q.graph;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.pirat9600q.graph.MethodDefinition.Accessibility;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -68,6 +69,12 @@ public class Dependencies {
                 .filter(new UniqueCallerCalleeCallsFilter())
                 .map(ResolvedCall::getCaller)
                 .collect(Collectors.toList());
+    }
+
+    public boolean isInterfaceMethod(final MethodDefinition method) {
+        return method.getAccessibility() == Accessibility.PUBLIC
+                && !hasMethodDependencies(method)
+                && !hasMethodDependants(method);
     }
 
     public boolean isMethodDependsOn(final MethodDefinition caller, final MethodDefinition callee) {
@@ -141,10 +148,10 @@ public class Dependencies {
     }
 
     private static int getMethodGroupSplitCount(final Collection<MethodDefinition> methodGroup) {
-        final List<Integer> overloadGroupIndices = methodGroup.stream()
+        final List<Integer> methodIndices = methodGroup.stream()
                 .map(MethodDefinition::getIndex).collect(Collectors.toList());
-        final MinMax<Integer> bounds = minMax(overloadGroupIndices);
-        return bounds.getMax() - bounds.getMin() - overloadGroupIndices.size() + 1;
+        final MinMax<Integer> bounds = minMax(methodIndices);
+        return bounds.getMax() - bounds.getMin() - methodIndices.size() + 1;
     }
 
     private static <T> MinMax<T> minMax(final Collection<T> elements) {

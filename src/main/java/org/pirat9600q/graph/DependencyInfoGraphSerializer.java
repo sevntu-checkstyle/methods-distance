@@ -5,6 +5,7 @@ import net.claribole.zgrviewer.dot.Cluster;
 import net.claribole.zgrviewer.dot.Comment;
 import net.claribole.zgrviewer.dot.Edge;
 import net.claribole.zgrviewer.dot.Graph;
+import net.claribole.zgrviewer.dot.Node;
 import org.pirat9600q.graph.MethodDefinition.Accessibility;
 
 import java.awt.Color;
@@ -14,6 +15,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 //CSOFF:
@@ -43,52 +45,51 @@ public class DependencyInfoGraphSerializer {
     }
 
     public static String serialize(final Dependencies info) {
-        try {
-            final Graph graph = new Graph("dependencies");
-            graph.setDirected(true);
-            graph.setRankdir(Graph.LR);
-            final Map<MethodDefinition, BasicNode> methodToNode = new HashMap<>();
-            final Cluster simpleMethods = new Cluster(graph, "simple");
-            final Set<MethodDefinition> nonInterfaceMethods = info.getMethods().stream()
-                    .filter(method ->
-                            !(method.getAccessibility() == Accessibility.PUBLIC
-                            && !info.hasMethodDependencies(method)
-                            && !info.hasMethodDependants(method)))
-                    .collect(Collectors.toSet());
-            for (final MethodDefinition method : nonInterfaceMethods) {
-                final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
-                node.setColor(getColorForMethod(method));
-                node.setShape(getShapeForMethod(method));
-                methodToNode.put(method, node);
-                if (info.hasMethodDependencies(method)) {
-                    graph.addNode(node);
+        final Graph graph = new Graph("dependencies");
+        graph.setDirected(true);
+        graph.setRankdir(Graph.LR);
+        final Map<MethodDefinition, Node> methodToNode = info.getMethods().stream()
+            .filter(method -> !info.isInterfaceMethod(method))
+            .collect(Collectors.toMap(Function.<MethodDefinition>identity(),
+                method -> createNode(graph, method)));
+        final Cluster simpleMethods = new Cluster(graph, "simple");
+        methodToNode.entrySet().stream()
+            .forEach(methodAndNode -> {
+                if (info.hasMethodDependencies(methodAndNode.getKey())) {
+                    graph.addNode(methodAndNode.getValue());
                 }
                 else {
-                    simpleMethods.addNode(node);
+                    simpleMethods.addNode(methodAndNode.getValue());
                 }
+            });
+        graph.addGenericNode(simpleMethods);
+        for (final MethodDefinition caller : methodToNode.keySet()) {
+            for (final MethodDefinition callee : info.getMethodDependencies(caller)) {
+                graph.addEdge(createEdge(graph, caller, callee, methodToNode));
             }
-            for (final MethodDefinition caller : nonInterfaceMethods) {
-                if (info.hasMethodDependencies(caller)) {
-                    for (final MethodDefinition callee : info.getMethodDependencies(caller)) {
-                        final BasicNode callerNode = methodToNode.get(caller);
-                        final BasicNode calleeNode = methodToNode.get(callee);
-                        final Edge edge = new Edge(graph, callerNode, calleeNode);
-                        final int indexDistance = caller.getIndexDistanceTo(callee);
-                        final int lineDistance = caller.getLineDistanceTo(callee);
-                        edge.setLabel(getFormattedEdgeLabel(indexDistance, lineDistance));
-                        graph.addEdge(edge);
-                    }
-                }
-            }
-            graph.addGenericNode(simpleMethods);
-            final Comment comment = new Comment(graph);
-            comment.setText(GRAPH_LEGEND);
-            graph.addNode(comment);
-            return graph.toString();
         }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        final Comment comment = new Comment(graph);
+        comment.setText(GRAPH_LEGEND);
+        graph.addNode(comment);
+        return graph.toString();
+    }
+
+    private static Edge createEdge(final Graph graph, final MethodDefinition caller,
+        final MethodDefinition callee, final Map<MethodDefinition, Node> methodToNode) {
+        final Node callerNode = methodToNode.get(caller);
+        final Node calleeNode = methodToNode.get(callee);
+        final Edge edge = new Edge(graph, callerNode, calleeNode);
+        final int indexDistance = caller.getIndexDistanceTo(callee);
+        final int lineDistance = caller.getLineDistanceTo(callee);
+        edge.setLabel(getFormattedEdgeLabel(indexDistance, lineDistance));
+        return edge;
+    }
+
+    private static Node createNode(final Graph graph, final MethodDefinition method) {
+        final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
+        node.setColor(getColorForMethod(method));
+        node.setShape(getShapeForMethod(method));
+        return node;
     }
 
     private static String getFormattedEdgeLabel(final int indexDistance, final int lineDistance) {

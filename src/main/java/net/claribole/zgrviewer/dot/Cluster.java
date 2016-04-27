@@ -48,10 +48,10 @@ public class Cluster extends SubGraph {
      *            root graph
      * @param id
      *            identificator of the Cluster
-     * @throws Exception
+     * @throws RuntimeException
      *             Exception thrown when no id is given
      */
-    public Cluster(Object root, String id) throws Exception {
+    public Cluster(Object root, String id) {
         super(root, id);
     }
     

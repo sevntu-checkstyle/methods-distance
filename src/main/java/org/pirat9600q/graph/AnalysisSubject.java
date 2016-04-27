@@ -39,12 +39,7 @@ public class AnalysisSubject {
             case TokenTypes.CTOR_DEF:
                 return true;
             case TokenTypes.VARIABLE_DEF:
-                if (isFieldDeclaration(parent)) {
-                    return false;
-                }
-                else {
-                    return isNestedInsideMethodDef(parent);
-                }
+                return !isFieldDeclaration(parent) && isNestedInsideMethodDef(parent);
             default:
                 throw new UnexpectedTokenTypeException(parent);
         }

@@ -633,9 +633,8 @@ public class Graph {
 
     /**
      * Create a new empty graph
-     * @throws Exception 
      */
-    public Graph() throws Exception {
+    public Graph() {
         //нинада
 //        this.genericNode = new BasicNode(this, "node");
 //        this.genericRecord = new Record(this, "node");
@@ -645,9 +644,8 @@ public class Graph {
     /**
      * Create a new empty graph
      *@param id a unique ID for this graph
-     *@throws Exception 
      */
-    public Graph(String id) throws Exception {
+    public Graph(String id) {
         //нинада
 //        this.genericNode = new BasicNode(this, "node");
 //        this.genericRecord = new Record(this, "node");

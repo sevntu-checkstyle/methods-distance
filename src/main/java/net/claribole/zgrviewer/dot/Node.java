@@ -82,12 +82,12 @@ abstract public class Node {
      *            root of the Node
      * @param id
      *            identification string of the node in the graph
-     * @throws Exception
+     * @throws RuntimeException
      *             the node must have an ID (unless it is a SubRecord node)
      */
-    public Node(Object root, String id) throws Exception {
+    public Node(Object root, String id) {
         if (id.equals("") && !(this instanceof SubRecord))
-            throw new Exception("No ID");
+            throw new RuntimeException("No ID");
         this.setId(id);
         this.setRoot(root);
     }

@@ -131,10 +131,10 @@ public class BasicNode extends CommonNode {
      *            parent graph
      * @param id
      *            identificator of the node
-     * @throws Exception
+     * @throws RuntimeException
      *             Exception thrown when no ID is given
      */
-    public BasicNode(Object root, String id) throws Exception {
+    public BasicNode(Object root, String id) {
         super(root, id);
         this.setLabel(id);
 

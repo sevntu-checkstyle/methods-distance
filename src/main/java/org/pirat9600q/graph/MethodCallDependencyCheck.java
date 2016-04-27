@@ -30,8 +30,6 @@ public class MethodCallDependencyCheck extends Check {
 
     private List<DetailAST> methodInvocations = new ArrayList<>();
 
-    private Dependencies dependencies;
-
     private final Optional<DependencyInformationConsumer> consumer;
 
     private int screenLinesCount = DEFAULT_SCREEN_LINES_COUNT;
@@ -56,7 +54,6 @@ public class MethodCallDependencyCheck extends Check {
     @Override
     public void beginTree(DetailAST rootAST) {
         topLevelClass = null;
-        dependencies = null;
         methodInvocations.clear();
     }
 
@@ -80,14 +77,13 @@ public class MethodCallDependencyCheck extends Check {
     @Override
     public void finishTree(DetailAST rootAST) {
         if (topLevelClass != null) {
-            dependencies = buildDependencies(topLevelClass, methodInvocations, screenLinesCount);
-            final String inputFilePath = getFileContents().getFileName();
-            consumer.ifPresent(dic -> dic.accept(inputFilePath, dependencies));
+            consumer.ifPresent(dic -> {
+                final Dependencies dependencies =
+                    buildDependencies(topLevelClass, methodInvocations, screenLinesCount);
+                final String inputFilePath = getFileContents().getFileName();
+                dic.accept(inputFilePath, dependencies);
+            });
         }
-    }
-
-    public Dependencies getDependencies() {
-        return dependencies;
     }
 
     private static Dependencies buildDependencies(final DetailAST topLevelClass,

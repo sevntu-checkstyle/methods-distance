@@ -35,7 +35,6 @@ public final class DependencyInfoMatrixSerializer {
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         engine.init();
-        final Template template = engine.getTemplate("org/pirat9600q/graph/matrix.vm");
         final VelocityContext context = new VelocityContext();
         context.put("info", dependencies);
         context.put("javaScript", getJavaScript());
@@ -44,6 +43,7 @@ public final class DependencyInfoMatrixSerializer {
         context.put("calculator", getPenaltyCalculator());
         context.put("configuration", config);
         final StringWriter writer = new StringWriter();
+        final Template template = engine.getTemplate("org/pirat9600q/graph/matrix.vm");
         template.merge(context, writer);
         return writer.toString();
     }

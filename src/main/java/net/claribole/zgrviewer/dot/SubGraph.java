@@ -58,9 +58,8 @@ public class SubGraph extends Node {
      * Create a new SubGraph
      * @param root root of the graph
      * @param id identificator of the subGraph
-     * @throws Exception
      */
-    public SubGraph(Object root, String id) throws Exception {
+    public SubGraph(Object root, String id) {
         super(root, id);
         //нинада
 //        this.genericNode = new BasicNode(this, "\"node\"");

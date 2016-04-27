@@ -25,10 +25,10 @@ abstract class CommonNode extends Node {
      *            parent Graph
      * @param id
      *            identificator of the node
-     * @throws Exception
+     * @throws RuntimeException
      *             Exception thrown when no ID is given
      */
-    CommonNode(Object root, String id) throws Exception {
+    CommonNode(Object root, String id) {
         super(root, id);
     }
 

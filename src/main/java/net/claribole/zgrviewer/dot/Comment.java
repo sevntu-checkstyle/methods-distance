@@ -4,7 +4,7 @@ public class Comment extends Node {
 
     private String text = "";
 
-    public Comment(Object root) throws Exception {
+    public Comment(Object root) {
         super(root, "comment");
     }
 
