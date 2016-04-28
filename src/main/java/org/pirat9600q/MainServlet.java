@@ -70,7 +70,7 @@ public class MainServlet extends HttpServlet {
                     resp.getWriter().append(html);
                 }
                 catch (final IOException e) {
-                    throw new RuntimeException(e);
+                    throw new ResponseGenerationException(e);
                 }
             }
         });
@@ -88,7 +88,7 @@ public class MainServlet extends HttpServlet {
                     resp.getWriter().append(dot);
                 }
                 catch (final IOException e) {
-                    throw new RuntimeException(e);
+                    throw new ResponseGenerationException(e);
                 }
             }
         });
@@ -129,5 +129,12 @@ public class MainServlet extends HttpServlet {
             }
         }
         return tmpFile;
+    }
+
+    private static final class ResponseGenerationException extends RuntimeException {
+
+        private ResponseGenerationException(final Throwable cause) {
+            super(cause);
+        }
     }
 }

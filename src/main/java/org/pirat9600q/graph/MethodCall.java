@@ -5,17 +5,14 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class MethodCall extends AnalysisSubject {
 
-    private final DetailAST methodCall;
+    private final DetailAST methodCallNode;
 
-    private final ClassDefinition classDefinition;
-
-    public MethodCall(final ClassDefinition classDefinition, final DetailAST methodCall) {
-        this.classDefinition = classDefinition;
-        this.methodCall = methodCall;
+    public MethodCall(final DetailAST methodCall) {
+        this.methodCallNode = methodCall;
     }
 
     public String getMethodName() {
-        final DetailAST methodCallFirstChild = methodCall.getFirstChild();
+        final DetailAST methodCallFirstChild = methodCallNode.getFirstChild();
         switch (methodCallFirstChild.getType()) {
             case TokenTypes.IDENT:
                 return methodCallFirstChild.getText();
@@ -27,17 +24,17 @@ public class MethodCall extends AnalysisSubject {
     }
 
     public boolean isThisClassMethodCall() {
-        final DetailAST firstChild = methodCall.getFirstChild();
+        final DetailAST firstChild = methodCallNode.getFirstChild();
         return firstChild.getType() == TokenTypes.IDENT
                 || firstChild.getType() == TokenTypes.DOT
                 && firstChild.getFirstChild().getType() == TokenTypes.LITERAL_THIS;
     }
 
     public int getArgCount() {
-        return methodCall.findFirstToken(TokenTypes.ELIST).getChildCount(TokenTypes.EXPR);
+        return methodCallNode.findFirstToken(TokenTypes.ELIST).getChildCount(TokenTypes.EXPR);
     }
 
     public DetailAST getEnclosingMethod() {
-        return getEnclosingMethod(methodCall);
+        return getEnclosingMethod(methodCallNode);
     }
 }

@@ -14,7 +14,7 @@ public final class FileUtils {
             return getTextStreamContents(stream);
         }
         catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 

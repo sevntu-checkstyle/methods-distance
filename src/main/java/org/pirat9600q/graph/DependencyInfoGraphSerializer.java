@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+// CSOFF: ClassDataAbstractionCoupling
 public final class DependencyInfoGraphSerializer {
 
     private DependencyInfoGraphSerializer() { }
@@ -25,7 +26,7 @@ public final class DependencyInfoGraphSerializer {
             file.write(serialize(info));
         }
         catch (final FileNotFoundException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -92,7 +93,7 @@ public final class DependencyInfoGraphSerializer {
             case PROTECTED: return Color.YELLOW;
             case PRIVATE: return Color.BLACK;
             case DEFAULT: return Color.BLUE;
-            default: throw new RuntimeException(
+            default: throw new IllegalArgumentException(
                 "Unexpected accessibility type " + method.getAccessibility());
         }
     }

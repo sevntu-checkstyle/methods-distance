@@ -18,7 +18,7 @@ public final class Main {
 
     private Main() { }
 
-    public static void main(String[] args) throws CheckstyleException {
+    public static void main(String... args) throws CheckstyleException {
         final DefaultConfiguration mcdc = new DefaultConfiguration(
             MethodCallDependencyCheck.class.getCanonicalName());
         mcdc.addAttribute("screenLinesCount", "50");

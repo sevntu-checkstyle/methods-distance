@@ -16,3 +16,6 @@ method-call-graph.iml
 .idea
 *.java.dot
 *.java.html
+/.classpath
+/.checkstyle
+/.project

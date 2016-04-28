@@ -23,7 +23,7 @@ public final class DependencyInfoMatrixSerializer {
             file.write(serialize(dependencies, javaSource, config));
         }
         catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(e);
         }
     }
 

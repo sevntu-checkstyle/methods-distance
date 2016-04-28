@@ -86,7 +86,7 @@ public class ClassDefinition extends AnalysisSubject {
 
     public Map<String, List<MethodDefinition>> getPropertiesAccessors() {
         return getMethods().stream()
-                .filter(m -> m.isGetter() || m.isSetter())
+                .filter(method -> method.isGetter() || method.isSetter())
                 .collect(Collectors.groupingBy(MethodDefinition::getAccessiblePropertyName));
     }
 }

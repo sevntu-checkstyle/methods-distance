@@ -7,6 +7,8 @@
   <description>
     PMD ruleset for Checkstyle
   </description>
+  <!-- there are a lot of violations for this classes -->
+  <exclude-pattern>.*/net/claribole/zgrviewer/dot/.*</exclude-pattern>
   <rule ref="rulesets/java/basic.xml"/>
   <rule ref="rulesets/java/braces.xml"/>
   <rule ref="rulesets/java/clone.xml"/>
@@ -120,6 +122,8 @@
     <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
     <!-- too much alarms of Checks, we will never move logic out of Check, each Check is independent logic container -->
     <exclude name="GodClass"/>
+    <!-- pointless -->
+    <exclude name="AccessorClassGeneration"/>
   </rule>
 
   <rule ref="rulesets/java/design.xml/ConfusingTernary">

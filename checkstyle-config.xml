@@ -29,8 +29,8 @@
       Use suppressions.xml for suppressions, this is only example.
       checkFormat will prevent suppression comments from being valid.
     -->
-    <property name="offCommentFormat" value="CSOFF\:"/>
-    <property name="onCommentFormat" value="CSON\:"/>
+    <property name="offCommentFormat" value="CSOFF\: ([\w\|]+)"/>
+    <property name="onCommentFormat" value="CSON\: ([\w\|]+)"/>
   </module>
   <module name="SuppressWarningsFilter"/>
   <module name="SuppressWithNearbyCommentFilter">

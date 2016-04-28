@@ -171,12 +171,12 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <executions>
                     <!-- lots of violations ... we`ll come back here later -->
-                    <!--<execution>-->
-                        <!--<phase>test</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>check</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

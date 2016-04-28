@@ -1,6 +1,5 @@
 package org.pirat9600q.graph;
 
-import com.google.common.collect.ImmutableSet;
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -9,22 +8,10 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class MethodCallDependencyCheck extends Check {
 
     private static final int DEFAULT_SCREEN_LINES_COUNT = 50;
-
-    private static final Set<Integer> PRIMITIVE_TOKEN_TYPES = ImmutableSet.of(
-            TokenTypes.LITERAL_VOID,
-            TokenTypes.LITERAL_BOOLEAN,
-            TokenTypes.LITERAL_CHAR,
-            TokenTypes.LITERAL_BYTE,
-            TokenTypes.LITERAL_SHORT,
-            TokenTypes.LITERAL_INT,
-            TokenTypes.LITERAL_LONG,
-            TokenTypes.LITERAL_DOUBLE
-    );
 
     private DetailAST topLevelClass;
 
@@ -106,7 +93,7 @@ public class MethodCallDependencyCheck extends Check {
         ResolvedCall callOccurrence = null;
         switch (invocation.getType()) {
             case TokenTypes.METHOD_CALL:
-                final MethodCall mc = new MethodCall(classDefinition, invocation);
+                final MethodCall mc = new MethodCall(invocation);
                 if (mc.isThisClassMethodCall()) {
                     callOccurrence = classDefinition.getMethodsByName(mc.getMethodName())
                         .stream()
@@ -138,7 +125,7 @@ public class MethodCallDependencyCheck extends Check {
                 }
                 break;
             default:
-                throw new RuntimeException("Expected METHOD_CALL or METHOD_REF, "
+                throw new IllegalArgumentException("Expected METHOD_CALL or METHOD_REF, "
                     + "got " + TokenUtils.getTokenName(invocation.getType()));
         }
         return callOccurrence;

@@ -12,7 +12,7 @@ public class PenaltyCalculator {
 
     public static final int DEFAULT_RELATIVE_ORDER_INCONSISTENCY_PENALTY = 1;
 
-    public static final int DEFAULT_DEPENDENCIES_BETWEEN_DISTANT_METHODS_PENALTY = 3;
+    public static final int DEFAULT_DISTANT_METHODS_DEPENDENCIES_PENALTY = 3;
 
     private float overrideGroupDivisionPenalty = DEFAULT_OVERRIDE_GROUP_DIVISION_PENALTY;
 
@@ -25,7 +25,7 @@ public class PenaltyCalculator {
     private float relativeOrderInconsistencyPenalty = DEFAULT_RELATIVE_ORDER_INCONSISTENCY_PENALTY;
 
     private float dependenciesBetweenDistantMethodsPenalty =
-        DEFAULT_DEPENDENCIES_BETWEEN_DISTANT_METHODS_PENALTY;
+        DEFAULT_DISTANT_METHODS_DEPENDENCIES_PENALTY;
 
     public float getPenalty(final Dependencies dep) {
         return dep.getTotalSumOfMethodDistances()

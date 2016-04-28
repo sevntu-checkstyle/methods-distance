@@ -213,6 +213,7 @@ public class Dependencies {
         private final Set<ResolvedCall> unique =
                 new TreeSet<>(new UniqueCallerCalleeCallOccurrencesComparator());
 
+        @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
         @Override
         public boolean test(ResolvedCall resolvedCall) {
             return unique.add(resolvedCall);

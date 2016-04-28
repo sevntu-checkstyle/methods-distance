@@ -9,8 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("PMD.UseUtilityClass")
 public class AnalysisSubject {
 
+    @SuppressWarnings("PMD.UncommentedEmptyConstructor")
     protected AnalysisSubject() { }
 
     protected static boolean isInsideClassDef(final DetailAST node) {
@@ -67,7 +69,7 @@ public class AnalysisSubject {
                 "Node of type %s is not contained within node of types %s",
                 TokenUtils.getTokenName(node.getType()),
                 tokenTypeNames);
-        throw new RuntimeException(msg);
+        throw new IllegalStateException(msg);
     }
 
     /**
