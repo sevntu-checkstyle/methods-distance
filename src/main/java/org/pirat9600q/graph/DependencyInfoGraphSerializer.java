@@ -1,13 +1,13 @@
 package org.pirat9600q.graph;
 
 import org.pirat9600q.dot.Cluster;
-import org.pirat9600q.dot.Color;
+import org.pirat9600q.dot.Colors;
 import org.pirat9600q.dot.Comment;
 import org.pirat9600q.dot.Edge;
 import org.pirat9600q.dot.Graph;
 import org.pirat9600q.dot.Node;
 import org.pirat9600q.dot.Rankdirs;
-import org.pirat9600q.dot.Shape;
+import org.pirat9600q.dot.Shapes;
 import org.pirat9600q.utils.FileUtils;
 
 import java.io.File;
@@ -64,7 +64,7 @@ public final class DependencyInfoGraphSerializer {
     }
 
     private static Edge createEdge(final MethodDefinition caller,
-                                   final MethodDefinition callee, final Map<MethodDefinition, Node> methodToNode) {
+        final MethodDefinition callee, final Map<MethodDefinition, Node> methodToNode) {
         final Node callerNode = methodToNode.get(caller);
         final Node calleeNode = methodToNode.get(callee);
         final Edge edge = new Edge(callerNode, calleeNode);
@@ -85,29 +85,29 @@ public final class DependencyInfoGraphSerializer {
         return String.format("%d/%d", indexDistance, lineDistance);
     }
 
-    private static Color getColorForMethod(final MethodDefinition method) {
+    private static Colors getColorForMethod(final MethodDefinition method) {
         switch (method.getAccessibility()) {
-            case PUBLIC: return Color.GREEN;
-            case PROTECTED: return Color.YELLOW;
-            case PRIVATE: return Color.BLACK;
-            case DEFAULT: return Color.BLUE;
+            case PUBLIC: return Colors.GREEN;
+            case PROTECTED: return Colors.YELLOW;
+            case PRIVATE: return Colors.BLACK;
+            case DEFAULT: return Colors.BLUE;
             default: throw new IllegalArgumentException(
                 "Unexpected accessibility type " + method.getAccessibility());
         }
     }
 
-    private static Shape getShapeForMethod(final MethodDefinition method) {
+    private static Shapes getShapeForMethod(final MethodDefinition method) {
         if (method.isStatic()) {
-            return Shape.POLYGON;
+            return Shapes.POLYGON;
         }
         else if (method.isOverride()) {
-            return Shape.TRAPEZIUM;
+            return Shapes.TRAPEZIUM;
         }
         else if (method.isOverloaded()) {
-            return Shape.INVTRIANGLE;
+            return Shapes.INVTRIANGLE;
         }
         else {
-            return Shape.ELLIPSE;
+            return Shapes.ELLIPSE;
         }
     }
 }

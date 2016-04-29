@@ -3,6 +3,7 @@ package org.pirat9600q.dot;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("PMD.ShortClassName")
 public class Edge implements Element, AttributeHolder {
 
     private final Node start;
@@ -22,7 +23,7 @@ public class Edge implements Element, AttributeHolder {
 
     @Override
     public String serialize() {
-        if(hasAttributes()) {
+        if (hasAttributes()) {
             return String.format("\"%s\" -> \"%s\" %s;\n", start.getId(), end.getId(),
                 serializeAttributes());
         }

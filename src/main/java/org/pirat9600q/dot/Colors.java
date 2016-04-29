@@ -1,6 +1,6 @@
 package org.pirat9600q.dot;
 
-public enum Color {
+public enum Colors {
 
     GREEN("#00ff00"),
 
@@ -12,8 +12,7 @@ public enum Color {
 
     private final String rgb;
 
-
-    Color(String rgb) {
+    Colors(String rgb) {
         this.rgb = rgb;
     }
 

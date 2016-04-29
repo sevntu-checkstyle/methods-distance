@@ -3,6 +3,7 @@ package org.pirat9600q.dot;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("PMD.ShortClassName")
 public class Node implements Element, AttributeHolder {
 
     private final String id;
@@ -32,11 +33,11 @@ public class Node implements Element, AttributeHolder {
         return attrs;
     }
 
-    public void setColor(final Color color) {
+    public void setColor(final Colors color) {
         addAttribute("color", color.asString());
     }
 
-    public void setShape(final Shape shape) {
+    public void setShape(final Shapes shape) {
         addAttribute("shape", shape.asString());
     }
 }
