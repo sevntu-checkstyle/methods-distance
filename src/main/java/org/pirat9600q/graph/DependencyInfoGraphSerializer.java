@@ -1,14 +1,15 @@
 package org.pirat9600q.graph;
 
-import net.claribole.zgrviewer.dot.BasicNode;
-import net.claribole.zgrviewer.dot.Cluster;
-import net.claribole.zgrviewer.dot.Comment;
-import net.claribole.zgrviewer.dot.Edge;
-import net.claribole.zgrviewer.dot.Graph;
-import net.claribole.zgrviewer.dot.Node;
+import org.pirat9600q.dot.Cluster;
+import org.pirat9600q.dot.Color;
+import org.pirat9600q.dot.Comment;
+import org.pirat9600q.dot.Edge;
+import org.pirat9600q.dot.Graph;
+import org.pirat9600q.dot.Node;
+import org.pirat9600q.dot.Rankdirs;
+import org.pirat9600q.dot.Shape;
 import org.pirat9600q.utils.FileUtils;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -16,7 +17,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// CSOFF: ClassDataAbstractionCoupling
 public final class DependencyInfoGraphSerializer {
 
     private DependencyInfoGraphSerializer() { }
@@ -32,32 +32,30 @@ public final class DependencyInfoGraphSerializer {
 
     public static String serialize(final Dependencies info) {
         final Graph graph = new Graph("dependencies");
-        graph.setDirected(true);
-        graph.setRankdir(Graph.LR);
+        graph.setRankdir(Rankdirs.LR);
+        final Cluster simpleMethods = new Cluster("simple");
         final Map<MethodDefinition, Node> methodToNode = info.getMethods().stream()
             .filter(method -> !info.isInterfaceMethod(method))
             .collect(Collectors.toMap(Function.<MethodDefinition>identity(),
-                method -> createNode(graph, method)));
-        final Cluster simpleMethods = new Cluster(graph, "simple");
+                DependencyInfoGraphSerializer::createNode));
         methodToNode.entrySet().stream()
             .forEach(methodAndNode -> {
                 if (info.hasMethodDependencies(methodAndNode.getKey())) {
-                    graph.addNode(methodAndNode.getValue());
+                    graph.addComponent(methodAndNode.getValue());
                 }
                 else {
-                    simpleMethods.addNode(methodAndNode.getValue());
+                    simpleMethods.addComponent(methodAndNode.getValue());
                 }
             });
-        graph.addGenericNode(simpleMethods);
+        graph.addComponent(simpleMethods);
         for (final MethodDefinition caller : methodToNode.keySet()) {
             for (final MethodDefinition callee : info.getMethodDependencies(caller)) {
-                graph.addEdge(createEdge(graph, caller, callee, methodToNode));
+                graph.addComponent(createEdge(caller, callee, methodToNode));
             }
         }
-        final Comment comment = new Comment(graph);
-        comment.setText(getDescription());
-        graph.addNode(comment);
-        return graph.toString();
+        final Comment comment = new Comment(getDescription());
+        graph.addComponent(comment);
+        return graph.serialize();
     }
 
     private static String getDescription() {
@@ -65,19 +63,19 @@ public final class DependencyInfoGraphSerializer {
             DependencyInfoGraphSerializer.class.getResourceAsStream("graph description.txt"));
     }
 
-    private static Edge createEdge(final Graph graph, final MethodDefinition caller,
-        final MethodDefinition callee, final Map<MethodDefinition, Node> methodToNode) {
+    private static Edge createEdge(final MethodDefinition caller,
+                                   final MethodDefinition callee, final Map<MethodDefinition, Node> methodToNode) {
         final Node callerNode = methodToNode.get(caller);
         final Node calleeNode = methodToNode.get(callee);
-        final Edge edge = new Edge(graph, callerNode, calleeNode);
+        final Edge edge = new Edge(callerNode, calleeNode);
         final int indexDistance = caller.getIndexDistanceTo(callee);
         final int lineDistance = caller.getLineDistanceTo(callee);
         edge.setLabel(getFormattedEdgeLabel(indexDistance, lineDistance));
         return edge;
     }
 
-    private static Node createNode(final Graph graph, final MethodDefinition method) {
-        final BasicNode node = new BasicNode(graph, quote(method.getSignature()));
+    private static Node createNode(final MethodDefinition method) {
+        final Node node = new Node(method.getSignature());
         node.setColor(getColorForMethod(method));
         node.setShape(getShapeForMethod(method));
         return node;
@@ -98,22 +96,18 @@ public final class DependencyInfoGraphSerializer {
         }
     }
 
-    private static int getShapeForMethod(final MethodDefinition method) {
+    private static Shape getShapeForMethod(final MethodDefinition method) {
         if (method.isStatic()) {
-            return BasicNode.POLYGON;
+            return Shape.POLYGON;
         }
         else if (method.isOverride()) {
-            return BasicNode.TRAPEZIUM;
+            return Shape.TRAPEZIUM;
         }
         else if (method.isOverloaded()) {
-            return BasicNode.INVTRIANGLE;
+            return Shape.INVTRIANGLE;
         }
         else {
-            return BasicNode.ELLIPSE;
+            return Shape.ELLIPSE;
         }
-    }
-
-    private static String quote(final String str) {
-        return String.format("\"%s\"", str);
     }
 }
