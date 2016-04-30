@@ -3,11 +3,9 @@ package org.pirat9600q;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import org.pirat9600q.graph.Dependencies;
-import org.pirat9600q.graph.DependencyInfoGraphSerializer;
-import org.pirat9600q.graph.DependencyInfoMatrixSerializer;
-import org.pirat9600q.graph.DependencyInformationConsumer;
-import org.pirat9600q.graph.MethodCallDependencyCheck;
+import org.pirat9600q.analysis.Dependencies;
+import org.pirat9600q.analysis.DependencyInformationConsumer;
+import org.pirat9600q.analysis.MethodCallDependencyCheck;
 import org.pirat9600q.utils.FileUtils;
 
 import javax.servlet.ServletException;

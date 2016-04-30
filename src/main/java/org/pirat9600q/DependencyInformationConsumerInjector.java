@@ -2,8 +2,8 @@ package org.pirat9600q;
 
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import org.pirat9600q.graph.DependencyInformationConsumer;
-import org.pirat9600q.graph.MethodCallDependencyCheck;
+import org.pirat9600q.analysis.DependencyInformationConsumer;
+import org.pirat9600q.analysis.MethodCallDependencyCheck;
 
 import java.lang.reflect.InvocationTargetException;
 

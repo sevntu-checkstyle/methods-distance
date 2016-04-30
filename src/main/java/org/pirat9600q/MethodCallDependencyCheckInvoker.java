@@ -5,7 +5,7 @@ import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import org.pirat9600q.graph.DependencyInformationConsumer;
+import org.pirat9600q.analysis.DependencyInformationConsumer;
 
 import java.io.File;
 import java.util.List;
