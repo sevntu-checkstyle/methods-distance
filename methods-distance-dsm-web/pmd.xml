@@ -16,7 +16,6 @@
     <!-- we are using CyclomaticComplexity -->
     <exclude name="StdCyclomaticComplexity"/>
   </rule>
-
   <rule ref="rulesets/java/codesize.xml/CyclomaticComplexity">
     <properties>
       <property name="showClassesComplexity" value="false"/>
