@@ -10,12 +10,10 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
-
-
-method-call-graph.iml
+*.iml
 .idea
+.classpath
+.project
+.checkstyle
 *.java.dot
 *.java.html
-/.classpath
-/.checkstyle
-/.project
