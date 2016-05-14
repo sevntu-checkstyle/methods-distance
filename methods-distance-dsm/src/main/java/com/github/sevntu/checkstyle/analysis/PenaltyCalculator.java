@@ -1,5 +1,7 @@
 package com.github.sevntu.checkstyle.analysis;
 
+import com.github.sevntu.checkstyle.ordering.Ordering;
+
 public class PenaltyCalculator {
 
     public static final int DEFAULT_OVERRIDE_GROUP_DIVISION_PENALTY = 3;
@@ -27,14 +29,14 @@ public class PenaltyCalculator {
     private float dependenciesBetweenDistantMethodsPenalty =
         DEFAULT_DISTANT_METHODS_DEPENDENCIES_PENALTY;
 
-    public float getPenalty(final Dependencies dep) {
+    public float getPenalty(final Ordering dep, final int screenLinesCount) {
         return dep.getTotalSumOfMethodDistances()
             + dep.getDeclarationBeforeUsageCases() * declarationBeforeFirstUsagePenalty
-            + dep.getOverloadGroupSplitCases() * overloadGroupDivisionPenalty
+            + dep.getOverloadGroupsSplitCases() * overloadGroupDivisionPenalty
             + dep.getOverrideGroupSplitCases() * overrideGroupDivisionPenalty
             + dep.getAccessorsSplitCases() * accessorsGroupDivisionPenalty
             + dep.getRelativeOrderInconsistencyCases() * relativeOrderInconsistencyPenalty
-            + dep.getDependenciesBetweenDistantMethodsCases()
+            + dep.getDependenciesBetweenDistantMethodsCases(screenLinesCount)
                 * dependenciesBetweenDistantMethodsPenalty;
     }
 

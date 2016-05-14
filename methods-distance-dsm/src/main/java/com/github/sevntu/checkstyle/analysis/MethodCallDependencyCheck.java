@@ -73,6 +73,7 @@ public class MethodCallDependencyCheck extends Check {
         }
     }
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private static Dependencies buildDependencies(final DetailAST topLevelClass,
             final List<DetailAST> methodInvocations, final int screenLinesCount) {
         final ClassDefinition  classDefinition = new ClassDefinition(topLevelClass);
@@ -85,7 +86,7 @@ public class MethodCallDependencyCheck extends Check {
                 }
             }
         }
-        return new Dependencies(classDefinition, callOccurrences, screenLinesCount);
+        return new Dependencies(classDefinition, callOccurrences);
     }
 
     private static ResolvedCall tryResolveCall(

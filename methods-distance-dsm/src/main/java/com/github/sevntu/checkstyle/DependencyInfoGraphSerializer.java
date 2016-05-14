@@ -1,7 +1,6 @@
 package com.github.sevntu.checkstyle;
 
 import com.github.sevntu.checkstyle.analysis.Dependencies;
-import com.github.sevntu.checkstyle.analysis.MethodDefinition;
 import com.github.sevntu.checkstyle.dot.Cluster;
 import com.github.sevntu.checkstyle.dot.Colors;
 import com.github.sevntu.checkstyle.dot.Comment;
@@ -10,6 +9,8 @@ import com.github.sevntu.checkstyle.dot.Graph;
 import com.github.sevntu.checkstyle.dot.Node;
 import com.github.sevntu.checkstyle.dot.Rankdirs;
 import com.github.sevntu.checkstyle.dot.Shapes;
+import com.github.sevntu.checkstyle.ordering.Method;
+import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 
 import java.io.File;
@@ -32,13 +33,14 @@ public final class DependencyInfoGraphSerializer {
         }
     }
 
-    public static String serialize(final Dependencies info) {
+    public static String serialize(final Dependencies dependencies) {
+        final Ordering info = new Ordering(dependencies);
         final Graph graph = new Graph("dependencies");
         graph.setRankdir(Rankdirs.LR);
         final Cluster simpleMethods = new Cluster("simple");
-        final Map<MethodDefinition, Node> methodToNode = info.getMethods().stream()
+        final Map<Method, Node> methodToNode = info.getMethods().stream()
             .filter(method -> !info.isInterfaceMethod(method))
-            .collect(Collectors.toMap(Function.<MethodDefinition>identity(),
+            .collect(Collectors.toMap(Function.<Method>identity(),
                 DependencyInfoGraphSerializer::createNode));
         methodToNode.entrySet().stream()
             .forEach(methodAndNode -> {
@@ -50,9 +52,9 @@ public final class DependencyInfoGraphSerializer {
                 }
             });
         graph.addComponent(simpleMethods);
-        for (final MethodDefinition caller : methodToNode.keySet()) {
-            for (final MethodDefinition callee : info.getMethodDependencies(caller)) {
-                graph.addComponent(createEdge(caller, callee, methodToNode));
+        for (final Method caller : methodToNode.keySet()) {
+            for (final Method callee : info.getMethodDependenciesInAppearanceOrder(caller)) {
+                graph.addComponent(createEdge(caller, callee, methodToNode, info));
             }
         }
         final Comment comment = new Comment(getDescription());
@@ -65,18 +67,18 @@ public final class DependencyInfoGraphSerializer {
             DependencyInfoGraphSerializer.class.getResourceAsStream("graph description.txt"));
     }
 
-    private static Edge createEdge(final MethodDefinition caller,
-        final MethodDefinition callee, final Map<MethodDefinition, Node> methodToNode) {
+    private static Edge createEdge(final Method caller,
+        final Method callee, final Map<Method, Node> methodToNode, final Ordering ordering) {
         final Node callerNode = methodToNode.get(caller);
         final Node calleeNode = methodToNode.get(callee);
         final Edge edge = new Edge(callerNode, calleeNode);
-        final int indexDistance = caller.getIndexDistanceTo(callee);
-        final int lineDistance = caller.getLineDistanceTo(callee);
+        final int indexDistance = ordering.getMethodsIndexDifference(caller, callee);
+        final int lineDistance = ordering.getMethodsLineDifference(caller, callee);
         edge.setLabel(getFormattedEdgeLabel(indexDistance, lineDistance));
         return edge;
     }
 
-    private static Node createNode(final MethodDefinition method) {
+    private static Node createNode(final Method method) {
         final Node node = new Node(method.getSignature());
         node.setColor(getColorForMethod(method));
         node.setShape(getShapeForMethod(method));
@@ -87,7 +89,7 @@ public final class DependencyInfoGraphSerializer {
         return String.format("%d/%d", indexDistance, lineDistance);
     }
 
-    private static Colors getColorForMethod(final MethodDefinition method) {
+    private static Colors getColorForMethod(final Method method) {
         switch (method.getAccessibility()) {
             case PUBLIC: return Colors.GREEN;
             case PROTECTED: return Colors.YELLOW;
@@ -98,7 +100,7 @@ public final class DependencyInfoGraphSerializer {
         }
     }
 
-    private static Shapes getShapeForMethod(final MethodDefinition method) {
+    private static Shapes getShapeForMethod(final Method method) {
         if (method.isStatic()) {
             return Shapes.POLYGON;
         }

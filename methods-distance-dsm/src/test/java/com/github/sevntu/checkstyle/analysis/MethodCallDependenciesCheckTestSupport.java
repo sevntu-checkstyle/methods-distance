@@ -1,6 +1,8 @@
 package com.github.sevntu.checkstyle.analysis;
 
 import com.github.sevntu.checkstyle.DependencyInformationConsumerInjector;
+import com.github.sevntu.checkstyle.ordering.Method;
+import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
@@ -21,13 +23,17 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
     private DependencyInformationCollector collector = new DependencyInformationCollector();
 
     protected void verifyInfo(final Configuration config, final String fileName, final ExpectedDependencies expected) throws Exception {
-        mustBeSame(expected, invokeCheckAndGetDependencies(config, fileName));
+        mustBeSame(expected, invokeCheckAndGetOrdering(config, fileName));
     }
 
     protected Dependencies invokeCheckAndGetDependencies(final Configuration config, final String fileName) throws Exception {
         final String filePath = getInputPath(fileName);
         verify(config, filePath);
         return collector.getForFile(filePath);
+    }
+
+    protected Ordering invokeCheckAndGetOrdering(final Configuration config, final String fileName) throws Exception {
+        return new Ordering(invokeCheckAndGetDependencies(config, fileName));
     }
 
     protected final Checker createChecker(Configuration checkConfig) throws Exception {
@@ -46,24 +52,24 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
         return checker;
     }
 
-    private static void mustBeSame(final ExpectedDependencies expected, final Dependencies actual) {
+    private static void mustBeSame(final ExpectedDependencies expected, final Ordering actual) {
         for(final String expectedMethod : expected.getMethods()) {
             assertTrue("Method " + expectedMethod + " is not present is actual info",
                     actual.getMethods().stream().anyMatch(md -> expectedMethod.equals(md.getSignature())));
         }
-        for(final MethodDefinition actualMethod: actual.getMethods()) {
+        for(final Method actualMethod: actual.getMethods()) {
             assertTrue("Method " + actualMethod.getSignature() + " is not present in expected info",
                     expected.getMethods().stream().anyMatch(mi -> mi.equals(actualMethod.getSignature())));
         }
         for(final String method : expected.getMethods()) {
-            final MethodDefinition caller = actual.getMethods().stream()
-                    .filter(md -> md.getSignature().equals(method)).findFirst().get();
-            final List<MethodDefinition> dependencies = actual.getMethodDependencies(caller);
+            final Method caller = actual.getMethods().stream()
+                    .filter(m -> m.getSignature().equals(method)).findFirst().get();
+            final List<Method> dependencies = actual.getMethodDependenciesInAppearanceOrder(caller);
             final List<ExpectedDependencies.MethodInvocation> invocations = expected.getInvocationsFromMethod(method);
             assertEquals("Actual method dependencies count and count of invocations from method "
                     + method + " does not match", invocations.size(), dependencies.size());
             for(int i = 0; i < invocations.size(); ++i) {
-                final MethodDefinition calledMethod = dependencies.get(i);
+                final Method calledMethod = dependencies.get(i);
                 final ExpectedDependencies.MethodInvocation invocationOfMethod = invocations.get(i);
                 assertTrue("Method " + calledMethod.getSignature() + " is present as actual "
                                 + i + " dependency of " + method + " but should not be!",
@@ -78,6 +84,10 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
 
     protected Dependencies withDefaultConfig(final String fileName) throws Exception {
         return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyCheck.class), fileName);
+    }
+
+    protected Ordering withDefaultConfigOrdering(final String fileName) throws Exception {
+        return new Ordering(withDefaultConfig(fileName));
     }
 
     private static class DependencyInformationCollector implements DependencyInformationConsumer {

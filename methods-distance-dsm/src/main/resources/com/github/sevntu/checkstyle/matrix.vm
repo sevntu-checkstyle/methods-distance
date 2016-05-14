@@ -2,8 +2,9 @@
 #* @vtlvariable name="javaSource" type="java.lang.String" *#
 #* @vtlvariable name="css" type="java.lang.String" *#
 #* @vtlvariable name="javaScript" type="java.lang.String" *#
-#* @vtlvariable name="info" type="com.github.sevntu.checkstyle.analysis.Dependencies" *#
+#* @vtlvariable name="info" type="com.github.sevntu.checkstyle.ordering.Ordering" *#
 #* @vtlvariable name="calculator" type="com.github.sevntu.checkstyle.analysis.PenaltyCalculator" *#
+#* @vtlvariable name="penaltyValue" type="java.lang.String" *#
 <!DOCTYPE html>
 <html>
     <head>
@@ -17,7 +18,7 @@
     </head>
     <body>
         <div>
-            <span>Panalty function value: $calculator.getPenalty($info)</span>
+            <span>Penalty function value: $penaltyValue</span>
             <p>Penalty calculation parameters:</p>
             <ul>
                 <li>declaration before first usage penalty - $calculator.declarationBeforeFirstUsagePenalty</li>
@@ -52,7 +53,7 @@
                             <td class="highlightable"
                                 data-accessibility="$caller.accessibility"
                                 data-static="$caller.static"
-                                data-dependencies-indices="[#foreach($index in $info.getMethodDependenciesAsIndices($caller))$index,#end]">
+                                data-dependencies-indices="[#foreach($index in $info.getMethodDependenciesIndexesInAppearanceOrder($caller))$index,#end]">
                                 <span class="relative-dependency"></span>
                                 <span class="horizontal-content" data-overloaded="$caller.overloaded">
                                     <span class="horizontal-content" data-override="$caller.override">
@@ -63,11 +64,11 @@
                                 </span>
                             </td>
                             #foreach($callee in $info.methods)
-                                #if($callee.index == $caller.index)
+                                #if($caller.equals($callee))
                                     <td class="highlightable cell diagonal">-</td>
                                 #elseif($info.isMethodDependsOn($caller, $callee))
                                     <td class="highlightable cell depends-on">
-                                        <span class="index-distance">$caller.getIndexDistanceTo($callee)</span>/<span class="line-distance">$caller.getLineDistanceTo($callee)</span>
+                                        <span class="index-distance">$info.getMethodsIndexDifference($caller, $callee)</span>/<span class="line-distance">$info.getMethodsLineDifference($caller, $callee)</span>
                                     </td>
                                 #else
                                     <td class="highlightable cell"></td>

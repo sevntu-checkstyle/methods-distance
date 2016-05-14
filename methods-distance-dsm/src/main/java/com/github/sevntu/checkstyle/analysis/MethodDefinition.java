@@ -230,6 +230,12 @@ public class MethodDefinition extends AnalysisSubject {
         return methodDef.findFirstToken(TokenTypes.TYPE).getFirstChild();
     }
 
+    public int getLength() {
+        final DetailAST rightCurly = methodDef.findFirstToken(TokenTypes.SLIST)
+            .findFirstToken(TokenTypes.RCURLY);
+        return rightCurly.getLineNo() - methodDef.getLineNo();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || o.getClass() != this.getClass()) {

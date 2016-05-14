@@ -1,5 +1,7 @@
 package com.github.sevntu.checkstyle;
 
+import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -24,24 +26,28 @@ public final class DependencyInfoMatrixSerializer {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serialize(dependencies, javaSource, config));
         }
-        catch (FileNotFoundException e) {
+        catch (final CheckstyleException | FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     public static String serialize(final Dependencies dependencies, final String javaSource,
-        final Configuration config) {
+        final Configuration config) throws CheckstyleException {
+        final Ordering ordering = new Ordering(dependencies);
         final VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         engine.setProperty(
             "classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         engine.init();
+        final PenaltyCalculator calculator = getPenaltyCalculator();
+        final int screenLinesCount = Integer.parseInt(config.getAttribute("screenLinesCount"));
         final VelocityContext context = new VelocityContext();
-        context.put("info", dependencies);
+        context.put("info", ordering);
         context.put("javaScript", getJavaScript());
         context.put("css", getStyles());
         context.put("javaSource", javaSource);
-        context.put("calculator", getPenaltyCalculator());
+        context.put("calculator", calculator);
+        context.put("penaltyValue", calculator.getPenalty(ordering, screenLinesCount));
         context.put("configuration", config);
         final StringWriter writer = new StringWriter();
         final Template template = engine.getTemplate("com/github/sevntu/checkstyle/matrix.vm");

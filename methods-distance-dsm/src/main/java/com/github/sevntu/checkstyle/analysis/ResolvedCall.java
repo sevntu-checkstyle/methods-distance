@@ -37,6 +37,17 @@ public class ResolvedCall extends AnalysisSubject {
         return methodInvocation.getType() == TokenTypes.METHOD_REF;
     }
 
+    public boolean isNestedInside(final ResolvedCall other) {
+        for (DetailAST parent = getAstNode().getParent(); parent != null;
+            parent = parent.getParent()) {
+            if (parent.getLineNo() == other.getAstNode().getLineNo()
+                && parent.getColumnNo() == other.getAstNode().getColumnNo()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || o.getClass() != this.getClass()) {
