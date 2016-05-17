@@ -4,6 +4,7 @@ import com.github.sevntu.checkstyle.analysis.Dependencies;
 import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
 import com.github.sevntu.checkstyle.analysis.MethodCallDependencyCheck;
 import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.TopologicalMethodSorter;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -13,9 +14,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-public final class Main {
+public final class ReorderingMain {
 
-    private Main() { }
+    private ReorderingMain() { }
 
     public static void main(String... args) throws CheckstyleException {
         final DefaultConfiguration mcdc = new DefaultConfiguration(
@@ -40,10 +41,14 @@ public final class Main {
         @Override
         public void accept(String filePath, Dependencies dependencies) {
             final String baseName = new File(filePath).getName();
-            DependencyInfoGraphSerializer.writeToFile(dependencies, baseName + ".dot");
             final String source = FileUtils.getFileContents(filePath);
-            DependencyInfoMatrixSerializer.writeToFile(source, new Ordering(dependencies), config,
-                baseName + ".html");
+            final Ordering initialOrdering = new Ordering(dependencies);
+            final Ordering topologicalOrdering = new TopologicalMethodSorter()
+                .sort(initialOrdering);
+            DependencyInfoMatrixSerializer.writeToFile(source, initialOrdering, config,
+                baseName + ".initial.html");
+            DependencyInfoMatrixSerializer.writeToFile(source, topologicalOrdering, config,
+                baseName + ".topological.html");
         }
     }
 }

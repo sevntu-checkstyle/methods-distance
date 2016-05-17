@@ -1,6 +1,8 @@
 package com.github.sevntu.checkstyle;
 
+import com.github.sevntu.checkstyle.analysis.PenaltyCalculator;
 import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.apache.velocity.Template;
@@ -8,9 +10,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import com.github.sevntu.checkstyle.analysis.Dependencies;
-import com.github.sevntu.checkstyle.analysis.PenaltyCalculator;
-import com.github.sevntu.checkstyle.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,19 +20,18 @@ public final class DependencyInfoMatrixSerializer {
 
     private DependencyInfoMatrixSerializer() { }
 
-    public static void writeToFile(final String javaSource, final Dependencies dependencies,
+    public static void writeToFile(final String javaSource, final Ordering ordering,
         final Configuration config, final String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
-            file.write(serialize(dependencies, javaSource, config));
+            file.write(serialize(ordering, javaSource, config));
         }
         catch (final CheckstyleException | FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    public static String serialize(final Dependencies dependencies, final String javaSource,
+    public static String serialize(final Ordering ordering, final String javaSource,
         final Configuration config) throws CheckstyleException {
-        final Ordering ordering = new Ordering(dependencies);
         final VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         engine.setProperty(

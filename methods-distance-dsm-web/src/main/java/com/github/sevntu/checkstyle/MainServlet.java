@@ -3,6 +3,7 @@ package com.github.sevntu.checkstyle;
 import com.github.sevntu.checkstyle.analysis.Dependencies;
 import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
 import com.github.sevntu.checkstyle.analysis.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -62,12 +63,13 @@ public class MainServlet extends HttpServlet {
             public void accept(String filePath, Dependencies dependencies) {
                 try {
                     final String javaSource = FileUtils.getFileContents(filePath);
+                    final Ordering ordering = new Ordering(dependencies);
                     final String html =
-                        DependencyInfoMatrixSerializer.serialize(dependencies, javaSource, config);
+                        DependencyInfoMatrixSerializer.serialize(ordering, javaSource, config);
                     resp.setContentType("text/html");
                     resp.getWriter().append(html);
                 }
-                catch (final IOException e) {
+                catch (final IOException | CheckstyleException e) {
                     throw new ResponseGenerationException(e);
                 }
             }

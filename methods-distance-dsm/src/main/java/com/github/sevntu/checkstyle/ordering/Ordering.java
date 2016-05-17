@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -82,6 +81,24 @@ public class Ordering {
             throw new IllegalArgumentException(String.format(
                 "Trying to move method #%d by %d positions", currentIndex, newIndex));
         }
+    }
+
+    public Ordering reorder(final List<Method> order) {
+        final boolean allMethodsPresent = currentOrdering.stream().allMatch(order::contains);
+        if (allMethodsPresent && currentOrdering.size() == order.size()) {
+            return new Ordering(this, new ArrayList<>(order));
+        }
+        else {
+            final String currentOrderingString = methodsSignatureList(currentOrdering);
+            final String newOrderingString = methodsSignatureList(order);
+            throw new IllegalArgumentException("New ordering contains another set of methods:\n "
+                + "currentOrdering " + currentOrderingString + "\n"
+                + "newOrdering" + newOrderingString);
+        }
+    }
+
+    private static String methodsSignatureList(final Collection<Method> methods) {
+        return methods.stream().map(Object::toString).collect(Collectors.joining("; ", "[", "]"));
     }
 
     public List<Method> getMethodDependenciesInAppearanceOrder(final Method caller) {
@@ -219,31 +236,28 @@ public class Ordering {
     }
 
     private int translateInitialLineNo(final int lineNo) {
-        final Optional<Method> containingMethod = currentOrdering.stream()
+        return currentOrdering.stream()
             .filter(method -> {
                 final int start = method.getInitialLineNo();
                 final int end = start + method.getLength();
                 return start <= lineNo && lineNo <= end;
             })
-            .findFirst();
-        if (containingMethod.isPresent()) {
-            final Method method = containingMethod.get();
-            final int initialMethodIndex = initialOrdering.indexOf(method);
-            final int currentMethodIndex = currentOrdering.indexOf(method);
-            final int sumOfLengthsPresidingMethodsInInitialOrder = initialOrdering
-                .subList(0, initialMethodIndex).stream()
-                .collect(Collectors.summingInt(Method::getLength));
-            final int sumOfLengthsPresidingMethodInCurrentOrder = currentOrdering
-                .subList(0, currentMethodIndex).stream()
-                .collect(Collectors.summingInt(Method::getLength));
-            final int change = sumOfLengthsPresidingMethodInCurrentOrder
-                - sumOfLengthsPresidingMethodsInInitialOrder;
-            return lineNo + change;
-        }
-        else {
-            throw new IllegalArgumentException(
-                String.format("Line #%d does lies within any method", lineNo));
-        }
+            .findFirst()
+            .map(method -> {
+                final int initialMethodIndex = initialOrdering.indexOf(method);
+                final int currentMethodIndex = currentOrdering.indexOf(method);
+                final int sumOfLengthsPresidingMethodsInInitialOrder = initialOrdering
+                    .subList(0, initialMethodIndex).stream()
+                    .collect(Collectors.summingInt(Method::getLength));
+                final int sumOfLengthsPresidingMethodInCurrentOrder = currentOrdering
+                    .subList(0, currentMethodIndex).stream()
+                    .collect(Collectors.summingInt(Method::getLength));
+                final int change = sumOfLengthsPresidingMethodInCurrentOrder
+                    - sumOfLengthsPresidingMethodsInInitialOrder;
+                return lineNo + change;
+            })
+            .orElseThrow(() -> new IllegalArgumentException(
+                String.format("Line #%d does lies within any method", lineNo)));
     }
 
     private static Map<String, Method> getAllMethods(final Dependencies dependencies) {
