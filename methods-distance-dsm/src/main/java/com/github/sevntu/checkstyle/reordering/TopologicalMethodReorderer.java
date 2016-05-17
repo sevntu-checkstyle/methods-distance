@@ -1,6 +1,8 @@
-package com.github.sevntu.checkstyle.ordering;
+package com.github.sevntu.checkstyle.reordering;
 
 import com.github.sevntu.checkstyle.analysis.PenaltyCalculator;
+import com.github.sevntu.checkstyle.ordering.Method;
+import com.github.sevntu.checkstyle.ordering.Ordering;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +15,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TopologicalMethodSorter implements MethodSorter {
+public class TopologicalMethodReorderer implements MethodReorderer {
 
     private static final int DEFAULT_SCREEN_LINES_COUNT = 50;
 
@@ -22,7 +24,7 @@ public class TopologicalMethodSorter implements MethodSorter {
     private final PenaltyCalculator calculator = new PenaltyCalculator();
 
     @Override
-    public Ordering sort(final Ordering initialOrdering) {
+    public Ordering reorder(final Ordering initialOrdering) {
         Ordering currentOrdering = initialOrdering.reorder(
             breadthFirstOrder(initialOrdering, getFirstMethod(initialOrdering)));
         currentOrdering = overrideMethodGrouping(currentOrdering);

@@ -1,6 +1,7 @@
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.DependencyInformationConsumerInjector;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.puppycrawl.tools.checkstyle.Checker;

@@ -1,5 +1,6 @@
 package com.github.sevntu.checkstyle.analysis;
 
+import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.puppycrawl.tools.checkstyle.api.Configuration;

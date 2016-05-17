@@ -1,4 +1,4 @@
-package com.github.sevntu.checkstyle;
+package com.github.sevntu.checkstyle.vizualization;
 
 import com.github.sevntu.checkstyle.analysis.PenaltyCalculator;
 import com.github.sevntu.checkstyle.ordering.Ordering;
@@ -48,7 +48,8 @@ public final class DependencyInfoMatrixSerializer {
         context.put("penaltyValue", calculator.getPenalty(ordering, screenLinesCount));
         context.put("configuration", config);
         final StringWriter writer = new StringWriter();
-        final Template template = engine.getTemplate("com/github/sevntu/checkstyle/matrix.vm");
+        final Template template =
+            engine.getTemplate("com/github/sevntu/checkstyle/vizualization/matrix.vm");
         template.merge(context, writer);
         return writer.toString();
     }

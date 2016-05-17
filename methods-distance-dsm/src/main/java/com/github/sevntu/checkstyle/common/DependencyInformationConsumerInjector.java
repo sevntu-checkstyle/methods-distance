@@ -1,9 +1,9 @@
-package com.github.sevntu.checkstyle;
+package com.github.sevntu.checkstyle.common;
 
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.analysis.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
 
 import java.lang.reflect.InvocationTargetException;
 

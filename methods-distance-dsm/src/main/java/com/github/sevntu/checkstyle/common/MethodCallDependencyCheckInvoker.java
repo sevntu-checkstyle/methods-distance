@@ -1,11 +1,11 @@
-package com.github.sevntu.checkstyle;
+package com.github.sevntu.checkstyle.common;
 
+import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
 
 import java.io.File;
 import java.util.List;

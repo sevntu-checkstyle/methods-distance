@@ -2,10 +2,12 @@ package com.github.sevntu.checkstyle;
 
 import com.github.sevntu.checkstyle.analysis.Dependencies;
 import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.analysis.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
 import com.github.sevntu.checkstyle.ordering.Ordering;
-import com.github.sevntu.checkstyle.ordering.TopologicalMethodSorter;
+import com.github.sevntu.checkstyle.reordering.TopologicalMethodReorderer;
 import com.github.sevntu.checkstyle.utils.FileUtils;
+import com.github.sevntu.checkstyle.vizualization.DependencyInfoMatrixSerializer;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
@@ -43,8 +45,8 @@ public final class ReorderingMain {
             final String baseName = new File(filePath).getName();
             final String source = FileUtils.getFileContents(filePath);
             final Ordering initialOrdering = new Ordering(dependencies);
-            final Ordering topologicalOrdering = new TopologicalMethodSorter()
-                .sort(initialOrdering);
+            final Ordering topologicalOrdering = new TopologicalMethodReorderer()
+                .reorder(initialOrdering);
             DependencyInfoMatrixSerializer.writeToFile(source, initialOrdering, config,
                 baseName + ".initial.html");
             DependencyInfoMatrixSerializer.writeToFile(source, topologicalOrdering, config,

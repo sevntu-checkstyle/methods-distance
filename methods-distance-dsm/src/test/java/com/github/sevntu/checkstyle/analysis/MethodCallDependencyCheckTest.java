@@ -1,5 +1,6 @@
 package com.github.sevntu.checkstyle.analysis;
 
+import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;

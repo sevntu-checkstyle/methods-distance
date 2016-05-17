@@ -1,4 +1,4 @@
-package com.github.sevntu.checkstyle;
+package com.github.sevntu.checkstyle.vizualization;
 
 import com.github.sevntu.checkstyle.analysis.Dependencies;
 import com.github.sevntu.checkstyle.dot.Cluster;

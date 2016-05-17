@@ -1,6 +1,14 @@
-package com.github.sevntu.checkstyle.analysis;
+package com.github.sevntu.checkstyle.check;
 
-import com.puppycrawl.tools.checkstyle.api.Check;
+import com.github.sevntu.checkstyle.analysis.ClassDefinition;
+import com.github.sevntu.checkstyle.analysis.Dependencies;
+import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.analysis.MethodCall;
+import com.github.sevntu.checkstyle.analysis.MethodDefinition;
+import com.github.sevntu.checkstyle.analysis.RefCall;
+import com.github.sevntu.checkstyle.analysis.ResolvedCall;
+import com.github.sevntu.checkstyle.analysis.UnexpectedTokenTypeException;
+import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
@@ -9,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MethodCallDependencyCheck extends Check {
+public class MethodCallDependencyCheck extends AbstractCheck {
 
     private static final int DEFAULT_SCREEN_LINES_COUNT = 50;
 
@@ -76,7 +84,7 @@ public class MethodCallDependencyCheck extends Check {
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private static Dependencies buildDependencies(final DetailAST topLevelClass,
             final List<DetailAST> methodInvocations, final int screenLinesCount) {
-        final ClassDefinition  classDefinition = new ClassDefinition(topLevelClass);
+        final ClassDefinition classDefinition = new ClassDefinition(topLevelClass);
         final List<ResolvedCall> callOccurrences = new ArrayList<>();
         for (final DetailAST invocation : methodInvocations) {
             if (classDefinition.isInsideMethodOfClass(invocation)) {
