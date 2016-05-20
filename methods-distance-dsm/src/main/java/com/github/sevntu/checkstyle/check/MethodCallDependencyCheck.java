@@ -8,6 +8,9 @@ import com.github.sevntu.checkstyle.analysis.MethodDefinition;
 import com.github.sevntu.checkstyle.analysis.RefCall;
 import com.github.sevntu.checkstyle.analysis.ResolvedCall;
 import com.github.sevntu.checkstyle.analysis.UnexpectedTokenTypeException;
+import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.reordering.MethodReorderer;
+import com.github.sevntu.checkstyle.reordering.TopologicalMethodReorderer;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -18,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class MethodCallDependencyCheck extends AbstractCheck {
+
+    private static final String MSG_KEY = "method.call.dependencies.moveMethod";
 
     private static final int DEFAULT_SCREEN_LINES_COUNT = 50;
 
@@ -30,7 +35,7 @@ public class MethodCallDependencyCheck extends AbstractCheck {
     private int screenLinesCount = DEFAULT_SCREEN_LINES_COUNT;
 
     public MethodCallDependencyCheck() {
-        consumer = Optional.empty();
+        consumer = Optional.of(new ViolationReporterDependencyInformationConsumer());
     }
 
     public MethodCallDependencyCheck(final DependencyInformationConsumer dic) {
@@ -138,5 +143,30 @@ public class MethodCallDependencyCheck extends AbstractCheck {
                     + "got " + TokenUtils.getTokenName(invocation.getType()));
         }
         return callOccurrence;
+    }
+
+    private final class ViolationReporterDependencyInformationConsumer
+        implements DependencyInformationConsumer {
+
+        private final MethodReorderer reorderer = new TopologicalMethodReorderer();
+
+        @Override
+        public void accept(final String filePath, final Dependencies dependencies) {
+            final Ordering initialOrdering = new Ordering(dependencies);
+            final Ordering optimizedOrdering = reorderer.reorder(initialOrdering);
+            logFirstMethodOutOfOrder(optimizedOrdering);
+        }
+
+        private void logFirstMethodOutOfOrder(final Ordering optimizedOrdering) {
+            optimizedOrdering.getMethods().stream()
+                .filter(method ->
+                    optimizedOrdering.getMethodIndex(method) != method.getInitialIndex())
+                .findFirst()
+                .ifPresent(method -> {
+                    final int difference =
+                         method.getInitialIndex() - optimizedOrdering.getMethodIndex(method);
+                    log(method.getInitialLineNo(), MSG_KEY, method.getSignature(), difference);
+                });
+        }
     }
 }

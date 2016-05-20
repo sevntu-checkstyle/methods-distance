@@ -2,9 +2,12 @@ package com.github.sevntu.checkstyle;
 
 import com.github.sevntu.checkstyle.analysis.Dependencies;
 import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.analysis.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.github.sevntu.checkstyle.utils.FileUtils;
+import com.github.sevntu.checkstyle.vizualization.DependencyInfoGraphSerializer;
+import com.github.sevntu.checkstyle.vizualization.DependencyInfoMatrixSerializer;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
