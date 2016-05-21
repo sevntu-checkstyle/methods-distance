@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,24 +26,43 @@ public class TopologicalMethodReorderer implements MethodReorderer {
 
     @Override
     public Ordering reorder(final Ordering initialOrdering) {
-        Ordering currentOrdering = initialOrdering.reorder(
+        final Ordering topologicalOrdering = initialOrdering.reorder(
             breadthFirstOrder(initialOrdering, getFirstMethod(initialOrdering)));
-        currentOrdering = overrideMethodGrouping(currentOrdering);
-        currentOrdering = overloadMethodGrouping(currentOrdering);
-        currentOrdering = methodDependenciesRoundShiftOptimization(currentOrdering);
-        currentOrdering = methodDependenciesPullingOptimization(currentOrdering);
-        return currentOrdering;
+        return Function.<Ordering>identity()
+            .andThen(this::overrideMethodGrouping)
+            .andThen(this::accessorMethodGrouping)
+            .andThen(this::overloadMethodGrouping)
+            .andThen(this::methodDependenciesRelativeOrderOptimization)
+            .andThen(this::methodDependenciesDistanceOptimization)
+            .andThen(this::pullAllCtorsToStart)
+            .apply(topologicalOrdering);
     }
 
-    private Ordering methodDependenciesRoundShiftOptimization(final Ordering ordering) {
+    private Ordering pullAllCtorsToStart(final Ordering ordering) {
+        final List<Method> allCtors = ordering.getMethods().stream()
+            .filter(Method::isCtor)
+            .collect(Collectors.toList());
+        final List<Method> newOrder = new ArrayList<>(ordering.getMethods());
+        newOrder.removeAll(allCtors);
+        newOrder.addAll(0, allCtors);
+        return ordering.reorder(newOrder);
+    }
+
+    private Ordering methodDependenciesRelativeOrderOptimization(final Ordering ordering) {
         Ordering currentOrdering = ordering;
         for (final Method caller : currentOrdering.getMethods()) {
-            final List<Method> dependencies =
+            final List<Method> dependenciesInAppearanceOrder =
                 currentOrdering.getMethodDependenciesInAppearanceOrder(caller);
-            if (dependencies.size() > 1) {
-                final int from = currentOrdering.getMethodIndex(caller);
-                final int till = from + dependencies.size();
-                final List<Method> optimized = roundShift(currentOrdering.getMethods(), from, till);
+            if (dependenciesInAppearanceOrder.size() > 1) {
+                final List<Integer> dependenciesIndices = dependenciesInAppearanceOrder.stream()
+                    .map(currentOrdering::getMethodIndex)
+                    .sorted(Integer::compare)
+                    .collect(Collectors.toList());
+                final List<Method> optimized = new ArrayList<>(currentOrdering.getMethods());
+                optimized.removeAll(dependenciesInAppearanceOrder);
+                for (int i = 0; i < dependenciesIndices.size(); ++i) {
+                    optimized.add(dependenciesIndices.get(i), dependenciesInAppearanceOrder.get(i));
+                }
                 final Ordering optimizedOrdering = currentOrdering.reorder(optimized);
                 currentOrdering = getBestOrdering(currentOrdering, optimizedOrdering);
             }
@@ -50,7 +70,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         return currentOrdering;
     }
 
-    private Ordering methodDependenciesPullingOptimization(final Ordering startingOrdering) {
+    private Ordering methodDependenciesDistanceOptimization(final Ordering startingOrdering) {
         Ordering currentOrdering = startingOrdering;
         for (final Method caller : startingOrdering.getMethods()) {
             final List<Method> dependencies =
@@ -94,6 +114,16 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         }
     }
 
+    private Ordering accessorMethodGrouping(final Ordering ordering) {
+        final List<List<Method>> accessorGroups = ordering.getMethods().stream()
+            .filter(method -> method.isGetter() || method.isSetter())
+            .collect(Collectors.groupingBy(Method::getAccessiblePropertyName))
+            .values().stream()
+            .filter(group -> group.size() > 1)
+            .collect(Collectors.toList());
+        return methodGroupsGrouping(ordering, accessorGroups);
+    }
+
     private Ordering methodGroupsGrouping(final Ordering startingOrdering,
         final List<List<Method>> groups) {
         Ordering currentOrdering = startingOrdering;
@@ -123,14 +153,6 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         }
     }
 
-    private static <T> List<T> roundShift(final List<T> list, final int from, final int till) {
-        final List<T> result = new ArrayList<>(list);
-        final List<T> sublist = result.subList(from, till);
-        final T head = sublist.remove(0);
-        sublist.add(head);
-        return result;
-    }
-
     private static Method getFirstMethod(final Ordering ordering) {
         return Stream.<Supplier<Optional<Method>>>of(
             () -> ordering.getMethods().stream()
@@ -158,10 +180,10 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         queue.add(startMethod);
         while (result.size() < ordering.getMethods().size()) {
             if (queue.isEmpty()) {
-                final Optional<Method> firstUnvisitedMethod = ordering.getMethods().stream()
+                ordering.getMethods().stream()
                     .filter(method -> !result.contains(method))
-                    .findFirst();
-                queue.add(firstUnvisitedMethod.get());
+                    .findFirst()
+                    .ifPresent(queue::add);
             }
             else {
                 final Method head = queue.remove();
