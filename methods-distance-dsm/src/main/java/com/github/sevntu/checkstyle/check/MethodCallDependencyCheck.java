@@ -164,7 +164,7 @@ public class MethodCallDependencyCheck extends AbstractCheck {
                 .findFirst()
                 .ifPresent(method -> {
                     final int difference =
-                         method.getInitialIndex() - optimizedOrdering.getMethodIndex(method);
+                        method.getInitialIndex() - optimizedOrdering.getMethodIndex(method);
                     log(method.getInitialLineNo(), MSG_KEY, method.getSignature(), difference);
                 });
         }
