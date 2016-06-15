@@ -11,7 +11,7 @@ public interface AttributeHolder {
         return !attributes().isEmpty();
     }
 
-    default void addAttribute(final String name, final String value) {
+    default void addAttribute(String name, String value) {
         attributes().put(name, value);
     }
 

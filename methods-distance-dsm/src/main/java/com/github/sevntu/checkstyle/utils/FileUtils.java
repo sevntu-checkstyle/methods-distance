@@ -9,7 +9,7 @@ public final class FileUtils {
 
     private FileUtils() { }
 
-    public static String getFileContents(final String filePath) {
+    public static String getFileContents(String filePath) {
         try (final InputStream stream = new FileInputStream(filePath)) {
             return getTextStreamContents(stream);
         }
@@ -18,7 +18,7 @@ public final class FileUtils {
         }
     }
 
-    public static String getTextStreamContents(final InputStream input) {
+    public static String getTextStreamContents(InputStream input) {
         final Scanner scanner = new Scanner(input);
         scanner.useDelimiter("\\Z");
         return scanner.next();

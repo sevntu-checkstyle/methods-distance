@@ -8,8 +8,7 @@ public class Dependencies {
 
     private final List<ResolvedCall> resolvedCalls;
 
-    public Dependencies(final ClassDefinition classDefinition,
-                        final List<ResolvedCall> resolvedCalls) {
+    public Dependencies(ClassDefinition classDefinition, List<ResolvedCall> resolvedCalls) {
         this.classDefinition = classDefinition;
         this.resolvedCalls = resolvedCalls;
     }

@@ -25,7 +25,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
     private final PenaltyCalculator calculator = new PenaltyCalculator();
 
     @Override
-    public Ordering reorder(final Ordering initialOrdering) {
+    public Ordering reorder(Ordering initialOrdering) {
         final Ordering topologicalOrdering = initialOrdering.reorder(
             breadthFirstOrder(initialOrdering, getFirstMethod(initialOrdering)));
         return Function.<Ordering>identity()
@@ -38,7 +38,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
             .apply(topologicalOrdering);
     }
 
-    private Ordering pullAllCtorsToStart(final Ordering ordering) {
+    private Ordering pullAllCtorsToStart(Ordering ordering) {
         final List<Method> allCtors = ordering.getMethods().stream()
             .filter(Method::isCtor)
             .collect(Collectors.toList());
@@ -48,7 +48,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         return ordering.reorder(newOrder);
     }
 
-    private Ordering methodDependenciesRelativeOrderOptimization(final Ordering ordering) {
+    private Ordering methodDependenciesRelativeOrderOptimization(Ordering ordering) {
         Ordering currentOrdering = ordering;
         for (final Method caller : currentOrdering.getMethods()) {
             final List<Method> dependenciesInAppearanceOrder =
@@ -70,7 +70,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         return currentOrdering;
     }
 
-    private Ordering methodDependenciesDistanceOptimization(final Ordering startingOrdering) {
+    private Ordering methodDependenciesDistanceOptimization(Ordering startingOrdering) {
         Ordering currentOrdering = startingOrdering;
         for (final Method caller : startingOrdering.getMethods()) {
             final List<Method> dependencies =
@@ -95,14 +95,14 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         return currentOrdering;
     }
 
-    private Ordering overloadMethodGrouping(final Ordering ordering) {
+    private Ordering overloadMethodGrouping(Ordering ordering) {
         final List<List<Method>> overloadGroups = ordering.getMethods().stream()
             .collect(Collectors.groupingBy(Method::getName))
             .values().stream().filter(list -> list.size() > 1).collect(Collectors.toList());
         return methodGroupsGrouping(ordering, overloadGroups);
     }
 
-    private Ordering overrideMethodGrouping(final Ordering ordering) {
+    private Ordering overrideMethodGrouping(Ordering ordering) {
         final List<Method> overrideMethods = ordering.getMethods().stream()
             .filter(Method::isOverride)
             .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         }
     }
 
-    private Ordering accessorMethodGrouping(final Ordering ordering) {
+    private Ordering accessorMethodGrouping(Ordering ordering) {
         final List<List<Method>> accessorGroups = ordering.getMethods().stream()
             .filter(method -> method.isGetter() || method.isSetter())
             .collect(Collectors.groupingBy(Method::getAccessiblePropertyName))
@@ -124,8 +124,9 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         return methodGroupsGrouping(ordering, accessorGroups);
     }
 
-    private Ordering methodGroupsGrouping(final Ordering startingOrdering,
+    private Ordering methodGroupsGrouping(Ordering startingOrdering,
         final List<List<Method>> groups) {
+
         Ordering currentOrdering = startingOrdering;
         for (final List<Method> methodsGroup : groups) {
             final Method lastMethod = methodsGroup.stream()
@@ -143,7 +144,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         return currentOrdering;
     }
 
-    private Ordering getBestOrdering(final Ordering lhs, final Ordering rhs) {
+    private Ordering getBestOrdering(Ordering lhs, Ordering rhs) {
         if (calculator.getPenalty(lhs, screenLinesCount)
             < calculator.getPenalty(rhs, screenLinesCount)) {
             return lhs;
@@ -153,7 +154,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         }
     }
 
-    private static Method getFirstMethod(final Ordering ordering) {
+    private static Method getFirstMethod(Ordering ordering) {
         return Stream.<Supplier<Optional<Method>>>of(
             () -> ordering.getMethods().stream()
                 .filter(Method::isCtor)
@@ -173,8 +174,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
             .findFirst().get();
     }
 
-    private static List<Method> breadthFirstOrder(final Ordering ordering,
-        final Method startMethod) {
+    private static List<Method> breadthFirstOrder(Ordering ordering, Method startMethod) {
         final Queue<Method> queue = new LinkedList<>();
         final List<Method> result = new ArrayList<>();
         queue.add(startMethod);
@@ -202,12 +202,12 @@ public class TopologicalMethodReorderer implements MethodReorderer {
 
         private final Ordering ordering;
 
-        private MethodIndexComparator(final Ordering ordering) {
+        private MethodIndexComparator(Ordering ordering) {
             this.ordering = ordering;
         }
 
         @Override
-        public int compare(final Method lhs, final Method rhs) {
+        public int compare(Method lhs, Method rhs) {
             return Integer.compare(ordering.getMethodIndex(lhs), ordering.getMethodIndex(rhs));
         }
     }

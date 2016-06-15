@@ -4,7 +4,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class ResolvedCall extends AnalysisSubject {
+public class ResolvedCall {
 
     private final DetailAST methodInvocation;
 
@@ -16,6 +16,7 @@ public class ResolvedCall extends AnalysisSubject {
             final DetailAST methodInvocation,
             final MethodDefinition caller,
             final MethodDefinition callee) {
+
         this.methodInvocation = methodInvocation;
         this.caller = caller;
         this.callee = callee;
@@ -37,7 +38,7 @@ public class ResolvedCall extends AnalysisSubject {
         return methodInvocation.getType() == TokenTypes.METHOD_REF;
     }
 
-    public boolean isNestedInside(final ResolvedCall other) {
+    public boolean isNestedInside(ResolvedCall other) {
         for (DetailAST parent = getAstNode().getParent(); parent != null;
             parent = parent.getParent()) {
             if (parent.getLineNo() == other.getAstNode().getLineNo()

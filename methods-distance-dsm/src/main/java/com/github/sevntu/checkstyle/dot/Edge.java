@@ -3,6 +3,7 @@ package com.github.sevntu.checkstyle.dot;
 import java.util.HashMap;
 import java.util.Map;
 
+/* Class name is sufficiently descriptive. */
 @SuppressWarnings("PMD.ShortClassName")
 public class Edge implements Element, AttributeHolder {
 
@@ -12,12 +13,12 @@ public class Edge implements Element, AttributeHolder {
 
     private final Map<String, String> attrs = new HashMap<>();
 
-    public Edge(final Node start, final Node end) {
+    public Edge(Node start, Node end) {
         this.start = start;
         this.end = end;
     }
 
-    public void setLabel(final String label) {
+    public void setLabel(String label) {
         addAttribute("label", label);
     }
 

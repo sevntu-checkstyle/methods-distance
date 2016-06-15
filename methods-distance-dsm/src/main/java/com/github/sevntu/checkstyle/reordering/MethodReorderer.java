@@ -4,5 +4,5 @@ import com.github.sevntu.checkstyle.ordering.Ordering;
 
 public interface MethodReorderer {
 
-    Ordering reorder(final Ordering ordering);
+    Ordering reorder(Ordering ordering);
 }

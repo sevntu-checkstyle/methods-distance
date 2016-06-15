@@ -9,13 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("PMD.UseUtilityClass")
-public class AnalysisSubject {
+public final class AnalysisUtils {
 
-    @SuppressWarnings("PMD.UncommentedEmptyConstructor")
-    protected AnalysisSubject() { }
+    private AnalysisUtils() { }
 
-    protected static boolean isInsideClassDef(final DetailAST node) {
+    public static boolean isInsideClassDef(DetailAST node) {
         final DetailAST parent = getClosestParentOfTypes(node, TokenTypes.CLASS_DEF,
                 TokenTypes.LITERAL_NEW, TokenTypes.INTERFACE_DEF);
         switch (parent.getType()) {
@@ -29,11 +27,11 @@ public class AnalysisSubject {
         }
     }
 
-    protected static DetailAST getEnclosingClass(final DetailAST node) {
+    public static DetailAST getEnclosingClass(DetailAST node) {
         return getClosestParentOfTypes(node, TokenTypes.CLASS_DEF);
     }
 
-    protected static boolean isNestedInsideMethodDef(final DetailAST node) {
+    public static boolean isNestedInsideMethodDef(DetailAST node) {
         final DetailAST parent = getClosestParentOfTypes(node, TokenTypes.METHOD_DEF,
                 TokenTypes.CTOR_DEF, TokenTypes.VARIABLE_DEF);
         switch (parent.getType()) {
@@ -47,16 +45,15 @@ public class AnalysisSubject {
         }
     }
 
-    protected static boolean isFieldDeclaration(final DetailAST variableDef) {
+    public static boolean isFieldDeclaration(DetailAST variableDef) {
         return variableDef.getParent().getType() == TokenTypes.OBJBLOCK;
     }
 
-    protected static DetailAST getEnclosingMethod(final DetailAST node) {
+    public static DetailAST getEnclosingMethod(DetailAST node) {
         return getClosestParentOfTypes(node, TokenTypes.METHOD_DEF, TokenTypes.CTOR_DEF);
     }
 
-    protected static DetailAST getClosestParentOfTypes(final DetailAST node,
-                                                       final Integer... ofTypes) {
+    public static DetailAST getClosestParentOfTypes(DetailAST node, Integer... ofTypes) {
         for (DetailAST parent = node.getParent(); parent != null; parent = parent.getParent()) {
             if (Arrays.asList(ofTypes).contains(parent.getType())) {
                 return parent;
@@ -79,8 +76,7 @@ public class AnalysisSubject {
      * @param ofTypes child node types
      * @return list of child nodes
      */
-    protected static List<DetailAST> getNodeChildren(final DetailAST node,
-                                                     final Integer... ofTypes) {
+    public static List<DetailAST> getNodeChildren(DetailAST node, Integer... ofTypes) {
         final List<DetailAST> result = new ArrayList<>();
         for (DetailAST child = node.getFirstChild();
              child != null; child = child.getNextSibling()) {

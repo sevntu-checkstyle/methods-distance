@@ -20,8 +20,9 @@ public final class DependencyInfoMatrixSerializer {
 
     private DependencyInfoMatrixSerializer() { }
 
-    public static void writeToFile(final String javaSource, final Ordering ordering,
+    public static void writeToFile(String javaSource, Ordering ordering,
         final Configuration config, final String fileName) {
+
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serialize(ordering, javaSource, config));
         }
@@ -30,8 +31,9 @@ public final class DependencyInfoMatrixSerializer {
         }
     }
 
-    public static String serialize(final Ordering ordering, final String javaSource,
-        final Configuration config) throws CheckstyleException {
+    public static String serialize(Ordering ordering, String javaSource,
+        Configuration config) throws CheckstyleException {
+
         final VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         engine.setProperty(

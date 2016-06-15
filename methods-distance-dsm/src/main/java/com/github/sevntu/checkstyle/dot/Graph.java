@@ -11,11 +11,11 @@ public class Graph implements CompositeElement {
 
     private Rankdirs rankdir = Rankdirs.LR;
 
-    public Graph(final String name) {
+    public Graph(String name) {
         this.name = name;
     }
 
-    public void setRankdir(final Rankdirs rankdir) {
+    public void setRankdir(Rankdirs rankdir) {
         this.rankdir = rankdir;
     }
 

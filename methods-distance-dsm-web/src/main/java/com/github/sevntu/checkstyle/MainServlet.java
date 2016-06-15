@@ -2,13 +2,12 @@ package com.github.sevntu.checkstyle;
 
 import com.github.sevntu.checkstyle.analysis.Dependencies;
 import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.github.sevntu.checkstyle.vizualization.DependencyInfoGraphSerializer;
 import com.github.sevntu.checkstyle.vizualization.DependencyInfoMatrixSerializer;
-import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
@@ -25,7 +24,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
+/**
+ * Servlet which handles requests for generation of DSM and DOT from
+ * source code.
+ */
 public class MainServlet extends HttpServlet {
 
     private static final String CONTENT_LENGTH_HEADER = "Content-Length";
@@ -33,6 +39,7 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
+
         final String requestPath = req.getPathInfo();
         final String sourceUrl = req.getParameter("source_url");
         try {
@@ -58,64 +65,76 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void processDsm(final URL sourceUrl, final HttpServletResponse resp) throws
-            CheckstyleException, IOException {
-        final Configuration config = getCheckConfiguration();
-        processWithConsumer(sourceUrl, config, new DependencyInformationConsumer() {
-            @Override
-            public void accept(String filePath, Dependencies dependencies) {
-                try {
-                    final String javaSource = FileUtils.getFileContents(filePath);
-                    final Ordering ordering = new Ordering(dependencies);
-                    final String html =
-                        DependencyInfoMatrixSerializer.serialize(ordering, javaSource, config);
-                    resp.setContentType("text/html");
-                    resp.getWriter().append(html);
-                }
-                catch (final IOException | CheckstyleException e) {
-                    throw new ResponseGenerationException(e);
-                }
+    private void processDsm(URL sourceUrl, HttpServletResponse resp)
+        throws CheckstyleException, IOException {
+
+        class DsmDependencyInformationConsumer implements DependencyInformationConsumer {
+
+            private Optional<Configuration> configuration;
+
+            public void setConfiguration(final Configuration configuration) {
+                this.configuration = Optional.of(configuration);
             }
-        });
+
+            @Override
+            public void accept(MethodCallDependencyModule module, String filePath,
+                               Dependencies dependencies) {
+
+                configuration.ifPresent(config -> {
+                    try {
+                        final String javaSource = FileUtils.getFileContents(filePath);
+                        final Ordering ordering = new Ordering(dependencies);
+                        final String html =
+                            DependencyInfoMatrixSerializer.serialize(ordering, javaSource, config);
+                        resp.setContentType("text/html");
+                        resp.getWriter().append(html);
+                    }
+                    catch (final IOException | CheckstyleException e) {
+                        throw new ResponseGenerationException(e);
+                    }
+                });
+            }
+        }
+
+        final Map<String, String> config = getCheckConfiguration();
+        final DsmDependencyInformationConsumer consumer = new DsmDependencyInformationConsumer();
+        final MethodCallDependencyCheckInvoker invoker =
+            new MethodCallDependencyCheckInvoker(config, consumer);
+        consumer.setConfiguration(invoker.getConfiguration());
+        invoker.invoke(Collections.singletonList(downloadSource(sourceUrl)));
     }
 
-    private void processDot(final URL sourceUrl, final HttpServletResponse resp) throws
-            CheckstyleException, IOException {
-        final Configuration config = getCheckConfiguration();
-        processWithConsumer(sourceUrl, config, new DependencyInformationConsumer() {
-            @Override
-            public void accept(String filePath, Dependencies dependencies) {
-                try {
-                    final String dot = DependencyInfoGraphSerializer.serialize(dependencies);
-                    resp.setContentType("text/vnd.graphviz");
-                    resp.getWriter().append(dot);
-                }
-                catch (final IOException e) {
-                    throw new ResponseGenerationException(e);
-                }
-            }
-        });
-    }
+    private void processDot(URL sourceUrl, HttpServletResponse resp)
+        throws CheckstyleException, IOException {
 
-    private void processWithConsumer(final URL sourceUrl, final Configuration config,
-        final DependencyInformationConsumer consumer) throws CheckstyleException, IOException {
+        final DependencyInformationConsumer consumer = (module, filePath, dependencies) -> {
+            try {
+                final String dot = DependencyInfoGraphSerializer.serialize(dependencies);
+                resp.setContentType("text/vnd.graphviz");
+                resp.getWriter().append(dot);
+            }
+            catch (final IOException e) {
+                throw new ResponseGenerationException(e);
+            }
+        };
+
+        final Map<String, String> config = getCheckConfiguration();
         final MethodCallDependencyCheckInvoker invoker =
             new MethodCallDependencyCheckInvoker(config, consumer);
         invoker.invoke(Collections.singletonList(downloadSource(sourceUrl)));
     }
 
-    private void processNotFound(final HttpServletResponse resp) {
+    private void processNotFound(HttpServletResponse resp) {
         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 
-    private Configuration getCheckConfiguration() {
-        final DefaultConfiguration config =
-            new DefaultConfiguration(MethodCallDependencyCheck.class.getCanonicalName());
-        config.addAttribute("screenLinesCount", "50");
+    private Map<String, String> getCheckConfiguration() {
+        final Map<String, String> config = new HashMap<>();
+        config.put("screenLinesCount", "50");
         return config;
     }
 
-    private static File downloadSource(final URL sourceUrl) throws IOException {
+    private static File downloadSource(URL sourceUrl) throws IOException {
         final File tmpFile = File.createTempFile("source", ".java");
         final URLConnection connection = sourceUrl.openConnection();
         connection.connect();
@@ -136,7 +155,7 @@ public class MainServlet extends HttpServlet {
 
     private static final class ResponseGenerationException extends RuntimeException {
 
-        private ResponseGenerationException(final Throwable cause) {
+        private ResponseGenerationException(Throwable cause) {
             super(cause);
         }
     }

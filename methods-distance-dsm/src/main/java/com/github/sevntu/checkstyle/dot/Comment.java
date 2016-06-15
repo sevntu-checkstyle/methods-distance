@@ -4,7 +4,7 @@ public class Comment implements Element {
 
     private final String text;
 
-    public Comment(final String text) {
+    public Comment(String text) {
         this.text = text;
     }
 

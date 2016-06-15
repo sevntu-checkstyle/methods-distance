@@ -1,7 +1,9 @@
 package com.github.sevntu.checkstyle.common;
 
 import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
 import com.puppycrawl.tools.checkstyle.Checker;
+import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -9,25 +11,44 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public class MethodCallDependencyCheckInvoker {
 
     private final Checker checker;
 
-    public MethodCallDependencyCheckInvoker(final Configuration methodCallDependencyCheckConfig,
-        final DependencyInformationConsumer consumer) throws CheckstyleException {
+    private final Configuration configuration;
+
+    public MethodCallDependencyCheckInvoker(Map<String, String> configAttributes,
+        DependencyInformationConsumer consumer) throws CheckstyleException {
+
+        this.configuration = getCompleteConfig(configAttributes);
+
         final ModuleFactory moduleFactory = new DependencyInformationConsumerInjector(consumer);
+
         final TreeWalker tw = new TreeWalker();
         tw.setModuleFactory(moduleFactory);
         tw.finishLocalSetup();
-        tw.setupChild(methodCallDependencyCheckConfig);
+        tw.setupChild(configuration);
+
         checker = new Checker();
         checker.setModuleFactory(moduleFactory);
         checker.finishLocalSetup();
         checker.addFileSetCheck(tw);
     }
 
-    public void invoke(final List<File> files) throws CheckstyleException {
+    private static Configuration getCompleteConfig(Map<String, String> configAttributes) {
+        final DefaultConfiguration config =
+            new DefaultConfiguration(MethodCallDependencyModule.class.getCanonicalName());
+        configAttributes.entrySet().forEach(kv -> config.addAttribute(kv.getKey(), kv.getValue()));
+        return config;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void invoke(List<File> files) throws CheckstyleException {
         checker.process(files);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class ClassDefinitionTest extends MethodCallDependenciesCheckTestSupport {
+public class ClassDefinitionTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testSeveralAccessors() throws Exception {

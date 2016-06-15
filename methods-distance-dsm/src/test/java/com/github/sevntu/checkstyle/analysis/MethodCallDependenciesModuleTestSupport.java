@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.Ordering;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport {
+public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSupport {
 
     protected final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -80,11 +80,11 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
     }
 
     private static String getInputPath(final String fileName) {
-        return MethodCallDependencyCheckTest.class.getResource(fileName).getPath();
+        return MethodCallDependencyModuleTest.class.getResource(fileName).getPath();
     }
 
     protected Dependencies withDefaultConfig(final String fileName) throws Exception {
-        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyCheck.class), fileName);
+        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyModule.class), fileName);
     }
 
     protected Ordering withDefaultConfigOrdering(final String fileName) throws Exception {
@@ -96,7 +96,7 @@ public class MethodCallDependenciesCheckTestSupport extends BaseCheckTestSupport
         private Map<String, Dependencies> filePathToDependencies = new HashMap<>();
 
         @Override
-        public void accept(String filePath, Dependencies dependencies) {
+        public void accept(MethodCallDependencyModule check, String filePath, Dependencies dependencies) {
             filePathToDependencies.put(filePath, dependencies);
         }
 

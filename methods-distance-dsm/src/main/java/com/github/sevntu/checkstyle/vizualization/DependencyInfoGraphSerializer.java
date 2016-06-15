@@ -24,7 +24,7 @@ public final class DependencyInfoGraphSerializer {
 
     private DependencyInfoGraphSerializer() { }
 
-    public static void writeToFile(final Dependencies info, final String fileName) {
+    public static void writeToFile(Dependencies info, String fileName) {
         try (final PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serialize(info));
         }
@@ -33,7 +33,7 @@ public final class DependencyInfoGraphSerializer {
         }
     }
 
-    public static String serialize(final Dependencies dependencies) {
+    public static String serialize(Dependencies dependencies) {
         final Ordering info = new Ordering(dependencies);
         final Graph graph = new Graph("dependencies");
         graph.setRankdir(Rankdirs.LR);
@@ -67,8 +67,9 @@ public final class DependencyInfoGraphSerializer {
             DependencyInfoGraphSerializer.class.getResourceAsStream("graph description.txt"));
     }
 
-    private static Edge createEdge(final Method caller,
-        final Method callee, final Map<Method, Node> methodToNode, final Ordering ordering) {
+    private static Edge createEdge(Method caller,
+        Method callee, Map<Method, Node> methodToNode, Ordering ordering) {
+
         final Node callerNode = methodToNode.get(caller);
         final Node calleeNode = methodToNode.get(callee);
         final Edge edge = new Edge(callerNode, calleeNode);
@@ -78,18 +79,18 @@ public final class DependencyInfoGraphSerializer {
         return edge;
     }
 
-    private static Node createNode(final Method method) {
+    private static Node createNode(Method method) {
         final Node node = new Node(method.getSignature());
         node.setColor(getColorForMethod(method));
         node.setShape(getShapeForMethod(method));
         return node;
     }
 
-    private static String getFormattedEdgeLabel(final int indexDistance, final int lineDistance) {
+    private static String getFormattedEdgeLabel(int indexDistance, int lineDistance) {
         return String.format("%d/%d", indexDistance, lineDistance);
     }
 
-    private static Colors getColorForMethod(final Method method) {
+    private static Colors getColorForMethod(Method method) {
         switch (method.getAccessibility()) {
             case PUBLIC: return Colors.GREEN;
             case PROTECTED: return Colors.YELLOW;
@@ -100,7 +101,7 @@ public final class DependencyInfoGraphSerializer {
         }
     }
 
-    private static Shapes getShapeForMethod(final Method method) {
+    private static Shapes getShapeForMethod(Method method) {
         if (method.isStatic()) {
             return Shapes.POLYGON;
         }

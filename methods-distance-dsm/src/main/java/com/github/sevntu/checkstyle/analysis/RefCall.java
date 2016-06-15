@@ -3,13 +3,13 @@ package com.github.sevntu.checkstyle.analysis;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class RefCall extends AnalysisSubject {
+public class RefCall {
 
     private final DetailAST methodRef;
 
     private final ClassDefinition classDefinition;
 
-    public RefCall(final ClassDefinition classDefinition, final DetailAST methodRef) {
+    public RefCall(ClassDefinition classDefinition, DetailAST methodRef) {
         this.methodRef = methodRef;
         this.classDefinition = classDefinition;
     }
@@ -35,6 +35,6 @@ public class RefCall extends AnalysisSubject {
     }
 
     public DetailAST getEnclosingMethod() {
-        return getEnclosingMethod(methodRef);
+        return AnalysisUtils.getEnclosingMethod(methodRef);
     }
 }
