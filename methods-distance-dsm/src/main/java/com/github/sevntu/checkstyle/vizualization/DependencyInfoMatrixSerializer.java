@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.vizualization;
 
-import com.github.sevntu.checkstyle.analysis.PenaltyCalculator;
+import com.github.sevntu.checkstyle.ordering.PenaltyCalculator;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;

@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.vizualization;
 
-import com.github.sevntu.checkstyle.analysis.Dependencies;
+import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.dot.Cluster;
 import com.github.sevntu.checkstyle.dot.Colors;
 import com.github.sevntu.checkstyle.dot.Comment;

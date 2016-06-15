@@ -3,7 +3,7 @@
 #* @vtlvariable name="css" type="java.lang.String" *#
 #* @vtlvariable name="javaScript" type="java.lang.String" *#
 #* @vtlvariable name="info" type="com.github.sevntu.checkstyle.ordering.Ordering" *#
-#* @vtlvariable name="calculator" type="com.github.sevntu.checkstyle.analysis.PenaltyCalculator" *#
+#* @vtlvariable name="calculator" type="com.github.sevntu.checkstyle.ordering.PenaltyCalculator" *#
 #* @vtlvariable name="penaltyValue" type="java.lang.String" *#
 <!DOCTYPE html>
 <html>

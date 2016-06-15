@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.reordering;
 
-import com.github.sevntu.checkstyle.analysis.PenaltyCalculator;
+import com.github.sevntu.checkstyle.ordering.PenaltyCalculator;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 

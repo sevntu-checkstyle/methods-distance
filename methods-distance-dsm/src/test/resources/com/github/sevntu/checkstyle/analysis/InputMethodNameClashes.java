@@ -1,4 +1,4 @@
-package com.github.sevntu.checkstyle.analysis;
+package com.github.sevntu.checkstyle.domain;
 
 public class InputMethodNameClashes {
 

@@ -1,7 +1,11 @@
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
+import com.github.sevntu.checkstyle.domain.BaseCheckTestSupport;
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.domain.ExpectedDependencies;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.puppycrawl.tools.checkstyle.Checker;
@@ -49,7 +53,7 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         checker.setModuleFactory(new DependencyInformationConsumerInjector(collector));
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(dc);
-        checker.addListener(new BriefLogger(stream));
+        checker.addListener(new BaseCheckTestSupport.BriefLogger(stream));
         return checker;
     }
 
@@ -79,8 +83,8 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         }
     }
 
-    private static String getInputPath(final String fileName) {
-        return MethodCallDependencyModuleTest.class.getResource(fileName).getPath();
+    private String getInputPath(final String fileName) {
+        return getClass().getResource(fileName).getPath();
     }
 
     protected Dependencies withDefaultConfig(final String fileName) throws Exception {

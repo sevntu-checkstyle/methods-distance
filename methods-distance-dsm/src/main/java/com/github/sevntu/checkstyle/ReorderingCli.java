@@ -1,8 +1,8 @@
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.analysis.Dependencies;
-import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.github.sevntu.checkstyle.reordering.TopologicalMethodReorderer;
@@ -54,7 +54,7 @@ public final class ReorderingCli {
 
         @Override
         public void accept(
-            MethodCallDependencyModule check, String filePath, Dependencies dependencies) {
+            MethodCallDependencyModule module, String filePath, Dependencies dependencies) {
 
             config.ifPresent(configuration -> {
                 final String baseName = new File(filePath).getName();

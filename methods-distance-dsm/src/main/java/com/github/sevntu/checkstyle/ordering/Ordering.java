@@ -1,8 +1,8 @@
 package com.github.sevntu.checkstyle.ordering;
 
-import com.github.sevntu.checkstyle.analysis.Dependencies;
-import com.github.sevntu.checkstyle.analysis.MethodDefinition;
-import com.github.sevntu.checkstyle.analysis.ResolvedCall;
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.domain.MethodDefinition;
+import com.github.sevntu.checkstyle.domain.ResolvedCall;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.MultiMapUtils;

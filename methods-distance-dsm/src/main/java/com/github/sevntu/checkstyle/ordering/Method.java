@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.ordering;
 
-import com.github.sevntu.checkstyle.analysis.MethodDefinition;
+import com.github.sevntu.checkstyle.domain.MethodDefinition;
 
 /* This class is data-heavy. */
 @SuppressWarnings("PMD.TooManyFields")

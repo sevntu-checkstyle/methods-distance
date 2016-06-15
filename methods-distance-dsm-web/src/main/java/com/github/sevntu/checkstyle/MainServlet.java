@@ -1,9 +1,9 @@
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.analysis.Dependencies;
-import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.github.sevntu.checkstyle.vizualization.DependencyInfoGraphSerializer;
