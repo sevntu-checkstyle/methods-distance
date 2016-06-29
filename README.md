@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/alex-zuy/method-call-graph.svg?branch=master)](https://travis-ci.org/alex-zuy/method-call-graph)
+[![Build status](https://ci.appveyor.com/api/projects/status/1pex335cc3ow5mxx/branch/master?svg=true)](https://ci.appveyor.com/project/Checkstyle/methods-distance/branch/master)
 
 Running:
 - clone sources
