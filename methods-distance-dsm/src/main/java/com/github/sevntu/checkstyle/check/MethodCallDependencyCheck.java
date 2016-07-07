@@ -16,6 +16,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +81,8 @@ public class MethodCallDependencyCheck extends AbstractCheck {
             consumer.ifPresent(dic -> {
                 final Dependencies dependencies =
                     buildDependencies(topLevelClass, methodInvocations, screenLinesCount);
-                final String inputFilePath = getFileContents().getFileName();
+                final String inputFilePath =
+                    new File(getFileContents().getFileName()).toURI().getPath();
                 dic.accept(inputFilePath, dependencies);
             });
         }
