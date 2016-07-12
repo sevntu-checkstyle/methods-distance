@@ -37,7 +37,7 @@ public class Ordering {
 
     private final MultiValuedMap<MethodInvocation, MethodInvocation> invocationNesting;
 
-    public Ordering(final Dependencies dependencies) {
+    public Ordering(Dependencies dependencies) {
         this.methods = MapUtils.unmodifiableMap(getAllMethods(dependencies));
         this.initialOrdering = ListUtils.unmodifiableList(getInitialMethodOrdering(methods));
         this.currentOrdering = this.initialOrdering;
@@ -48,7 +48,7 @@ public class Ordering {
             getMethodInvocationsNesting(callsToInvocations));
     }
 
-    private Ordering(final Ordering ordering, final List<Method> newMethodOrdering) {
+    private Ordering(Ordering ordering, final List<Method> newMethodOrdering) {
         this.currentOrdering = ListUtils.unmodifiableList(newMethodOrdering);
         this.initialOrdering = ordering.initialOrdering;
         this.methods = ordering.methods;
@@ -60,15 +60,15 @@ public class Ordering {
         return currentOrdering;
     }
 
-    public int getMethodIndex(final Method method) {
+    public int getMethodIndex(Method method) {
         return currentOrdering.indexOf(method);
     }
 
-    public Method getMethodByInitialIndex(final int index) {
+    public Method getMethodByInitialIndex(int index) {
         return initialOrdering.get(index);
     }
 
-    public Ordering moveMethodBy(final Method method, final int indexShift) {
+    public Ordering moveMethodBy(Method method, int indexShift) {
         final int currentIndex = getMethodIndex(method);
         final int newIndex = currentIndex + indexShift;
         if (0 <= newIndex && newIndex < methods.size()) {
@@ -83,7 +83,7 @@ public class Ordering {
         }
     }
 
-    public Ordering reorder(final List<Method> order) {
+    public Ordering reorder(List<Method> order) {
         final boolean allMethodsPresent = currentOrdering.stream().allMatch(order::contains);
         if (allMethodsPresent && currentOrdering.size() == order.size()) {
             return new Ordering(this, new ArrayList<>(order));
@@ -97,11 +97,11 @@ public class Ordering {
         }
     }
 
-    private static String methodsSignatureList(final Collection<Method> methods) {
+    private static String methodsSignatureList(Collection<Method> methods) {
         return methods.stream().map(Object::toString).collect(Collectors.joining("; ", "[", "]"));
     }
 
-    public List<Method> getMethodDependenciesInAppearanceOrder(final Method caller) {
+    public List<Method> getMethodDependenciesInAppearanceOrder(Method caller) {
         return invocations.stream()
             .filter(methodInvocation -> methodInvocation.getCaller().equals(caller))
             .sorted(new AppearanceOrderMethodInvocationComparator())
@@ -110,17 +110,17 @@ public class Ordering {
             .collect(Collectors.toList());
     }
 
-    public List<Integer> getMethodDependenciesIndexesInAppearanceOrder(final Method caller) {
+    public List<Integer> getMethodDependenciesIndexesInAppearanceOrder(Method caller) {
         return getMethodDependenciesInAppearanceOrder(caller).stream()
             .map(this::getMethodIndex)
             .collect(Collectors.toList());
     }
 
-    public boolean hasMethodDependencies(final Method method) {
+    public boolean hasMethodDependencies(Method method) {
         return !getMethodDependenciesInAppearanceOrder(method).isEmpty();
     }
 
-    public List<Method> getMethodDependants(final Method callee) {
+    public List<Method> getMethodDependants(Method callee) {
         return invocations.stream()
             .filter(methodInvocation -> methodInvocation.getCallee().equals(callee))
             .filter(new UniqueCallerCalleeMethodInvocationFilter())
@@ -128,26 +128,26 @@ public class Ordering {
             .collect(Collectors.toList());
     }
 
-    public boolean hasMethodDependants(final Method method) {
+    public boolean hasMethodDependants(Method method) {
         return !getMethodDependants(method).isEmpty();
     }
 
-    public boolean isInterfaceMethod(final Method method) {
+    public boolean isInterfaceMethod(Method method) {
         return method.getAccessibility() == MethodDefinition.Accessibility.PUBLIC
             && !hasMethodDependencies(method)
             && !hasMethodDependants(method);
     }
 
-    public boolean isMethodDependsOn(final Method caller, final Method callee) {
+    public boolean isMethodDependsOn(Method caller, Method callee) {
         return invocations.stream()
             .anyMatch(mi -> mi.getCaller().equals(caller) && mi.getCallee().equals(callee));
     }
 
-    public int getMethodsIndexDifference(final Method caller, final Method callee) {
+    public int getMethodsIndexDifference(Method caller, Method callee) {
         return getMethodIndex(callee) - getMethodIndex(caller);
     }
 
-    public int getMethodsLineDifference(final Method caller, final Method callee) {
+    public int getMethodsLineDifference(Method caller, Method callee) {
         return translateInitialLineNo(callee.getInitialLineNo())
             - translateInitialLineNo(caller.getInitialLineNo());
     }
@@ -184,7 +184,7 @@ public class Ordering {
             .collect(Collectors.summingInt(this::getMethodGroupSplitCount));
     }
 
-    public int getDependenciesBetweenDistantMethodsCases(final int screenLinesCount) {
+    public int getDependenciesBetweenDistantMethodsCases(int screenLinesCount) {
         return invocations.stream()
             .collect(Collectors.groupingBy(MethodInvocation::getCaller))
             .values().stream()
@@ -227,7 +227,7 @@ public class Ordering {
             }));
     }
 
-    private int getMethodGroupSplitCount(final Collection<Method> methodGroup) {
+    private int getMethodGroupSplitCount(Collection<Method> methodGroup) {
         final List<Integer> methodIndices = methodGroup.stream()
             .map(this::getMethodIndex)
             .collect(Collectors.toList());
@@ -235,7 +235,7 @@ public class Ordering {
         return bounds.getMax() - bounds.getMin() - methodIndices.size() + 1;
     }
 
-    private int translateInitialLineNo(final int lineNo) {
+    private int translateInitialLineNo(int lineNo) {
         return currentOrdering.stream()
             .filter(method -> {
                 final int start = method.getInitialLineNo();
@@ -260,13 +260,14 @@ public class Ordering {
                 String.format("Line #%d does lies within any method", lineNo)));
     }
 
-    private static Map<String, Method> getAllMethods(final Dependencies dependencies) {
+    private static Map<String, Method> getAllMethods(Dependencies dependencies) {
         return dependencies.getMethods().stream()
             .collect(Collectors.toMap(MethodDefinition::getSignature, Method::new));
     }
 
     private static Map<ResolvedCall, MethodInvocation> getAllInvocations(
-        final Dependencies dependencies, final Map<String, Method> methods) {
+        Dependencies dependencies, Map<String, Method> methods) {
+
         return dependencies.getResolvedCalls().stream()
         .collect(Collectors.toMap(Function.identity(), resolvedCall -> {
             final String callerSignature = resolvedCall.getCaller().getSignature();
@@ -277,7 +278,8 @@ public class Ordering {
     }
 
     private static MultiValuedMap<MethodInvocation, MethodInvocation> getMethodInvocationsNesting(
-        final Map<ResolvedCall, MethodInvocation> callToInvocation) {
+        Map<ResolvedCall, MethodInvocation> callToInvocation) {
+
         final SetValuedMap<MethodInvocation, MethodInvocation> nestedInside =
             new HashSetValuedHashMap<>();
         callToInvocation.entrySet().stream()
@@ -292,13 +294,13 @@ public class Ordering {
         return nestedInside;
     }
 
-    private static List<Method> getInitialMethodOrdering(final Map<String, Method> methods) {
+    private static List<Method> getInitialMethodOrdering(Map<String, Method> methods) {
         return methods.values().stream()
             .sorted((lhs, rhs) -> Integer.compare(lhs.getInitialIndex(), rhs.getInitialIndex()))
             .collect(Collectors.toList());
     }
 
-    private static <T> MinMax<T> minMax(final Collection<T> elements) {
+    private static <T> MinMax<T> minMax(Collection<T> elements) {
         final SortedSet<T> sortedSet = new TreeSet<>(elements);
         return new MinMax<>(sortedSet.first(), sortedSet.last());
     }
@@ -309,7 +311,7 @@ public class Ordering {
 
         private final T max;
 
-        private MinMax(final T min, final T max) {
+        private MinMax(T min, T max) {
             this.min = min;
             this.max = max;
         }
@@ -327,7 +329,7 @@ public class Ordering {
         implements Comparator<MethodInvocation> {
 
         @Override
-        public int compare(final MethodInvocation lhs, final MethodInvocation rhs) {
+        public int compare(MethodInvocation lhs, MethodInvocation rhs) {
             if (invocationNesting.containsMapping(lhs, rhs)) {
                 return -1;
             }
@@ -357,6 +359,7 @@ public class Ordering {
             }
         });
 
+        /* This class is not unit test. Method name similarity is just accidence. */
         @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
         @Override
         public boolean test(MethodInvocation methodInvocation) {

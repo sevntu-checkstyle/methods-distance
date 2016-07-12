@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class OrderingReorderTest extends MethodCallDependenciesCheckTestSupport {
+public class OrderingReorderTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testReordering() throws Exception {

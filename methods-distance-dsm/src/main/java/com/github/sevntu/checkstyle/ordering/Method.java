@@ -2,6 +2,7 @@ package com.github.sevntu.checkstyle.ordering;
 
 import com.github.sevntu.checkstyle.analysis.MethodDefinition;
 
+/* This class is data-heavy. */
 @SuppressWarnings("PMD.TooManyFields")
 public class Method {
 
@@ -39,7 +40,7 @@ public class Method {
 
     private final int length;
 
-    public Method(final MethodDefinition md) {
+    public Method(MethodDefinition md) {
         signature = md.getSignature();
         initialIndex = md.getIndex();
         argCount = md.getArgCount();

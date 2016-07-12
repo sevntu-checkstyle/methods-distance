@@ -7,7 +7,7 @@ public interface CompositeElement extends Element {
 
     List<Element> components();
 
-    default void addComponent(final Element component) {
+    default void addComponent(Element component) {
         components().add(component);
     }
 

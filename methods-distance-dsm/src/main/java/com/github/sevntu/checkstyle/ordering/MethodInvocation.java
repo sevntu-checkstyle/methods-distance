@@ -14,8 +14,7 @@ public class MethodInvocation {
 
     private final int columnNo;
 
-    public MethodInvocation(final ResolvedCall resolvedCall, final Method caller,
-        final Method callee) {
+    public MethodInvocation(ResolvedCall resolvedCall, Method caller, Method callee) {
         this.caller = caller;
         this.callee = callee;
         initialLineNo = resolvedCall.getAstNode().getLineNo();

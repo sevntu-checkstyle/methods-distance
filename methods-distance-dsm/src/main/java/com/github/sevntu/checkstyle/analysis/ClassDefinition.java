@@ -7,19 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ClassDefinition extends AnalysisSubject {
+public class ClassDefinition {
 
     private final DetailAST classDef;
 
     private List<MethodDefinition> methods;
 
-    public ClassDefinition(final DetailAST classDef) {
+    public ClassDefinition(DetailAST classDef) {
         this.classDef = classDef;
         methods = getDeclaredMethods(this, classDef);
     }
 
     private static List<MethodDefinition> getDeclaredMethods(
-            final ClassDefinition definition, final DetailAST classDef) {
+            ClassDefinition definition, DetailAST classDef) {
+
         return getMethodDefsAstNodes(classDef).stream()
                 .map(methodDef -> new MethodDefinition(definition, methodDef))
                 .collect(Collectors.toList());
@@ -29,14 +30,15 @@ public class ClassDefinition extends AnalysisSubject {
         return getMethodDefsAstNodes(classDef);
     }
 
-    private static List<DetailAST> getMethodDefsAstNodes(final DetailAST classDef) {
-        return getNodeChildren(classDef.findFirstToken(TokenTypes.OBJBLOCK),
+    private static List<DetailAST> getMethodDefsAstNodes(DetailAST classDef) {
+        return AnalysisUtils.getNodeChildren(classDef.findFirstToken(TokenTypes.OBJBLOCK),
                 TokenTypes.METHOD_DEF, TokenTypes.CTOR_DEF);
     }
 
-    public boolean isInsideMethodOfClass(final DetailAST node) {
-        return isNestedInsideMethodDef(node) && isInsideClassDef(node)
-                && getEnclosingClass(node) == classDef;
+    public boolean isInsideMethodOfClass(DetailAST node) {
+        return AnalysisUtils.isNestedInsideMethodDef(node)
+            && AnalysisUtils.isInsideClassDef(node)
+            && AnalysisUtils.getEnclosingClass(node) == classDef;
     }
 
     public DetailAST getAstNode() {
@@ -51,14 +53,14 @@ public class ClassDefinition extends AnalysisSubject {
         return classDef.findFirstToken(TokenTypes.IDENT).getText();
     }
 
-    public MethodDefinition getMethodByIndex(final int index) {
+    public MethodDefinition getMethodByIndex(int index) {
         return methods.stream()
                 .filter(method -> method.getIndex() == index)
                 .findFirst()
                 .get();
     }
 
-    public MethodDefinition getMethodByAstNode(final DetailAST methodDef) {
+    public MethodDefinition getMethodByAstNode(DetailAST methodDef) {
         return methods.stream()
                 .filter(method -> method.getAstNode().getLineNo() == methodDef.getLineNo()
                         && method.getAstNode().getColumnNo() == methodDef.getColumnNo())
@@ -66,19 +68,19 @@ public class ClassDefinition extends AnalysisSubject {
                 .orElse(null);
     }
 
-    public List<MethodDefinition> getMethodsByName(final String methodName) {
+    public List<MethodDefinition> getMethodsByName(String methodName) {
         return methods.stream()
                 .filter(methodDef -> methodDef.getName().equals(methodName))
                 .collect(Collectors.toList());
     }
 
-    public List<MethodDefinition> getStaticMethodsByName(final String methodName) {
+    public List<MethodDefinition> getStaticMethodsByName(String methodName) {
         return getMethodsByName(methodName).stream()
                 .filter(MethodDefinition::isStatic)
                 .collect(Collectors.toList());
     }
 
-    public List<MethodDefinition> getInstanceMethodsByName(final String methodName) {
+    public List<MethodDefinition> getInstanceMethodsByName(String methodName) {
         return getMethodsByName(methodName).stream()
                 .filter(MethodDefinition::isInstance)
                 .collect(Collectors.toList());

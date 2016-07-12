@@ -10,7 +10,7 @@ public class Cluster implements CompositeElement {
 
     private final List<Element> componentList = new ArrayList<>();
 
-    public Cluster(final String name) {
+    public Cluster(String name) {
         this.name = name;
     }
 

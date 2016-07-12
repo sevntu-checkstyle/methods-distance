@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class MethodDefinition extends AnalysisSubject {
+public class MethodDefinition {
 
     private static final Set<Integer> PRIMITIVE_TOKEN_TYPES = ImmutableSet.of(
             TokenTypes.LITERAL_VOID,
@@ -36,7 +36,7 @@ public class MethodDefinition extends AnalysisSubject {
 
     private final DetailAST methodDef;
 
-    public MethodDefinition(final ClassDefinition classDefinition, final DetailAST methodDef) {
+    public MethodDefinition(ClassDefinition classDefinition, DetailAST methodDef) {
         this.classDefinition = classDefinition;
         this.methodDef = methodDef;
     }
@@ -64,7 +64,7 @@ public class MethodDefinition extends AnalysisSubject {
     }
 
     public boolean isVarArg() {
-        final List<DetailAST> parameterDefs = getNodeChildren(
+        final List<DetailAST> parameterDefs = AnalysisUtils.getNodeChildren(
                 methodDef.findFirstToken(TokenTypes.PARAMETERS),
                 TokenTypes.PARAMETER_DEF);
         if (parameterDefs.isEmpty()) {
@@ -84,8 +84,7 @@ public class MethodDefinition extends AnalysisSubject {
         return !isStatic();
     }
 
-    private static boolean isMethodDefHasModifier(
-            final DetailAST methodDef, final int modifierTokenType) {
+    private static boolean isMethodDefHasModifier(DetailAST methodDef, int modifierTokenType) {
         return methodDef.findFirstToken(TokenTypes.MODIFIERS)
                 .findFirstToken(modifierTokenType) != null;
     }
@@ -102,9 +101,10 @@ public class MethodDefinition extends AnalysisSubject {
      */
     public String getSignature() {
         final DetailAST parameters = methodDef.findFirstToken(TokenTypes.PARAMETERS);
-        final String parametersText = getNodeChildren(parameters, TokenTypes.PARAMETER_DEF).stream()
-                .map(MethodDefinition::getMethodParameterDefText)
-                .collect(Collectors.joining(","));
+        final String parametersText =
+            AnalysisUtils.getNodeChildren(parameters, TokenTypes.PARAMETER_DEF).stream()
+            .map(MethodDefinition::getMethodParameterDefText)
+            .collect(Collectors.joining(","));
         return String.format("%s(%s)", getName(), parametersText);
     }
 
@@ -125,7 +125,8 @@ public class MethodDefinition extends AnalysisSubject {
 
     public boolean isOverride() {
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
-        final List<DetailAST> annotations = getNodeChildren(modifiers, TokenTypes.ANNOTATION);
+        final List<DetailAST> annotations =
+            AnalysisUtils.getNodeChildren(modifiers, TokenTypes.ANNOTATION);
         return annotations.stream()
                 .anyMatch(annotation ->
                         "Override".equals(annotation.findFirstToken(TokenTypes.IDENT).getText()));
@@ -139,7 +140,7 @@ public class MethodDefinition extends AnalysisSubject {
         return classDefinition.getMethodDefsAstNodes().indexOf(methodDef);
     }
 
-    private static String getMethodParameterDefText(final DetailAST parameterDef) {
+    private static String getMethodParameterDefText(DetailAST parameterDef) {
         final DetailAST type = parameterDef.findFirstToken(TokenTypes.TYPE);
         final DetailAST typeFirstChild = type.getFirstChild();
         String typeName; //SUPPRESS CHECKSTYLE, FinalLocalVariable
@@ -170,11 +171,11 @@ public class MethodDefinition extends AnalysisSubject {
         return typeName;
     }
 
-    public int getIndexDistanceTo(final MethodDefinition other) {
+    public int getIndexDistanceTo(MethodDefinition other) {
         return other.getIndex() - getIndex();
     }
 
-    public int getLineDistanceTo(final MethodDefinition other) {
+    public int getLineDistanceTo(MethodDefinition other) {
         return other.getLineNo() - getLineNo();
     }
 
@@ -226,7 +227,7 @@ public class MethodDefinition extends AnalysisSubject {
             || returnType.getText().equals("Boolean");
     }
 
-    private static DetailAST getReturnType(final DetailAST methodDef) {
+    private static DetailAST getReturnType(DetailAST methodDef) {
         return methodDef.findFirstToken(TokenTypes.TYPE).getFirstChild();
     }
 

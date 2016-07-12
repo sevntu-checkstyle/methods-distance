@@ -3,6 +3,7 @@ package com.github.sevntu.checkstyle.dot;
 import java.util.HashMap;
 import java.util.Map;
 
+/* Class name is sufficiently descriptive. */
 @SuppressWarnings("PMD.ShortClassName")
 public class Node implements Element, AttributeHolder {
 
@@ -10,7 +11,7 @@ public class Node implements Element, AttributeHolder {
 
     private final Map<String, String> attrs = new HashMap<>();
 
-    public Node(final String id) {
+    public Node(String id) {
         this.id = id;
     }
 
@@ -33,11 +34,11 @@ public class Node implements Element, AttributeHolder {
         return attrs;
     }
 
-    public void setColor(final Colors color) {
+    public void setColor(Colors color) {
         addAttribute("color", color.asString());
     }
 
-    public void setShape(final Shapes shape) {
+    public void setShape(Shapes shape) {
         addAttribute("shape", shape.asString());
     }
 }

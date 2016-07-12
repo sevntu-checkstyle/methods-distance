@@ -7,7 +7,7 @@ public class UnexpectedTokenTypeException extends RuntimeException {
 
     private final DetailAST node;
 
-    public UnexpectedTokenTypeException(final DetailAST node) {
+    public UnexpectedTokenTypeException(DetailAST node) {
         this.node = node;
     }
 

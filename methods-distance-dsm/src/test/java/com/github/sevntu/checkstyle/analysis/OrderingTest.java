@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.check.MethodCallDependencyCheck;
+import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.Ordering;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
@@ -12,11 +12,11 @@ import java.util.TreeMap;
 
 import static org.junit.Assert.*;
 
-public class OrderingTest extends MethodCallDependenciesCheckTestSupport {
+public class OrderingTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testDependencies() throws Exception {
-        final Configuration dc = createCheckConfig(MethodCallDependencyCheck.class);
+        final Configuration dc = createCheckConfig(MethodCallDependencyModule.class);
         final Ordering ord = invokeCheckAndGetOrdering(dc, "InputDependencies.java");
         final Method methodB = ord.getMethodByInitialIndex(1);
         final List<Method> dependencies = ord.getMethodDependenciesInAppearanceOrder(methodB);
