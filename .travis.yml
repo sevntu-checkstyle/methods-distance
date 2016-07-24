@@ -2,8 +2,8 @@ language: java
 jdk:
   - oraclejdk8
 
-install: cd methods-distance-dsm && mvn clean install && cd ..
-      && cd methods-distance-dsm-web && mvn clean install && cd ..
+install: cd methods-distance && mvn clean install && cd ..
+      && cd methods-distance-web && mvn clean install && cd ..
 
 script: true
 
