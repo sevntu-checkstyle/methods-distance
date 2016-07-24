@@ -1,9 +1,9 @@
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.analysis.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.check.MethodCallDependencyModule;
-import com.github.sevntu.checkstyle.check.ViolationReporterDependencyInformationConsumer;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.ViolationReporterDependencyInformationConsumer;
 import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
+import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
@@ -48,5 +48,19 @@ public final class ReportingCli {
 
         final List<File> files = Collections.singletonList(new File(args[0]));
         checker.process(files);
+    }
+
+    private static final class SimpleModuleFactory implements ModuleFactory {
+
+        @Override
+        public Object createModule(String name) throws CheckstyleException {
+            try {
+                return Class.forName(name).newInstance();
+            }
+            catch (final ClassNotFoundException | IllegalAccessException
+                | InstantiationException e) {
+                throw new CheckstyleException("Failed to instantiate module " + name, e);
+            }
+        }
     }
 }

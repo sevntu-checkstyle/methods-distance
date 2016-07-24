@@ -5,5 +5,5 @@
         "http://www.puppycrawl.com/dtds/packages_1_0.dtd">
 
 <checkstyle-packages>
-    <package name="com.github.sevntu.checkstyle.check"/>
+    <package name="com.github.sevntu.checkstyle.module"/>
 </checkstyle-packages>
