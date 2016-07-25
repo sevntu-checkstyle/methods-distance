@@ -2,11 +2,6 @@ language: java
 jdk:
   - oraclejdk8
 
-install: cd methods-distance && mvn clean install && cd ..
-      && cd methods-distance-web && mvn clean install && cd ..
-
-script: true
-
 deploy:
   provider: heroku
   app: methods-distance
