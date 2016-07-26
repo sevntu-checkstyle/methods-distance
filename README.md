@@ -3,14 +3,13 @@
 
 Running:
 - clone sources
-- enter directory methods-distance-dsm
 - compile:
 ```
 mvn package
 ```
 - run
 ```
-java -jar target/methods-distance-dsm-1.0-SNAPSHOT-jar-with-dependencies.jar path/to/sources/InputFile.java
+java -jar methods-distance/target/methods-distance-dsm-1.0-SNAPSHOT-jar-with-dependencies.jar path/to/sources/InputFile.java
 ```
 This will produce files 'InputFile.java.html' and 'InputFile.java.dot' in working directory.
 

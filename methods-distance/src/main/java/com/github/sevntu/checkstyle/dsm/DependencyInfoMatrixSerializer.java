@@ -51,7 +51,7 @@ public final class DependencyInfoMatrixSerializer {
         context.put("configuration", config);
         final StringWriter writer = new StringWriter();
         final Template template =
-            engine.getTemplate("com/github/sevntu/checkstyle/vizualization/matrix.vm");
+            engine.getTemplate("com/github/sevntu/checkstyle/dsm/matrix.vm");
         template.merge(context, writer);
         return writer.toString();
     }
