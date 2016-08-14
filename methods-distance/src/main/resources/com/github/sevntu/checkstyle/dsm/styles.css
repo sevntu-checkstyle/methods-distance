@@ -37,7 +37,7 @@ td[data-accessibility=PUBLIC] .signature {
     color: green;
 }
 td[data-accessibility=PROTECTED] .signature {
-    color: yellow;
+    color: orange;
 }
 td[data-accessibility=PRIVATE] .signature {
     color: black;

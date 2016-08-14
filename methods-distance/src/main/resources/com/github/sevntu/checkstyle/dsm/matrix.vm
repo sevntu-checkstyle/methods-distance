@@ -85,7 +85,7 @@
             indicates accessibility of methods in the following way:
             <ul style="background-color: lightgray">
                 <li>public - <span style="color: green;">GREEN</span></li>
-                <li>protected - <span style="color: yellow;">YELLOW</span></li>
+                <li>protected - <span style="color: orange;">ORANGE</span></li>
                 <li>private - <span>BLACK</span></li>
                 <li>default - <span style="color: blue;">BLUE</span></li>
             </ul>
