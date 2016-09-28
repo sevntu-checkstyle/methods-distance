@@ -24,6 +24,8 @@ public class MethodCallDependencyCheckInvoker {
 
         this.configuration = getCompleteConfig(configAttributes);
 
+        consumer.setConfiguration(configuration);
+
         final ModuleFactory moduleFactory = new DependencyInformationConsumerInjector(consumer);
 
         final TreeWalker tw = new TreeWalker();

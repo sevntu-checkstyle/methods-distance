@@ -100,7 +100,7 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         private Map<String, Dependencies> filePathToDependencies = new HashMap<>();
 
         @Override
-        public void accept(MethodCallDependencyModule check, String filePath, Dependencies dependencies) {
+        public void accept(String filePath, Dependencies dependencies) {
             filePathToDependencies.put(filePath, dependencies);
         }
 

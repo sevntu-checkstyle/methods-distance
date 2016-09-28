@@ -1,6 +1,5 @@
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
 import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
@@ -26,7 +25,6 @@ import java.net.URLConnection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Servlet which handles requests for generation of DSM and DOT from
@@ -70,29 +68,26 @@ public class MainServlet extends HttpServlet {
 
         class DsmDependencyInformationConsumer implements DependencyInformationConsumer {
 
-            private Optional<Configuration> configuration;
+            private Configuration configuration;
 
-            public void setConfiguration(final Configuration configuration) {
-                this.configuration = Optional.of(configuration);
+            @Override
+            public void setConfiguration(Configuration configuration) {
+                this.configuration = configuration;
             }
 
             @Override
-            public void accept(MethodCallDependencyModule module, String filePath,
-                               Dependencies dependencies) {
-
-                configuration.ifPresent(config -> {
-                    try {
-                        final String javaSource = FileUtils.getFileContents(filePath);
-                        final Ordering ordering = new Ordering(dependencies);
-                        final String html =
-                            DependencyInfoMatrixSerializer.serialize(ordering, javaSource, config);
-                        resp.setContentType("text/html");
-                        resp.getWriter().append(html);
-                    }
-                    catch (final IOException | CheckstyleException e) {
-                        throw new ResponseGenerationException(e);
-                    }
-                });
+            public void accept(String filePath, Dependencies dependencies) {
+                try {
+                    final String javaSource = FileUtils.getFileContents(filePath);
+                    final Ordering ordering = new Ordering(dependencies);
+                    final String html = DependencyInfoMatrixSerializer.serialize(
+                        ordering, javaSource, configuration);
+                    resp.setContentType("text/html");
+                    resp.getWriter().append(html);
+                }
+                catch (final IOException | CheckstyleException e) {
+                    throw new ResponseGenerationException(e);
+                }
             }
         }
 
@@ -107,7 +102,7 @@ public class MainServlet extends HttpServlet {
     private void processDot(URL sourceUrl, HttpServletResponse resp)
         throws CheckstyleException, IOException {
 
-        final DependencyInformationConsumer consumer = (module, filePath, dependencies) -> {
+        final DependencyInformationConsumer consumer = (filePath, dependencies) -> {
             try {
                 final String dot = DependencyInfoGraphSerializer.serializeInfo(dependencies);
                 resp.setContentType("text/vnd.graphviz");

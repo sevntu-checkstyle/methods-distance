@@ -10,13 +10,19 @@ public class ViolationReporterDependencyInformationConsumer
 
     private final MethodReorderer reorderer = new TopologicalMethodReorderer();
 
+    private MethodCallDependencyModule module;
+
     @Override
-    public void accept(
-        MethodCallDependencyModule check, String filePath, Dependencies dependencies) {
+    public void setModule(MethodCallDependencyModule module) {
+        this.module = module;
+    }
+
+    @Override
+    public void accept(String filePath, Dependencies dependencies) {
 
         final Ordering initialOrdering = new Ordering(dependencies);
         final Ordering optimizedOrdering = reorderer.reorder(initialOrdering);
-        logFirstMethodOutOfOrder(check, optimizedOrdering);
+        logFirstMethodOutOfOrder(module, optimizedOrdering);
     }
 
     private void logFirstMethodOutOfOrder(

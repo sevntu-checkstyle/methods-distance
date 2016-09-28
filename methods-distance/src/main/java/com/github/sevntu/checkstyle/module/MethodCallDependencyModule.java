@@ -31,6 +31,11 @@ public class MethodCallDependencyModule extends AbstractCheck {
         consumer = Optional.of(dic);
     }
 
+    /**
+     * Estimated line count of source code that fit on screen at once.
+     *
+     * @param screenLinesCount
+     */
     public void setScreenLinesCount(int screenLinesCount) {
         // This setter is created only to allow putting this property to CS module config.
     }
@@ -71,7 +76,7 @@ public class MethodCallDependencyModule extends AbstractCheck {
                     buildDependencies(enclosingClass, methodInvocations);
                 final String inputFilePath =
                     new File(getFileContents().getFileName()).toURI().getPath();
-                informationConsumer.accept(this, inputFilePath, dependencies);
+                informationConsumer.accept(inputFilePath, dependencies);
             }));
     }
 
