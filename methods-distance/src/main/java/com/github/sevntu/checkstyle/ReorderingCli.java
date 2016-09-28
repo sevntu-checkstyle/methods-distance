@@ -1,6 +1,5 @@
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
@@ -15,7 +14,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Application entry point that accepts file path and generates
@@ -35,8 +33,6 @@ public final class ReorderingCli {
         final MethodCallDependencyCheckInvoker runner =
             new MethodCallDependencyCheckInvoker(attributes, consumer);
 
-        consumer.setConfig(runner.getConfiguration());
-
         final List<File> files = Collections.singletonList(new File(args[0]));
         runner.invoke(files);
     }
@@ -44,29 +40,26 @@ public final class ReorderingCli {
     private static final class DependencyInformationSerializer implements
         DependencyInformationConsumer {
 
-        private Optional<Configuration> config = Optional.empty();
+        private Configuration configuration;
 
         private DependencyInformationSerializer() { }
 
-        public void setConfig(final Configuration config) {
-            this.config = Optional.of(config);
+        @Override
+        public void setConfiguration(Configuration config) {
+            this.configuration = config;
         }
 
         @Override
-        public void accept(
-            MethodCallDependencyModule module, String filePath, Dependencies dependencies) {
-
-            config.ifPresent(configuration -> {
-                final String baseName = new File(filePath).getName();
-                final String source = FileUtils.getFileContents(filePath);
-                final Ordering initialOrdering = new Ordering(dependencies);
-                final Ordering topologicalOrdering = new TopologicalMethodReorderer()
-                    .reorder(initialOrdering);
-                DependencyInfoMatrixSerializer.writeToFile(
-                    source, initialOrdering, configuration, baseName + ".initial.html");
-                DependencyInfoMatrixSerializer.writeToFile(
-                    source, topologicalOrdering, configuration, baseName + ".topological.html");
-            });
+        public void accept(String filePath, Dependencies dependencies) {
+            final String baseName = new File(filePath).getName();
+            final String source = FileUtils.getFileContents(filePath);
+            final Ordering initialOrdering = new Ordering(dependencies);
+            final Ordering topologicalOrdering = new TopologicalMethodReorderer()
+                .reorder(initialOrdering);
+            DependencyInfoMatrixSerializer.writeToFile(
+                source, initialOrdering, configuration, baseName + ".initial.html");
+            DependencyInfoMatrixSerializer.writeToFile(
+                source, topologicalOrdering, configuration, baseName + ".topological.html");
         }
     }
 }
