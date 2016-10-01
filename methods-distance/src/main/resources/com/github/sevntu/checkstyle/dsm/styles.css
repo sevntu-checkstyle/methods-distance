@@ -52,6 +52,9 @@ td[data-static=true] .signature {
     margin-left: auto;
     margin-right: auto;
 }
+.description {
+    margin-top: 20px;
+}
 .highlightable.highlighted, .highlightable.highlighted .signature {
     background-color: yellow;
 }

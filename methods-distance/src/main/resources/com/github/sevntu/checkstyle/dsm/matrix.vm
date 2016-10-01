@@ -78,7 +78,7 @@
                     #end
             </tbody>
         </table>
-        <div class="centered">
+        <div class="centered description">
             In the matrix above, methods situated in the order they appear
             in class definition(first method occupies first row and first column,
             second method occupies second row and second column an so on). Text color
@@ -101,8 +101,20 @@
             <p>
                 If some method depends on another method(by calling it), then matrix
                 cell situated at intersection of caller`s row and callee`s column is displayed
-                in red and number in this cell indicates distance between methods.
-                Diagonal cells are always displayed in grey.
+                in red and number in this cell indicates distance between methods
+                (index distance / line distance, see below for description) and diagonal cells
+                are always displayed in grey.
+                Distance values are calculated using two metrics:
+                <ul>
+                    <li>
+                        Index distance: Absolute difference between methods indices -
+                        <i>abs(firstMethodIndex - secondMethodIndex)</i>.
+                    </li>
+                    <li>
+                        Line distance: Absolute difference between methods first line indices -
+                        <i>abs(firstMethodLineIndex - secondMethodLineIndex)</i>
+                    </li>
+                </ul>
             <p>
                 When some table cell gets clicked:
                 <ul>
