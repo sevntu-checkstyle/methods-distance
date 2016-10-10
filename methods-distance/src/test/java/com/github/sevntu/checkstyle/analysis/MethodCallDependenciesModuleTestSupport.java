@@ -7,7 +7,7 @@ import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.github.sevntu.checkstyle.domain.ExpectedDependencies;
 import com.github.sevntu.checkstyle.ordering.Method;
-import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
@@ -37,8 +37,8 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         return collector.getForFile(filePath);
     }
 
-    protected Ordering invokeCheckAndGetOrdering(final Configuration config, final String fileName) throws Exception {
-        return new Ordering(invokeCheckAndGetDependencies(config, fileName));
+    protected MethodOrder invokeCheckAndGetOrdering(final Configuration config, final String fileName) throws Exception {
+        return new MethodOrder(invokeCheckAndGetDependencies(config, fileName));
     }
 
     protected final Checker createChecker(Configuration checkConfig) throws Exception {
@@ -57,7 +57,7 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         return checker;
     }
 
-    private static void mustBeSame(final ExpectedDependencies expected, final Ordering actual) {
+    private static void mustBeSame(final ExpectedDependencies expected, final MethodOrder actual) {
         for(final String expectedMethod : expected.getMethods()) {
             assertTrue("Method " + expectedMethod + " is not present is actual info",
                     actual.getMethods().stream().anyMatch(md -> expectedMethod.equals(md.getSignature())));
@@ -91,8 +91,8 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyModule.class), fileName);
     }
 
-    protected Ordering withDefaultConfigOrdering(final String fileName) throws Exception {
-        return new Ordering(withDefaultConfig(fileName));
+    protected MethodOrder withDefaultConfigOrdering(final String fileName) throws Exception {
+        return new MethodOrder(withDefaultConfig(fileName));
     }
 
     private static class DependencyInformationCollector implements DependencyInformationConsumer {

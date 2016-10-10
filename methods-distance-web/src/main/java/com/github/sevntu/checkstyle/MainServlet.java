@@ -3,7 +3,7 @@ package com.github.sevntu.checkstyle;
 import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
 import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.github.sevntu.checkstyle.dot.DependencyInfoGraphSerializer;
 import com.github.sevntu.checkstyle.dsm.DependencyInfoMatrixSerializer;
@@ -79,9 +79,9 @@ public class MainServlet extends HttpServlet {
             public void accept(String filePath, Dependencies dependencies) {
                 try {
                     final String javaSource = FileUtils.getFileContents(filePath);
-                    final Ordering ordering = new Ordering(dependencies);
+                    final MethodOrder methodOrder = new MethodOrder(dependencies);
                     final String html = DependencyInfoMatrixSerializer.serialize(
-                        ordering, javaSource, configuration);
+                        methodOrder, javaSource, configuration);
                     resp.setContentType("text/html");
                     resp.getWriter().append(html);
                 }

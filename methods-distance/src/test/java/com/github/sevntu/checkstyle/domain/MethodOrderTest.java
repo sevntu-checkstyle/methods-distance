@@ -3,7 +3,7 @@ package com.github.sevntu.checkstyle.domain;
 import com.github.sevntu.checkstyle.analysis.MethodCallDependenciesModuleTestSupport;
 import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
 import com.github.sevntu.checkstyle.ordering.Method;
-import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import org.junit.Test;
 
@@ -13,12 +13,12 @@ import java.util.TreeMap;
 
 import static org.junit.Assert.*;
 
-public class OrderingTest extends MethodCallDependenciesModuleTestSupport {
+public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testDependencies() throws Exception {
         final Configuration dc = createCheckConfig(MethodCallDependencyModule.class);
-        final Ordering ord = invokeCheckAndGetOrdering(dc, "InputDependencies.java");
+        final MethodOrder ord = invokeCheckAndGetOrdering(dc, "InputDependencies.java");
         final Method methodB = ord.getMethodByInitialIndex(1);
         final List<Method> dependencies = ord.getMethodDependenciesInAppearanceOrder(methodB);
         assertTrue(dependencies.size() == 1);
@@ -36,49 +36,49 @@ public class OrderingTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testTotalSumOfMethodDistances1() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesDistance1.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesDistance1.java");
         assertEquals(12, ds.getTotalSumOfMethodDistances());
     }
 
     @Test
     public void testTotalSumOfMethodDistances2() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesDistance2.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesDistance2.java");
         assertEquals(3, ds.getTotalSumOfMethodDistances());
     }
 
     @Test
     public void testDeclarationBeforeUsageCases() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesDeclarationBeforeUsage.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesDeclarationBeforeUsage.java");
         assertEquals(2, ds.getDeclarationBeforeUsageCases());
     }
 
     @Test
     public void testOverloadSplit1() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesOverloadSplit1.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesOverloadSplit1.java");
         assertEquals(5, ds.getOverloadGroupsSplitCases());
     }
 
     @Test
     public void testOverloadSplit2() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesOverloadSplit2.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesOverloadSplit2.java");
         assertEquals(14, ds.getOverloadGroupsSplitCases());
     }
 
     @Test
     public void testOverrideSplit1() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesOverrideSplit1.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesOverrideSplit1.java");
         assertEquals(3, ds.getOverrideGroupSplitCases());
     }
 
     @Test
     public void testOverrideSplit2() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesOverrideSplit2.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesOverrideSplit2.java");
         assertEquals(0, ds.getOverrideGroupSplitCases());
     }
 
     @Test
     public void testOverrideSplit3() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesOverrideSplit3.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesOverrideSplit3.java");
         assertEquals(0, ds.getOverrideGroupSplitCases());
     }
 
@@ -99,7 +99,7 @@ public class OrderingTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testAccessorsSplit() throws Exception {
-        final Ordering ds = withDefaultConfigOrdering("InputDependenciesAccessorsSplit.java");
+        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesAccessorsSplit.java");
         assertEquals(3, ds.getAccessorsSplitCases());
     }
 
@@ -112,7 +112,7 @@ public class OrderingTest extends MethodCallDependenciesModuleTestSupport {
         expected.put("InputDependenciesDistantMethodCall3.java", 1);
         expected.put("InputDependenciesDistantMethodCall4.java", 0);
         for(final Map.Entry<String, Integer> e : expected.entrySet()) {
-            final Ordering dependencies = withDefaultConfigOrdering(e.getKey());
+            final MethodOrder dependencies = withDefaultConfigOrdering(e.getKey());
             final String msg = String.format("Incorrect result for input \"%s\"", e.getKey());
             assertEquals(msg, e.getValue().intValue(),
                 dependencies.getDependenciesBetweenDistantMethodsCases(screenLinesCount));

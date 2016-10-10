@@ -12,7 +12,7 @@ import com.github.sevntu.checkstyle.dot.domain.Node;
 import com.github.sevntu.checkstyle.dot.domain.Rankdirs;
 import com.github.sevntu.checkstyle.dot.domain.Shapes;
 import com.github.sevntu.checkstyle.ordering.Method;
-import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public final class DependencyInfoGraphSerializer {
     }
 
     public static String serializeInfo(Dependencies dependencies) {
-        final Ordering info = new Ordering(dependencies);
+        final MethodOrder info = new MethodOrder(dependencies);
         final Graph graph = new Graph("dependencies");
         graph.setRankdir(Rankdirs.LR);
         final Cluster simpleMethods = new Cluster("simple");
@@ -71,13 +71,13 @@ public final class DependencyInfoGraphSerializer {
     }
 
     private static Edge createEdge(Method caller, Method callee, Map<Method, Node> methodToNode,
-        Ordering ordering) {
+        MethodOrder methodOrder) {
 
         final Node callerNode = methodToNode.get(caller);
         final Node calleeNode = methodToNode.get(callee);
         final Edge edge = new Edge(callerNode, calleeNode);
-        final int indexDistance = ordering.getMethodsIndexDifference(caller, callee);
-        final int lineDistance = ordering.getMethodsLineDifference(caller, callee);
+        final int indexDistance = methodOrder.getMethodsIndexDifference(caller, callee);
+        final int lineDistance = methodOrder.getMethodsLineDifference(caller, callee);
         edge.setLabel(getFormattedEdgeLabel(indexDistance, lineDistance));
         return edge;
     }
