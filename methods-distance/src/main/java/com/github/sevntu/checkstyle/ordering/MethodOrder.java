@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Ordering {
+public class MethodOrder {
 
     private final Map<String, Method> methods;
 
@@ -37,7 +37,7 @@ public class Ordering {
 
     private final MultiValuedMap<MethodInvocation, MethodInvocation> invocationNesting;
 
-    public Ordering(Dependencies dependencies) {
+    public MethodOrder(Dependencies dependencies) {
         this.methods = MapUtils.unmodifiableMap(getAllMethods(dependencies));
         this.initialOrdering = ListUtils.unmodifiableList(getInitialMethodOrdering(methods));
         this.currentOrdering = this.initialOrdering;
@@ -48,12 +48,12 @@ public class Ordering {
             getMethodInvocationsNesting(callsToInvocations));
     }
 
-    private Ordering(Ordering ordering, final List<Method> newMethodOrdering) {
+    private MethodOrder(MethodOrder methodOrder, final List<Method> newMethodOrdering) {
         this.currentOrdering = ListUtils.unmodifiableList(newMethodOrdering);
-        this.initialOrdering = ordering.initialOrdering;
-        this.methods = ordering.methods;
-        this.invocations = ordering.invocations;
-        this.invocationNesting = ordering.invocationNesting;
+        this.initialOrdering = methodOrder.initialOrdering;
+        this.methods = methodOrder.methods;
+        this.invocations = methodOrder.invocations;
+        this.invocationNesting = methodOrder.invocationNesting;
     }
 
     public List<Method> getMethods() {
@@ -68,14 +68,14 @@ public class Ordering {
         return initialOrdering.get(index);
     }
 
-    public Ordering moveMethodBy(Method method, int indexShift) {
+    public MethodOrder moveMethodBy(Method method, int indexShift) {
         final int currentIndex = getMethodIndex(method);
         final int newIndex = currentIndex + indexShift;
         if (0 <= newIndex && newIndex < methods.size()) {
             final ArrayList<Method> newOrdering = new ArrayList<>(currentOrdering);
             newOrdering.remove(currentIndex);
             newOrdering.add(newIndex, method);
-            return new Ordering(this, newOrdering);
+            return new MethodOrder(this, newOrdering);
         }
         else {
             throw new IllegalArgumentException(String.format(
@@ -83,10 +83,10 @@ public class Ordering {
         }
     }
 
-    public Ordering reorder(List<Method> order) {
+    public MethodOrder reorder(List<Method> order) {
         final boolean allMethodsPresent = currentOrdering.stream().allMatch(order::contains);
         if (allMethodsPresent && currentOrdering.size() == order.size()) {
-            return new Ordering(this, new ArrayList<>(order));
+            return new MethodOrder(this, new ArrayList<>(order));
         }
         else {
             final String currentOrderingString = methodsSignatureList(currentOrdering);

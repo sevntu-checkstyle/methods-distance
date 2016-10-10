@@ -2,7 +2,7 @@ package com.github.sevntu.checkstyle.domain;
 
 import com.github.sevntu.checkstyle.analysis.MethodCallDependenciesModuleTestSupport;
 import com.github.sevntu.checkstyle.ordering.Method;
-import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -12,7 +12,7 @@ public class MethodDefinitionTest extends MethodCallDependenciesModuleTestSuppor
 
     @Test
     public void testGetterSetterRecognition() throws Exception {
-        final Ordering dc = withDefaultConfigOrdering("InputMethodDefinition1.java");
+        final MethodOrder dc = withDefaultConfigOrdering("InputMethodDefinition1.java");
         for(final int index : new int[]{0, 1, 2, 3, 4}) {
             final Method method = dc.getMethodByInitialIndex(index);
             assertTrue(method.isGetter());
@@ -32,7 +32,7 @@ public class MethodDefinitionTest extends MethodCallDependenciesModuleTestSuppor
 
     @Test
     public void testGetterSetterRecognitionsWithCtors() throws Exception {
-        final Ordering dc = withDefaultConfigOrdering("InputMethodDefinition2.java");
+        final MethodOrder dc = withDefaultConfigOrdering("InputMethodDefinition2.java");
         final Method noArgCtor = dc.getMethodByInitialIndex(0);
         assertFalse(noArgCtor.isGetter());
         assertFalse(noArgCtor.isSetter());

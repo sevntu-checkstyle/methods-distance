@@ -27,7 +27,7 @@ public class PenaltyCalculator {
     private float dependenciesBetweenDistantMethodsPenalty =
         DEFAULT_DISTANT_METHODS_DEPENDENCIES_PENALTY;
 
-    public float getPenalty(Ordering dep, int screenLinesCount) {
+    public float getPenalty(MethodOrder dep, int screenLinesCount) {
         return dep.getTotalSumOfMethodDistances()
             + dep.getDeclarationBeforeUsageCases() * declarationBeforeFirstUsagePenalty
             + dep.getOverloadGroupsSplitCases() * overloadGroupDivisionPenalty

@@ -3,7 +3,7 @@ package com.github.sevntu.checkstyle;
 import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
 import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import com.github.sevntu.checkstyle.utils.FileUtils;
 import com.github.sevntu.checkstyle.dot.DependencyInfoGraphSerializer;
 import com.github.sevntu.checkstyle.dsm.DependencyInfoMatrixSerializer;
@@ -65,7 +65,7 @@ public final class Main {
             if (arguments.shouldRenderDsm()) {
                 final String source = FileUtils.getFileContents(filePath);
                 DependencyInfoMatrixSerializer.writeToFile(
-                    source, new Ordering(dependencies), configuration, baseName + ".html");
+                    source, new MethodOrder(dependencies), configuration, baseName + ".html");
             }
         }
     }

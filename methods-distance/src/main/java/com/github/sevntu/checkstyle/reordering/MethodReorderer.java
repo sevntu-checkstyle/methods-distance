@@ -1,8 +1,8 @@
 package com.github.sevntu.checkstyle.reordering;
 
-import com.github.sevntu.checkstyle.ordering.Ordering;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
 
 public interface MethodReorderer {
 
-    Ordering reorder(Ordering ordering);
+    MethodOrder reorder(MethodOrder methodOrder);
 }
