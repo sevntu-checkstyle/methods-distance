@@ -1,8 +1,12 @@
 package com.github.sevntu.checkstyle.domain;
 
+import com.github.sevntu.checkstyle.analysis.AnalysisUtils;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
+/**
+ * Method invocation using method reference syntax. Called method is unknown.
+ */
 public class RefCall {
 
     private final DetailAST methodRef;

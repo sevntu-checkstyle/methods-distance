@@ -4,6 +4,12 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+/**
+ * Resolved method invocation.
+ *
+ * That is method invocation using round parenthesis syntax or method reference syntax for which
+ * caller method and called method are known(resolved).
+ */
 public class ResolvedCall {
 
     private final DetailAST methodInvocation;

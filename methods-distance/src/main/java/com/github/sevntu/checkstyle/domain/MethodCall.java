@@ -1,9 +1,13 @@
 package com.github.sevntu.checkstyle.domain;
 
-import com.github.sevntu.checkstyle.utils.UnexpectedTokenTypeException;
+import com.github.sevntu.checkstyle.analysis.AnalysisUtils;
+import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
+/**
+ * Method call using round parenthesis syntax. Called method is not known.
+ */
 public class MethodCall {
 
     private final String methodName;

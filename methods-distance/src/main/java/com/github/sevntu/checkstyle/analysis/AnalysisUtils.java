@@ -1,6 +1,6 @@
-package com.github.sevntu.checkstyle.domain;
+package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.utils.UnexpectedTokenTypeException;
+import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
