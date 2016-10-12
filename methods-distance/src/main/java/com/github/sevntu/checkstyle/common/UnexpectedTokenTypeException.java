@@ -1,4 +1,4 @@
-package com.github.sevntu.checkstyle.utils;
+package com.github.sevntu.checkstyle.common;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;

@@ -40,8 +40,8 @@ public class MethodDefinition {
 
     private String accessiblePropertyName;
 
-    MethodDefinition() {
-        //This constructor is intended to restrict access to package level
+    private MethodDefinition() {
+        //This constructor is intended to prevent instantiation from outside of class
     }
 
     public DetailAST getAstNode() {
@@ -158,68 +158,80 @@ public class MethodDefinition {
         PRIVATE
     }
 
-    void setClassDefinition(final ClassDefinition classDefinition) {
-        this.classDefinition = classDefinition;
+    public static MethodDefinitionBuilder builder() {
+        return new MethodDefinitionBuilder();
     }
 
-    void setMethodDef(final DetailAST methodDef) {
-        this.methodDef = methodDef;
-    }
+    public static final class MethodDefinitionBuilder {
 
-    void setArgCount(final int argCount) {
-        this.argCount = argCount;
-    }
+        private MethodDefinition instance = new MethodDefinition();
 
-    void setName(final String name) {
-        this.name = name;
-    }
+        public void setClassDefinition(final ClassDefinition classDefinition) {
+            instance.classDefinition = classDefinition;
+        }
 
-    void setVarArg(final boolean varArg) {
-        this.isVarArgMethod = varArg;
-    }
+        public void setMethodDef(final DetailAST methodDef) {
+            instance.methodDef = methodDef;
+        }
 
-    void setStatic(final boolean staticMethod) {
-        isStaticMethod = staticMethod;
-    }
+        public void setArgCount(final int argCount) {
+            instance.argCount = argCount;
+        }
 
-    void setSignature(final String signature) {
-        this.signature = signature;
-    }
+        public void setName(final String name) {
+            instance.name = name;
+        }
 
-    void setAccessibility(
-        final Accessibility accessibility) {
-        this.accessibility = accessibility;
-    }
+        public void setVarArg(final boolean varArg) {
+            instance.isVarArgMethod = varArg;
+        }
 
-    void setOverride(final boolean overrideMethod) {
-        isOverrideMethod = overrideMethod;
-    }
+        public void setStatic(final boolean staticMethod) {
+            instance.isStaticMethod = staticMethod;
+        }
 
-    void setIndex(final int index) {
-        this.index = index;
-    }
+        public void setSignature(final String signature) {
+            instance.signature = signature;
+        }
 
-    void setAccessiblePropertyName(final String accessiblePropertyName) {
-        this.accessiblePropertyName = accessiblePropertyName;
-    }
+        public void setAccessibility(final Accessibility accessibility) {
+            instance.accessibility = accessibility;
+        }
 
-    void setSetter(final boolean setterMethod) {
-        isSetterMethod = setterMethod;
-    }
+        public void setOverride(final boolean overrideMethod) {
+            instance.isOverrideMethod = overrideMethod;
+        }
 
-    void setGetter(final boolean getterMethod) {
-        isGetterMethod = getterMethod;
-    }
+        public void setIndex(final int index) {
+            instance.index = index;
+        }
 
-    void setCtor(final boolean ctorMethod) {
-        isCtorMethod = ctorMethod;
-    }
+        public void setAccessiblePropertyName(final String accessiblePropertyName) {
+            instance.accessiblePropertyName = accessiblePropertyName;
+        }
 
-    void setVoidMethod(final boolean voidMethod) {
-        isVoidMethod = voidMethod;
-    }
+        public void setSetter(final boolean setterMethod) {
+            instance.isSetterMethod = setterMethod;
+        }
 
-    void setLength(final int length) {
-        this.length = length;
+        public void setGetter(final boolean getterMethod) {
+            instance.isGetterMethod = getterMethod;
+        }
+
+        public void setCtor(final boolean ctorMethod) {
+            instance.isCtorMethod = ctorMethod;
+        }
+
+        public void setVoidMethod(final boolean isVoidMethod) {
+            instance.isVoidMethod = isVoidMethod;
+        }
+
+        public void setLength(final int length) {
+            instance.length = length;
+        }
+
+        public MethodDefinition build() {
+            return instance;
+        }
     }
 }

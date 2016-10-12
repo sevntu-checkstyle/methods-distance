@@ -6,7 +6,7 @@ import com.github.sevntu.checkstyle.domain.MethodCall;
 import com.github.sevntu.checkstyle.domain.MethodDefinition;
 import com.github.sevntu.checkstyle.domain.RefCall;
 import com.github.sevntu.checkstyle.domain.ResolvedCall;
-import com.github.sevntu.checkstyle.utils.UnexpectedTokenTypeException;
+import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;

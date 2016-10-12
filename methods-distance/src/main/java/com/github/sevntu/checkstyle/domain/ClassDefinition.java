@@ -1,5 +1,7 @@
 package com.github.sevntu.checkstyle.domain;
 
+import com.github.sevntu.checkstyle.analysis.AnalysisUtils;
+import com.github.sevntu.checkstyle.analysis.MethodDefinitionParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
@@ -38,7 +40,7 @@ public class ClassDefinition {
 
     private List<MethodDefinition> getDeclaredMethods() {
         return methodDefs.stream()
-                .map(methodDef -> MethodDefinitionBuilder.build(this, methodDef))
+                .map(methodDef -> MethodDefinitionParser.parse(this, methodDef))
                 .collect(Collectors.toList());
     }
 

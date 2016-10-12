@@ -1,6 +1,8 @@
-package com.github.sevntu.checkstyle.domain;
+package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.utils.UnexpectedTokenTypeException;
+import com.github.sevntu.checkstyle.domain.ClassDefinition;
+import com.github.sevntu.checkstyle.domain.MethodDefinition;
+import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
 import com.google.common.collect.ImmutableSet;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -11,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public final class MethodDefinitionBuilder {
+public final class MethodDefinitionParser {
 
     private static final Set<Integer> PRIMITIVE_TOKEN_TYPES = ImmutableSet.of(
         TokenTypes.LITERAL_VOID,
@@ -40,35 +42,38 @@ public final class MethodDefinitionBuilder {
 
     private final DetailAST methodDef;
 
-    private MethodDefinitionBuilder(final ClassDefinition classDef, final DetailAST methodDef) {
+    private MethodDefinitionParser(final ClassDefinition classDef, final DetailAST methodDef) {
         this.classDef = classDef;
         this.methodDef = methodDef;
     }
 
-    public static MethodDefinition build(ClassDefinition classDef, DetailAST methodDef) {
-        final MethodDefinitionBuilder builder = new MethodDefinitionBuilder(classDef, methodDef);
-        final MethodDefinition methodDefinition = new MethodDefinition();
-        methodDefinition.setClassDefinition(classDef);
-        methodDefinition.setMethodDef(methodDef);
-        methodDefinition.setIndex(builder.getIndex());
-        methodDefinition.setName(builder.getName());
-        methodDefinition.setSignature(builder.getSignature());
-        methodDefinition.setAccessibility(builder.getAccessibility());
-        methodDefinition.setLength(builder.getLength());
-        methodDefinition.setArgCount(builder.getArgCount());
-        methodDefinition.setCtor(builder.isCtor());
-        if (!methodDefinition.isCtor()) {
-            methodDefinition.setVoidMethod(builder.isVoid());
+    public static MethodDefinition parse(ClassDefinition classDef, DetailAST methodDef) {
+        final MethodDefinitionParser parser = new MethodDefinitionParser(classDef, methodDef);
+        final MethodDefinition.MethodDefinitionBuilder builder = MethodDefinition.builder();
+        builder.setClassDefinition(classDef);
+        builder.setMethodDef(methodDef);
+        builder.setIndex(parser.getIndex());
+        builder.setName(parser.getName());
+        builder.setSignature(parser.getSignature());
+        builder.setAccessibility(parser.getAccessibility());
+        builder.setLength(parser.getLength());
+        builder.setArgCount(parser.getArgCount());
+        final boolean isCtor = parser.isCtor();
+        builder.setCtor(isCtor);
+        if (!isCtor) {
+            builder.setVoidMethod(parser.isVoid());
         }
-        methodDefinition.setVarArg(builder.isVarArg());
-        methodDefinition.setStatic(builder.isStatic());
-        methodDefinition.setOverride(builder.isOverride());
-        methodDefinition.setSetter(builder.isSetter());
-        methodDefinition.setGetter(builder.isGetter());
-        if (methodDefinition.isGetter() || methodDefinition.isSetter()) {
-            methodDefinition.setAccessiblePropertyName(builder.getAccessiblePropertyName());
+        builder.setVarArg(parser.isVarArg());
+        builder.setStatic(parser.isStatic());
+        builder.setOverride(parser.isOverride());
+        final boolean isSetter = parser.isSetter();
+        builder.setSetter(isSetter);
+        final boolean isGetter = parser.isGetter();
+        builder.setGetter(isGetter);
+        if (isGetter || isSetter) {
+            builder.setAccessiblePropertyName(parser.getAccessiblePropertyName());
         }
-        return methodDefinition;
+        return builder.build();
     }
 
     private int getArgCount() {
