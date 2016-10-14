@@ -15,11 +15,11 @@ public interface DependencyInformationConsumer {
     }
 
     /**
-     * Override this method to get instance of {@link MethodCallDependencyModule}.
+     * Override this method to get instance of {@link MethodCallDependencyCheckstyleModule}.
      *
      * @param module
      */
-    default void setModule(MethodCallDependencyModule module) {
+    default void setModule(MethodCallDependencyCheckstyleModule module) {
         // default implementation
     }
 

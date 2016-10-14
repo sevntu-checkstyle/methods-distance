@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.common;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -19,7 +19,7 @@ public final class DependencyInformationConsumerInjector implements ModuleFactor
     public Object createModule(String name) throws CheckstyleException {
         try {
             final Class<?> moduleClass = Class.forName(name);
-            if (moduleClass.equals(MethodCallDependencyModule.class)) {
+            if (moduleClass.equals(MethodCallDependencyCheckstyleModule.class)) {
                 return moduleClass.getConstructor(DependencyInformationConsumer.class)
                         .newInstance(consumer);
             }

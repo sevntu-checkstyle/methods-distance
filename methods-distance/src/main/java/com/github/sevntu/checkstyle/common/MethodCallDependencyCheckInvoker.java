@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.common;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -41,7 +41,7 @@ public class MethodCallDependencyCheckInvoker {
 
     private static Configuration getCompleteConfig(Map<String, String> configAttributes) {
         final DefaultConfiguration config =
-            new DefaultConfiguration(MethodCallDependencyModule.class.getCanonicalName());
+            new DefaultConfiguration(MethodCallDependencyCheckstyleModule.class.getCanonicalName());
         configAttributes.entrySet().forEach(kv -> config.addAttribute(kv.getKey(), kv.getValue()));
         return config;
     }

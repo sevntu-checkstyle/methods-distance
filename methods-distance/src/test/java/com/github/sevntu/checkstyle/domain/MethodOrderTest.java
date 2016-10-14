@@ -1,7 +1,7 @@
 package com.github.sevntu.checkstyle.domain;
 
 import com.github.sevntu.checkstyle.analysis.MethodCallDependenciesModuleTestSupport;
-import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
@@ -17,7 +17,7 @@ public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testDependencies() throws Exception {
-        final Configuration dc = createCheckConfig(MethodCallDependencyModule.class);
+        final Configuration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final MethodOrder ord = invokeCheckAndGetOrdering(dc, "InputDependencies.java");
         final Method methodB = ord.getMethodByInitialIndex(1);
         final List<Method> dependencies = ord.getMethodDependenciesInAppearanceOrder(methodB);
