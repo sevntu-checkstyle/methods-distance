@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MethodCallDependencyModule extends AbstractCheck {
+public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
 
     public static final String MSG_KEY = "method.call.dependencies.moveMethod";
 
@@ -27,7 +27,7 @@ public class MethodCallDependencyModule extends AbstractCheck {
 
     private final Optional<DependencyInformationConsumer> consumer;
 
-    public MethodCallDependencyModule(DependencyInformationConsumer dic) {
+    public MethodCallDependencyCheckstyleModule(DependencyInformationConsumer dic) {
         consumer = Optional.of(dic);
     }
 

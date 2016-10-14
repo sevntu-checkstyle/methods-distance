@@ -10,10 +10,10 @@ public class ViolationReporterDependencyInformationConsumer
 
     private final MethodReorderer reorderer = new TopologicalMethodReorderer();
 
-    private MethodCallDependencyModule module;
+    private MethodCallDependencyCheckstyleModule module;
 
     @Override
-    public void setModule(MethodCallDependencyModule module) {
+    public void setModule(MethodCallDependencyCheckstyleModule module) {
         this.module = module;
     }
 
@@ -26,7 +26,7 @@ public class ViolationReporterDependencyInformationConsumer
     }
 
     private void logFirstMethodOutOfOrder(
-        MethodCallDependencyModule check, MethodOrder optimizedMethodOrder) {
+        MethodCallDependencyCheckstyleModule check, MethodOrder optimizedMethodOrder) {
 
         optimizedMethodOrder.getMethods().stream()
             .filter(method ->
@@ -35,7 +35,7 @@ public class ViolationReporterDependencyInformationConsumer
             .ifPresent(method -> {
                 final int difference =
                     method.getInitialIndex() - optimizedMethodOrder.getMethodIndex(method);
-                check.log(method.getInitialLineNo(), MethodCallDependencyModule.MSG_KEY,
+                check.log(method.getInitialLineNo(), MethodCallDependencyCheckstyleModule.MSG_KEY,
                     method.getSignature(), difference);
             });
     }

@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
 import com.github.sevntu.checkstyle.domain.BaseCheckTestSupport;
 import com.github.sevntu.checkstyle.domain.Dependencies;
@@ -88,7 +88,7 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
     }
 
     protected Dependencies withDefaultConfig(final String fileName) throws Exception {
-        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyModule.class), fileName);
+        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyCheckstyleModule.class), fileName);
     }
 
     protected MethodOrder withDefaultConfigOrdering(final String fileName) throws Exception {

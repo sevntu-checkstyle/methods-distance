@@ -1,6 +1,6 @@
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyModule;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.github.sevntu.checkstyle.module.ViolationReporterDependencyInformationConsumer;
 import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
@@ -17,26 +17,27 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Application entry point that accepts file path and
- * generates violations of method ordering.
+ * Application entry point that accepts file path, processes it, extracts methods
+ * dependency information, calculates other method order and generates instructions
+ * on how to convert current methods order to calculated one.
  */
-public final class ReportingCli {
+public final class ReportCli {
 
-    private ReportingCli() { }
+    private ReportCli() { }
 
     public static void main(String... args) throws CheckstyleException {
         final DependencyInformationConsumer consumer =
             new ViolationReporterDependencyInformationConsumer();
         final ModuleFactory moduleFactory = new DependencyInformationConsumerInjector(consumer);
 
-        final DefaultConfiguration mcdc = new DefaultConfiguration(
-            MethodCallDependencyModule.class.getCanonicalName());
-        mcdc.addAttribute("screenLinesCount", "50");
+        final DefaultConfiguration moduleConfig = new DefaultConfiguration(
+            MethodCallDependencyCheckstyleModule.class.getCanonicalName());
+        moduleConfig.addAttribute("screenLinesCount", "50");
 
         final TreeWalker tw = new TreeWalker();
         tw.setModuleFactory(moduleFactory);
         tw.finishLocalSetup();
-        tw.setupChild(mcdc);
+        tw.setupChild(moduleConfig);
 
         final AuditListener listener = new DefaultLogger(System.out, false);
 
@@ -48,19 +49,5 @@ public final class ReportingCli {
 
         final List<File> files = Collections.singletonList(new File(args[0]));
         checker.process(files);
-    }
-
-    private static final class SimpleModuleFactory implements ModuleFactory {
-
-        @Override
-        public Object createModule(String name) throws CheckstyleException {
-            try {
-                return Class.forName(name).newInstance();
-            }
-            catch (final ClassNotFoundException | IllegalAccessException
-                | InstantiationException e) {
-                throw new CheckstyleException("Failed to instantiate module " + name, e);
-            }
-        }
     }
 }
