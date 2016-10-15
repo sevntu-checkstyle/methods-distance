@@ -168,6 +168,15 @@ public class MethodOrder {
             .count();
     }
 
+    public int getCtorGroupsSplitCases() {
+        final List<Method> constructors = currentOrdering.stream()
+            .filter(Method::isCtor)
+            .collect(Collectors.toList());
+        return constructors.isEmpty()
+            ? 0
+            : getMethodGroupSplitCount(constructors);
+    }
+
     public int getOverrideGroupSplitCases() {
         final List<Method> overrideMethods = currentOrdering.stream()
             .filter(Method::isOverride)
@@ -179,6 +188,7 @@ public class MethodOrder {
 
     public int getOverloadGroupsSplitCases() {
         return currentOrdering.stream()
+            .filter(method -> !method.isCtor())
             .collect(Collectors.groupingBy(Method::getName))
             .values().stream()
             .collect(Collectors.summingInt(this::getMethodGroupSplitCount));

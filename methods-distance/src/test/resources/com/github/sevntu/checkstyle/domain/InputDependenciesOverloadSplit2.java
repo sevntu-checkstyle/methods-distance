@@ -2,7 +2,11 @@ package com.github.sevntu.checkstyle.domain;
 
 public class InputDependenciesOverloadSplit2 {
 
+    InputDependenciesOverloadSplit2() { }
+
     void a() { }
+
+    InputDependenciesOverloadSplit2(String s) { }
 
     void ol1(Integer i) { }
 

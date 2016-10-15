@@ -2,6 +2,8 @@ package com.github.sevntu.checkstyle.ordering;
 
 public class PenaltyCalculator {
 
+    public static final int DEFAULT_CTOR_GROUP_DIVISION_PENALTY = 4;
+
     public static final int DEFAULT_OVERRIDE_GROUP_DIVISION_PENALTY = 3;
 
     public static final int DEFAULT_OVERLOAD_GROUP_DIVISION_PENALTY = 5;
@@ -13,6 +15,8 @@ public class PenaltyCalculator {
     public static final int DEFAULT_RELATIVE_ORDER_INCONSISTENCY_PENALTY = 1;
 
     public static final int DEFAULT_DISTANT_METHODS_DEPENDENCIES_PENALTY = 3;
+
+    private float ctorGroupDivisionPenalty = DEFAULT_CTOR_GROUP_DIVISION_PENALTY;
 
     private float overrideGroupDivisionPenalty = DEFAULT_OVERRIDE_GROUP_DIVISION_PENALTY;
 
@@ -30,12 +34,21 @@ public class PenaltyCalculator {
     public float getPenalty(MethodOrder dep, int screenLinesCount) {
         return dep.getTotalSumOfMethodDistances()
             + dep.getDeclarationBeforeUsageCases() * declarationBeforeFirstUsagePenalty
+            + dep.getCtorGroupsSplitCases() * ctorGroupDivisionPenalty
             + dep.getOverloadGroupsSplitCases() * overloadGroupDivisionPenalty
             + dep.getOverrideGroupSplitCases() * overrideGroupDivisionPenalty
             + dep.getAccessorsSplitCases() * accessorsGroupDivisionPenalty
             + dep.getRelativeOrderInconsistencyCases() * relativeOrderInconsistencyPenalty
             + dep.getDependenciesBetweenDistantMethodsCases(screenLinesCount)
                 * dependenciesBetweenDistantMethodsPenalty;
+    }
+
+    public float getCtorGroupDivisionPenalty() {
+        return ctorGroupDivisionPenalty;
+    }
+
+    public void setCtorGroupDivisionPenalty(float ctorGroupDivisionPenalty) {
+        this.ctorGroupDivisionPenalty = ctorGroupDivisionPenalty;
     }
 
     public float getOverrideGroupDivisionPenalty() {
