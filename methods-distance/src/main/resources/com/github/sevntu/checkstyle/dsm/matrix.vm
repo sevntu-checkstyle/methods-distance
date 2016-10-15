@@ -2,8 +2,8 @@
 #* @vtlvariable name="javaSource" type="java.lang.String" *#
 #* @vtlvariable name="css" type="java.lang.String" *#
 #* @vtlvariable name="javaScript" type="java.lang.String" *#
-#* @vtlvariable name="info" type="com.github.sevntu.checkstyle.methodOrder.MethodOrder" *#
-#* @vtlvariable name="calculator" type="com.github.sevntu.checkstyle.methodOrder.PenaltyCalculator" *#
+#* @vtlvariable name="info" type="com.github.sevntu.checkstyle.ordering.MethodOrder" *#
+#* @vtlvariable name="calculator" type="com.github.sevntu.checkstyle.ordering.PenaltyCalculator" *#
 #* @vtlvariable name="penaltyValue" type="java.lang.String" *#
 <!DOCTYPE html>
 <html>
@@ -22,6 +22,7 @@
             <p>Penalty calculation parameters:</p>
             <ul>
                 <li>declaration before first usage penalty - $calculator.declarationBeforeFirstUsagePenalty</li>
+                <li>constructos group division penalty - $calculator.ctorGroupDivisionPenalty</li>
                 <li>overload group division penalty - $calculator.overloadGroupDivisionPenalty</li>
                 <li>override group division penalty - $calculator.overrideGroupDivisionPenalty</li>
                 <li>accessors group division penalty - $calculator.accessorsGroupDivisionPenalty</li>

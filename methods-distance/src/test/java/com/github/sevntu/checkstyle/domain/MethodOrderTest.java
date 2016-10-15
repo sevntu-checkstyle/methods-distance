@@ -53,6 +53,12 @@ public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
     }
 
     @Test
+    public void testConstructorsSplit() throws Exception {
+        final MethodOrder order = withDefaultConfigOrdering("InputDependenciesConstructorsSplit.java");
+        assertEquals(3, order.getCtorGroupsSplitCases());
+    }
+
+    @Test
     public void testOverloadSplit1() throws Exception {
         final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesOverloadSplit1.java");
         assertEquals(5, ds.getOverloadGroupsSplitCases());
