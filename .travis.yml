@@ -2,6 +2,10 @@ language: java
 jdk:
   - oraclejdk8
 
+cache:
+  directories:
+   - ~\.m2
+
 deploy:
   provider: heroku
   app: methods-distance
