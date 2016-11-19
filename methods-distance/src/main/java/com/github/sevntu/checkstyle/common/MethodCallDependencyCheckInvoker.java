@@ -4,6 +4,7 @@ import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -37,6 +38,7 @@ public class MethodCallDependencyCheckInvoker {
         checker.setModuleFactory(moduleFactory);
         checker.finishLocalSetup();
         checker.addFileSetCheck(tw);
+        checker.addListener(new DefaultLogger(System.out, false));
     }
 
     private static Configuration getCompleteConfig(Map<String, String> configAttributes) {
