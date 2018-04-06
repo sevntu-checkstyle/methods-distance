@@ -23,7 +23,7 @@ public final class DependencyInfoMatrixSerializer {
     public static void writeToFile(String javaSource, MethodOrder methodOrder,
         final Configuration config, final String fileName) {
 
-        try (final PrintWriter file = new PrintWriter(new File(fileName))) {
+        try (PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serialize(methodOrder, javaSource, config));
         }
         catch (final CheckstyleException | FileNotFoundException e) {

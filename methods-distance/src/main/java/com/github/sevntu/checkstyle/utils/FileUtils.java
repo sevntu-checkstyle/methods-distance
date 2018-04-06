@@ -10,7 +10,7 @@ public final class FileUtils {
     private FileUtils() { }
 
     public static String getFileContents(String filePath) {
-        try (final InputStream stream = new FileInputStream(filePath)) {
+        try (InputStream stream = new FileInputStream(filePath)) {
             return getTextStreamContents(stream);
         }
         catch (final IOException e) {
