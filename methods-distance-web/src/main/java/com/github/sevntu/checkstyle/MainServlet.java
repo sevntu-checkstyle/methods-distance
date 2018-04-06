@@ -133,8 +133,8 @@ public class MainServlet extends HttpServlet {
         final File tmpFile = File.createTempFile("source", ".java");
         final URLConnection connection = sourceUrl.openConnection();
         connection.connect();
-        try (final InputStream input = connection.getInputStream();
-            final OutputStream output = new FileOutputStream(tmpFile)) {
+        try (InputStream input = connection.getInputStream();
+            OutputStream output = new FileOutputStream(tmpFile)) {
             final int fileSize = connection.getHeaderFieldInt(CONTENT_LENGTH_HEADER, 0);
             final int bufferSize = 1024 * 4;
             final byte[] buffer = new byte[bufferSize];

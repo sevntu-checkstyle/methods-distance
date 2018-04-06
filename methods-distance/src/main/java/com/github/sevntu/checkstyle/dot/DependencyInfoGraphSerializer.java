@@ -28,7 +28,7 @@ public final class DependencyInfoGraphSerializer {
     private DependencyInfoGraphSerializer() { }
 
     public static void writeToFile(Dependencies info, String fileName) {
-        try (final PrintWriter file = new PrintWriter(new File(fileName))) {
+        try (PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serializeInfo(info));
         }
         catch (final FileNotFoundException e) {
@@ -186,7 +186,7 @@ public final class DependencyInfoGraphSerializer {
             .collect(Collectors.joining(" ", "[ ", " ]"));
     }
 
-    private static String fmt(String fmt, Object ...args) {
+    private static String fmt(String fmt, Object... args) {
         return String.format(fmt, args);
     }
 }

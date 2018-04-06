@@ -43,7 +43,6 @@ public final class ReportCli {
 
         final Checker checker = new Checker();
         checker.setModuleFactory(moduleFactory);
-        checker.finishLocalSetup();
         checker.addFileSetCheck(tw);
         checker.addListener(listener);
 

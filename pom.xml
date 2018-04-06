@@ -16,7 +16,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle-version>6.18</checkstyle-version>
+        <checkstyle-version>8.9</checkstyle-version>
         <maven.checktyle-plugin.version>2.17</maven.checktyle-plugin.version>
         <maven.pmd.plugin.version>3.6</maven.pmd.plugin.version>
         <jetty.maven.plugin.version>9.3.8.v20160314</jetty.maven.plugin.version>
