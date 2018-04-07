@@ -18,13 +18,9 @@
     <suppress checks="SuppressWarnings" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="UncommentedMain" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="AvoidInlineConditionals" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="LineLength" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="VisibilityModifier" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="MemberName" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="ParameterName" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="ReturnCount" files=".*"/>
     <suppress checks="ImportControl" files=".*"/>
-    <suppress checks="NeedBraces" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="ClassDataAbstractionCoupling" files=".*"/>
     <!-- END of legacy code -->
 

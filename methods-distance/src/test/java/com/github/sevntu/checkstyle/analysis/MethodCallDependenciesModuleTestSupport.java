@@ -46,17 +46,20 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
 
     private DependencyInformationCollector collector = new DependencyInformationCollector();
 
-    protected void verifyInfo(final Configuration config, final String fileName, final ExpectedDependencies expected) throws Exception {
+    protected void verifyInfo(final Configuration config, final String fileName,
+            final ExpectedDependencies expected) throws Exception {
         mustBeSame(expected, invokeCheckAndGetOrdering(config, fileName));
     }
 
-    protected Dependencies invokeCheckAndGetDependencies(final Configuration config, final String fileName) throws Exception {
+    protected Dependencies invokeCheckAndGetDependencies(final Configuration config,
+            final String fileName) throws Exception {
         final String filePath = getInputPath(fileName);
         verify(config, filePath);
         return collector.getForFile(filePath);
     }
 
-    protected MethodOrder invokeCheckAndGetOrdering(final Configuration config, final String fileName) throws Exception {
+    protected MethodOrder invokeCheckAndGetOrdering(final Configuration config,
+            final String fileName) throws Exception {
         return new MethodOrder(invokeCheckAndGetDependencies(config, fileName));
     }
 
@@ -79,17 +82,20 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
     private static void mustBeSame(final ExpectedDependencies expected, final MethodOrder actual) {
         for (final String expectedMethod : expected.getMethods()) {
             assertTrue("Method " + expectedMethod + " is not present is actual info",
-                    actual.getMethods().stream().anyMatch(md -> expectedMethod.equals(md.getSignature())));
+                    actual.getMethods().stream()
+                        .anyMatch(md -> expectedMethod.equals(md.getSignature())));
         }
         for (final Method actualMethod: actual.getMethods()) {
             assertTrue("Method " + actualMethod.getSignature() + " is not present in expected info",
-                    expected.getMethods().stream().anyMatch(mi -> mi.equals(actualMethod.getSignature())));
+                    expected.getMethods().stream()
+                        .anyMatch(mi -> mi.equals(actualMethod.getSignature())));
         }
         for (final String method : expected.getMethods()) {
             final Method caller = actual.getMethods().stream()
                     .filter(m -> m.getSignature().equals(method)).findFirst().get();
             final List<Method> dependencies = actual.getMethodDependenciesInAppearanceOrder(caller);
-            final List<ExpectedDependencies.MethodInvocation> invocations = expected.getInvocationsFromMethod(method);
+            final List<ExpectedDependencies.MethodInvocation> invocations = expected
+                    .getInvocationsFromMethod(method);
             assertEquals("Actual method dependencies count and count of invocations from method "
                     + method + " does not match", invocations.size(), dependencies.size());
             for (int i = 0; i < invocations.size(); ++i) {
@@ -97,7 +103,8 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
                 final ExpectedDependencies.MethodInvocation invocationOfMethod = invocations.get(i);
                 assertTrue("Method " + calledMethod.getSignature() + " is present as actual "
                                 + i + " dependency of " + method + " but should not be!",
-                        calledMethod.getSignature().equals(expected.getMethodByIndex(invocationOfMethod.callee)));
+                        calledMethod.getSignature()
+                            .equals(expected.getMethodByIndex(invocationOfMethod.callee)));
             }
         }
     }
@@ -107,7 +114,8 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
     }
 
     protected Dependencies withDefaultConfig(final String fileName) throws Exception {
-        return invokeCheckAndGetDependencies(createCheckConfig(MethodCallDependencyCheckstyleModule.class), fileName);
+        return invokeCheckAndGetDependencies(
+                createCheckConfig(MethodCallDependencyCheckstyleModule.class), fileName);
     }
 
     protected MethodOrder withDefaultConfigOrdering(final String fileName) throws Exception {

@@ -37,7 +37,8 @@ public class ClassDefinitionTest extends MethodCallDependenciesModuleTestSupport
     @Test
     public void testSeveralAccessors() throws Exception {
         final Dependencies d = withDefaultConfig("InputClassDefinition1.java");
-        final Map<String, List<MethodDefinition>> accessors = d.getClassDefinition().getPropertiesAccessors();
+        final Map<String, List<MethodDefinition>> accessors = d.getClassDefinition()
+                .getPropertiesAccessors();
         final Map<String, List<String>> expected = new HashMap<>();
         expected.put("name", Collections.singletonList("getName()"));
         expected.put("height", Arrays.asList("getHeight()", "setHeight(int)"));

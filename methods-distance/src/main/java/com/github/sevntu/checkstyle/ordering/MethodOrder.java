@@ -174,17 +174,22 @@ public class MethodOrder {
 
     public int getTotalSumOfMethodDistances() {
         return currentOrdering.stream()
-            .collect(Collectors.summingInt(caller -> getMethodDependenciesInAppearanceOrder(caller)
-                .stream()
-                .collect(Collectors.summingInt(callee ->
-                    Math.abs(getMethodsIndexDifference(caller, callee))))));
+            .collect(Collectors.summingInt(caller -> {
+                return getMethodDependenciesInAppearanceOrder(caller)
+                    .stream()
+                    .collect(Collectors.summingInt(callee -> {
+                        return Math.abs(getMethodsIndexDifference(caller, callee));
+                    }));
+            }));
     }
 
     public int getDeclarationBeforeUsageCases() {
         return (int) invocations.stream()
             .filter(new UniqueCallerCalleeMethodInvocationFilter())
-            .filter(invocation ->
-                getMethodsIndexDifference(invocation.getCaller(), invocation.getCallee()) < 0)
+            .filter(invocation -> {
+                return getMethodsIndexDifference(invocation.getCaller(),
+                    invocation.getCallee()) < 0;
+            })
             .count();
     }
 

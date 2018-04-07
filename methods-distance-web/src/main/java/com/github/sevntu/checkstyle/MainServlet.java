@@ -73,12 +73,12 @@ public class MainServlet extends HttpServlet {
                     processNotFound(resp);
             }
         }
-        catch (final MalformedURLException e) {
+        catch (final MalformedURLException ex) {
             resp.getWriter().print("Malformed url provided: " + sourceUrl);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        catch (final CheckstyleException e) {
-            resp.getWriter().print("Checkstyle exception occurred: " + e.getMessage());
+        catch (final CheckstyleException ex) {
+            resp.getWriter().print("Checkstyle exception occurred: " + ex.getMessage());
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
@@ -105,8 +105,8 @@ public class MainServlet extends HttpServlet {
                     resp.setContentType("text/html");
                     resp.getWriter().append(html);
                 }
-                catch (final IOException | CheckstyleException e) {
-                    throw new ResponseGenerationException(e);
+                catch (final IOException | CheckstyleException ex) {
+                    throw new ResponseGenerationException(ex);
                 }
             }
         }
@@ -128,8 +128,8 @@ public class MainServlet extends HttpServlet {
                 resp.setContentType("text/vnd.graphviz");
                 resp.getWriter().append(dot);
             }
-            catch (final IOException e) {
-                throw new ResponseGenerationException(e);
+            catch (final IOException ex) {
+                throw new ResponseGenerationException(ex);
             }
         };
 

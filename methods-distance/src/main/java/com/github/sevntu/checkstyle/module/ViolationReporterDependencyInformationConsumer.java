@@ -48,8 +48,9 @@ public class ViolationReporterDependencyInformationConsumer
         MethodCallDependencyCheckstyleModule check, MethodOrder optimizedMethodOrder) {
 
         optimizedMethodOrder.getMethods().stream()
-            .filter(method ->
-                optimizedMethodOrder.getMethodIndex(method) != method.getInitialIndex())
+            .filter(method -> {
+                return optimizedMethodOrder.getMethodIndex(method) != method.getInitialIndex();
+            })
             .findFirst()
             .ifPresent(method -> {
                 final int difference =

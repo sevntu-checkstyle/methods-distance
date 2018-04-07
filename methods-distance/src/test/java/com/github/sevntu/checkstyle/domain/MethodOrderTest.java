@@ -70,13 +70,15 @@ public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testDeclarationBeforeUsageCases() throws Exception {
-        final MethodOrder ds = withDefaultConfigOrdering("InputDependenciesDeclarationBeforeUsage.java");
+        final MethodOrder ds =
+            withDefaultConfigOrdering("InputDependenciesDeclarationBeforeUsage.java");
         assertEquals(2, ds.getDeclarationBeforeUsageCases());
     }
 
     @Test
     public void testConstructorsSplit() throws Exception {
-        final MethodOrder order = withDefaultConfigOrdering("InputDependenciesConstructorsSplit.java");
+        final MethodOrder order =
+            withDefaultConfigOrdering("InputDependenciesConstructorsSplit.java");
         assertEquals(3, order.getCtorGroupsSplitCases());
     }
 
@@ -121,7 +123,8 @@ public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
         expected.put("InputDependenciesOrderInconsistency6.java", 0);
         for (final Map.Entry<String, Integer> e : expected.entrySet()) {
             final String msg = String.format("Incorrect result for input \"%s\"", e.getKey());
-            assertEquals(msg, e.getValue().longValue(), withDefaultConfigOrdering(e.getKey()).getRelativeOrderInconsistencyCases());
+            assertEquals(msg, e.getValue().longValue(), withDefaultConfigOrdering(e.getKey())
+                    .getRelativeOrderInconsistencyCases());
         }
     }
 

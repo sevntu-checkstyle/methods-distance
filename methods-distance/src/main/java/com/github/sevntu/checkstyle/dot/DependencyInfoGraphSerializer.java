@@ -50,8 +50,8 @@ public final class DependencyInfoGraphSerializer {
         try (PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serializeInfo(info));
         }
-        catch (final FileNotFoundException e) {
-            throw new IllegalArgumentException(e);
+        catch (final FileNotFoundException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 

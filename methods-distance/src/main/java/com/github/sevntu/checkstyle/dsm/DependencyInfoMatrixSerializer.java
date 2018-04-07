@@ -46,8 +46,8 @@ public final class DependencyInfoMatrixSerializer {
         try (PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serialize(methodOrder, javaSource, config));
         }
-        catch (final CheckstyleException | FileNotFoundException e) {
-            throw new IllegalArgumentException(e);
+        catch (final CheckstyleException | FileNotFoundException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 

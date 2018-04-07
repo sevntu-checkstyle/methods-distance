@@ -32,8 +32,8 @@ public final class FileUtils {
         try (InputStream stream = new FileInputStream(filePath)) {
             return getTextStreamContents(stream);
         }
-        catch (final IOException e) {
-            throw new IllegalArgumentException(e);
+        catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 

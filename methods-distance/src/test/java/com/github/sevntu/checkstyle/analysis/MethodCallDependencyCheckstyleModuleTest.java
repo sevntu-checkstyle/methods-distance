@@ -26,11 +26,13 @@ import com.github.sevntu.checkstyle.domain.ExpectedDependencies;
 import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 
-public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependenciesModuleTestSupport {
+public class MethodCallDependencyCheckstyleModuleTest extends
+        MethodCallDependenciesModuleTestSupport {
 
     @Test
     public void testSimpleDependency() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies dependencies = ExpectedDependencies.build()
                 .method("InputSimpleDependency()")
                 .callsTo(1).at(6, 17)
@@ -48,19 +50,22 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
     @Test
     @Ignore
     public void testEmptyInterface() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         verifyInfo(dc, "InputEmptyInterface.java", ExpectedDependencies.build().get());
     }
 
     @Test
     public void testMethodCallInInitialization() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         verifyInfo(dc, "InputMethodCallInInitialization.java", ExpectedDependencies.build().get());
     }
 
     @Test
     public void testAnonymousClasses() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("method()")
                 .method("a()")
@@ -72,7 +77,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testRecursiveMethod() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("method()")
                 .callsTo(0).at(6, 14)
@@ -82,7 +88,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testNotThisClassMethodCall() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("method()")
                 .method("format(String)")
@@ -92,7 +99,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testMethodSignatures() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies dep = ExpectedDependencies.build()
                 .method("m()")
                 .method("m(boolean)")
@@ -118,7 +126,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testVarargMethodCall() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("c1()")
                 .callsTo(3).at(6, 20)
@@ -133,7 +142,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testMethodCallsInLambda() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("m()")
                 .callsTo(1).at(8, 43)
@@ -144,7 +154,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testMethodCallThroughMethodReference() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("a()")
                 .callsTo(2).at(11, 61)
@@ -160,7 +171,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testOverloadedMethods2() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("b1()")
                 .method("b1(String)")
@@ -184,7 +196,8 @@ public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependen
 
     @Test
     public void testAppearanceOrder() throws Exception {
-        final DefaultConfiguration dc = createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
         final ExpectedDependencies expected = ExpectedDependencies.build()
                 .method("b1()")
                 .method("b2()")
