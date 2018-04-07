@@ -20,7 +20,6 @@
     <suppress checks="AvoidInlineConditionals" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="VisibilityModifier" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="ReturnCount" files=".*"/>
-    <suppress checks="ImportControl" files=".*"/>
     <suppress checks="ClassDataAbstractionCoupling" files=".*"/>
     <!-- END of legacy code -->
 

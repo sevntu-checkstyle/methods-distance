@@ -4,4 +4,73 @@
     "http://checkstyle.sourceforge.net/dtds/import_control_1_2.dtd">
 
 <import-control pkg="com.github.sevntu.checkstyle">
+
+  <allow pkg="java.util"/>
+  <allow pkg="java.io"/>
+  <allow pkg="com.puppycrawl.tools.checkstyle.api"/>
+  <allow pkg="com.github.sevntu.checkstyle.common"/>
+
+  <allow pkg="com.puppycrawl.tools.checkstyle" local-only="true" exact-match="true"/>
+  <allow class="com.github.sevntu.checkstyle.utils.FileUtils" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.domain.Dependencies" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.dot.DependencyInfoGraphSerializer" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.dsm.DependencyInfoMatrixSerializer" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.module.DependencyInformationConsumer" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.module.ViolationReporterDependencyInformationConsumer" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.ordering.MethodOrder" local-only="true"/>
+  <allow class="com.github.sevntu.checkstyle.reordering.TopologicalMethodReorderer" local-only="true"/>
+
+  <!-- until https://github.com/checkstyle/checkstyle/issues/3492 for MainServlet -->
+  <allow pkg="java.net"/>
+  <allow pkg="javax.servlet"/>
+
+  <subpackage name="analysis">
+    <allow pkg="com.github.sevntu.checkstyle.domain"/>
+    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtils"/>
+    <allow class="com.google.common.collect.ImmutableSet"/>
+  </subpackage>
+
+  <subpackage name="common">
+    <allow pkg="com.github.sevntu.checkstyle.module"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle" exact-match="true"/>
+    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtils"/>
+    <allow class="java.lang.reflect.InvocationTargetException"/>
+  </subpackage>
+
+  <subpackage name="domain">
+    <allow pkg="com.github.sevntu.checkstyle.analysis"/>
+    <allow class="org.apache.commons.lang.builder.HashCodeBuilder"/>
+  </subpackage>
+
+  <subpackage name="dot">
+    <allow pkg="com.github.sevntu.checkstyle.dot.domain"/>
+    <allow pkg="com.github.sevntu.checkstyle.domain"/>
+    <allow pkg="com.github.sevntu.checkstyle.ordering"/>
+    <allow class="com.github.sevntu.checkstyle.utils.FileUtils"/>
+  </subpackage>
+
+  <subpackage name="dsm">
+    <allow pkg="com.github.sevntu.checkstyle.ordering"/>
+    <allow class="com.github.sevntu.checkstyle.utils.FileUtils"/>
+    <allow pkg="org.apache.velocity"/>
+  </subpackage>
+
+  <subpackage name="module">
+    <allow pkg="com.github.sevntu.checkstyle.domain"/>
+    <allow pkg="com.github.sevntu.checkstyle.ordering"/>
+    <allow pkg="com.github.sevntu.checkstyle.reordering"/>
+    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtils"/>
+  </subpackage>
+
+  <subpackage name="ordering">
+    <allow pkg="com.github.sevntu.checkstyle.domain"/>
+    <allow pkg="org.apache.commons.collections4"/>
+    <allow pkg="org.apache.commons.lang.builder"/>
+  </subpackage>
+
+  <subpackage name="reordering">
+    <allow pkg="com.github.sevntu.checkstyle.ordering"/>
+  </subpackage>
+
 </import-control>
