@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+    "-//Puppy Crawl//DTD Suppressions 1.2//EN"
+    "http://checkstyle.sourceforge.net/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- START of legacy code, all violations will be resolved during transition to main project -->
+    <suppress message="Missing a Javadoc comment|Missing package-info.java file" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="DesignForExtension" files=".*"/>
+    <suppress checks="WriteTag" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="JavadocMethod" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="JavadocType" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="JavadocStyle" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="JavadocParagraph" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="SummaryJavadoc" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="NonEmptyAtclauseDescription" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="SuppressWarnings" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="UncommentedMain" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="AvoidInlineConditionals" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="TrailingComment" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="Indentation" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="LineLength" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="WhitespaceAfter|WhitespaceAround" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="ImportOrder" files=".*"/>
+    <suppress checks="AvoidStarImport" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="EmptyLineSeparator" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="Header" files=".*"/>
+    <suppress checks="VisibilityModifier" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="FinalClass" files=".*"/>
+    <suppress checks="MemberName" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="LocalVariableName" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="ParameterName" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="ReturnCount" files=".*"/>
+    <suppress checks="ImportControl" files=".*"/>
+    <suppress checks="NeedBraces" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress checks="NewlineAtEndOfFile" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="RedundantModifier" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="ClassDataAbstractionCoupling" files=".*"/>
+    <!-- END of legacy code -->
+
+    <!-- Tone down the checking for test code -->
+    <suppress checks="Javadoc|DesignForExtension" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="MagicNumber" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="AvoidStaticImport" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="WriteTag" files=".*[\\/]src[\\/]test[\\/]"/>
+
+    <!-- Fixing these cases will decrease code readability -->
+    <suppress checks="MultipleStringLiterals" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="Translation" files=".*"/>
+
+</suppressions>
