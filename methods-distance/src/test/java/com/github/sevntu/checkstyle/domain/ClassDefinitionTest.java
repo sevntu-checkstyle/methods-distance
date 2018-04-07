@@ -22,12 +22,12 @@ public class ClassDefinitionTest extends MethodCallDependenciesModuleTestSupport
         expected.put("height", Arrays.asList("getHeight()", "setHeight(int)"));
         expected.put("fat", Arrays.asList("isFat()", "getFat()", "setFat(boolean)"));
         assertEquals(expected.size(), accessors.size());
-        for(final Map.Entry<String, List<MethodDefinition>> e : accessors.entrySet()) {
+        for (final Map.Entry<String, List<MethodDefinition>> e : accessors.entrySet()) {
             final List<String> expectedMethods = expected.get(e.getKey());
             final List<MethodDefinition> actualMethods = e.getValue();
             assertEquals(expectedMethods.size(), actualMethods.size());
-            for(final MethodDefinition md : actualMethods) {
-                assertTrue(expectedMethods.contains(md.getSignature()));
+            for (final MethodDefinition methodDefinition : actualMethods) {
+                assertTrue(expectedMethods.contains(methodDefinition.getSignature()));
             }
         }
     }

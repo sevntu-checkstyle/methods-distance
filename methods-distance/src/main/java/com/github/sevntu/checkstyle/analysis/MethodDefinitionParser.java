@@ -111,7 +111,7 @@ public final class MethodDefinitionParser {
     private String getMethodParameterDefText(DetailAST parameterDef) {
         final DetailAST type = parameterDef.findFirstToken(TokenTypes.TYPE);
         final DetailAST typeFirstChild = type.getFirstChild();
-        String typeName; //SUPPRESS CHECKSTYLE, FinalLocalVariable
+        String typeName;
         switch (typeFirstChild.getType()) {
             case TokenTypes.IDENT:
                 typeName = typeFirstChild.getText();

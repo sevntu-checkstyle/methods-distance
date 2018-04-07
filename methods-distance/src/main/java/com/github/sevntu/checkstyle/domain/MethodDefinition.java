@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 // This class is data-heavy
 // CSOFF: MethodCount
 @SuppressWarnings("PMD.TooManyFields")
-public class MethodDefinition {
+public final class MethodDefinition {
 
     private ClassDefinition classDefinition;
 
