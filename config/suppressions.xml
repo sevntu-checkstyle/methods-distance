@@ -19,8 +19,6 @@
     <suppress checks="UncommentedMain" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="AvoidInlineConditionals" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="LineLength" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="ImportOrder" files=".*"/>
-    <suppress checks="AvoidStarImport" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="VisibilityModifier" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="MemberName" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="ParameterName" files=".*[\\/]src[\\/]main[\\/]"/>

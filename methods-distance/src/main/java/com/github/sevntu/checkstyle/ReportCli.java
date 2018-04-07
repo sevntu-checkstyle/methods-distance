@@ -19,10 +19,14 @@
 
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
-import com.github.sevntu.checkstyle.module.ViolationReporterDependencyInformationConsumer;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
+import com.github.sevntu.checkstyle.module.ViolationReporterDependencyInformationConsumer;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
@@ -30,10 +34,6 @@ import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Application entry point that accepts file path, processes it, extracts methods

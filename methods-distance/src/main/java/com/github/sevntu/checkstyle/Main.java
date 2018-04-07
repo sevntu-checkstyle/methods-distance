@@ -19,22 +19,22 @@
 
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
-import com.github.sevntu.checkstyle.domain.Dependencies;
-import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.ordering.MethodOrder;
-import com.github.sevntu.checkstyle.utils.FileUtils;
-import com.github.sevntu.checkstyle.dot.DependencyInfoGraphSerializer;
-import com.github.sevntu.checkstyle.dsm.DependencyInfoMatrixSerializer;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.dot.DependencyInfoGraphSerializer;
+import com.github.sevntu.checkstyle.dsm.DependencyInfoMatrixSerializer;
+import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
+import com.github.sevntu.checkstyle.utils.FileUtils;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 /**
  * Application entry point that accepts file paths as command line arguments and

@@ -19,11 +19,12 @@
 
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
-import com.github.sevntu.checkstyle.domain.ExpectedDependencies;
-import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.github.sevntu.checkstyle.domain.ExpectedDependencies;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
+import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 
 public class MethodCallDependencyCheckstyleModuleTest extends MethodCallDependenciesModuleTestSupport {
 

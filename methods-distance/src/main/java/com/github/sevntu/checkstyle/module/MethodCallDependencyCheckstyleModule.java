@@ -19,22 +19,22 @@
 
 package com.github.sevntu.checkstyle.module;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
 import com.github.sevntu.checkstyle.domain.ClassDefinition;
 import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.domain.MethodCall;
 import com.github.sevntu.checkstyle.domain.MethodDefinition;
 import com.github.sevntu.checkstyle.domain.RefCall;
 import com.github.sevntu.checkstyle.domain.ResolvedCall;
-import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
 

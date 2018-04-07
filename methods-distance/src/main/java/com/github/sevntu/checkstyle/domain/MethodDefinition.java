@@ -19,8 +19,9 @@
 
 package com.github.sevntu.checkstyle.domain;
 
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 // This class is data-heavy
 // CSOFF: MethodCount

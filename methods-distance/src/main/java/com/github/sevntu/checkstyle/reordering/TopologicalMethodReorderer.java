@@ -19,10 +19,6 @@
 
 package com.github.sevntu.checkstyle.reordering;
 
-import com.github.sevntu.checkstyle.ordering.MethodOrder;
-import com.github.sevntu.checkstyle.ordering.PenaltyCalculator;
-import com.github.sevntu.checkstyle.ordering.Method;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,6 +30,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.github.sevntu.checkstyle.ordering.Method;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
+import com.github.sevntu.checkstyle.ordering.PenaltyCalculator;
 
 public class TopologicalMethodReorderer implements MethodReorderer {
 

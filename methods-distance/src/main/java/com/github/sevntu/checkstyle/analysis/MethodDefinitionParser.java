@@ -19,18 +19,18 @@
 
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.domain.ClassDefinition;
-import com.github.sevntu.checkstyle.domain.MethodDefinition;
-import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
-import com.google.common.collect.ImmutableSet;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
+import com.github.sevntu.checkstyle.domain.ClassDefinition;
+import com.github.sevntu.checkstyle.domain.MethodDefinition;
+import com.google.common.collect.ImmutableSet;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public final class MethodDefinitionParser {
 

@@ -19,14 +19,14 @@
 
 package com.github.sevntu.checkstyle.domain;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.github.sevntu.checkstyle.analysis.AnalysisUtils;
 import com.github.sevntu.checkstyle.analysis.MethodDefinitionParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ClassDefinition {
 

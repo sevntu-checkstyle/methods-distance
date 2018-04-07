@@ -19,21 +19,22 @@
 
 package com.github.sevntu.checkstyle.dsm;
 
-import com.github.sevntu.checkstyle.ordering.MethodOrder;
-import com.github.sevntu.checkstyle.ordering.PenaltyCalculator;
-import com.github.sevntu.checkstyle.utils.FileUtils;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
+import com.github.sevntu.checkstyle.ordering.PenaltyCalculator;
+import com.github.sevntu.checkstyle.utils.FileUtils;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 public final class DependencyInfoMatrixSerializer {
 
