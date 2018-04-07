@@ -19,17 +19,8 @@
 
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
-import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
-import com.github.sevntu.checkstyle.domain.BaseCheckTestSupport;
-import com.github.sevntu.checkstyle.domain.Dependencies;
-import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.domain.ExpectedDependencies;
-import com.github.sevntu.checkstyle.ordering.Method;
-import com.github.sevntu.checkstyle.ordering.MethodOrder;
-import com.puppycrawl.tools.checkstyle.Checker;
-import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -37,8 +28,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.github.sevntu.checkstyle.common.DependencyInformationConsumerInjector;
+import com.github.sevntu.checkstyle.domain.BaseCheckTestSupport;
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.domain.ExpectedDependencies;
+import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
+import com.github.sevntu.checkstyle.ordering.Method;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
+import com.puppycrawl.tools.checkstyle.Checker;
+import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSupport {
 

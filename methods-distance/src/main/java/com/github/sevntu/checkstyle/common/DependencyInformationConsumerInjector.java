@@ -19,12 +19,12 @@
 
 package com.github.sevntu.checkstyle.common;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
+import java.lang.reflect.InvocationTargetException;
+
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-
-import java.lang.reflect.InvocationTargetException;
 
 public final class DependencyInformationConsumerInjector implements ModuleFactory {
 

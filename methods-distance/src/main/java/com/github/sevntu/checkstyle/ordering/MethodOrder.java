@@ -19,18 +19,6 @@
 
 package com.github.sevntu.checkstyle.ordering;
 
-import com.github.sevntu.checkstyle.domain.Dependencies;
-import com.github.sevntu.checkstyle.domain.MethodDefinition;
-import com.github.sevntu.checkstyle.domain.ResolvedCall;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.collections4.MultiMapUtils;
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.SetUtils;
-import org.apache.commons.collections4.SetValuedMap;
-import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
-import org.apache.commons.lang.builder.CompareToBuilder;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -43,6 +31,19 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.SetUtils;
+import org.apache.commons.collections4.SetValuedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+import org.apache.commons.lang.builder.CompareToBuilder;
+
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.domain.MethodDefinition;
+import com.github.sevntu.checkstyle.domain.ResolvedCall;
 
 public class MethodOrder {
 

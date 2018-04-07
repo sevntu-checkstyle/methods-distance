@@ -19,12 +19,13 @@
 
 package com.github.sevntu.checkstyle.domain;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import com.github.sevntu.checkstyle.analysis.MethodCallDependenciesModuleTestSupport;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.MethodOrder;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class MethodOrderReorderTest extends MethodCallDependenciesModuleTestSupport {
 

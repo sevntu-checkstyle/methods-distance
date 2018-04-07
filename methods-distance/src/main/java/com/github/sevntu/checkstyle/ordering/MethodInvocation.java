@@ -19,9 +19,10 @@
 
 package com.github.sevntu.checkstyle.ordering;
 
-import com.github.sevntu.checkstyle.domain.ResolvedCall;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import com.github.sevntu.checkstyle.domain.ResolvedCall;
 
 public class MethodInvocation {
 

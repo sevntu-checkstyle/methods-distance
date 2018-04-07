@@ -19,15 +19,15 @@
 
 package com.github.sevntu.checkstyle.analysis;
 
-import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 public final class AnalysisUtils {
 

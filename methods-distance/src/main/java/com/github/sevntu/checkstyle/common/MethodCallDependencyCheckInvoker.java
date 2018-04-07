@@ -19,8 +19,12 @@
 
 package com.github.sevntu.checkstyle.common;
 
-import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
 import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
@@ -28,10 +32,6 @@ import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 public class MethodCallDependencyCheckInvoker {
 

@@ -19,9 +19,10 @@
 
 package com.github.sevntu.checkstyle.domain;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Resolved method invocation.

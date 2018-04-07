@@ -19,6 +19,14 @@
 
 package com.github.sevntu.checkstyle.dot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.dot.domain.AttributeHolder;
 import com.github.sevntu.checkstyle.dot.domain.Cluster;
@@ -33,14 +41,6 @@ import com.github.sevntu.checkstyle.dot.domain.Shapes;
 import com.github.sevntu.checkstyle.ordering.Method;
 import com.github.sevntu.checkstyle.ordering.MethodOrder;
 import com.github.sevntu.checkstyle.utils.FileUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public final class DependencyInfoGraphSerializer {
 

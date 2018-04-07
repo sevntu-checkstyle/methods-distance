@@ -19,20 +19,6 @@
 
 package com.github.sevntu.checkstyle;
 
-import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
-import com.github.sevntu.checkstyle.domain.Dependencies;
-import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
-import com.github.sevntu.checkstyle.ordering.MethodOrder;
-import com.github.sevntu.checkstyle.utils.FileUtils;
-import com.github.sevntu.checkstyle.dot.DependencyInfoGraphSerializer;
-import com.github.sevntu.checkstyle.dsm.DependencyInfoMatrixSerializer;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,6 +30,21 @@ import java.net.URLConnection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.github.sevntu.checkstyle.common.MethodCallDependencyCheckInvoker;
+import com.github.sevntu.checkstyle.domain.Dependencies;
+import com.github.sevntu.checkstyle.dot.DependencyInfoGraphSerializer;
+import com.github.sevntu.checkstyle.dsm.DependencyInfoMatrixSerializer;
+import com.github.sevntu.checkstyle.module.DependencyInformationConsumer;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
+import com.github.sevntu.checkstyle.utils.FileUtils;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 /**
  * Servlet which handles requests for generation of DSM and DOT from

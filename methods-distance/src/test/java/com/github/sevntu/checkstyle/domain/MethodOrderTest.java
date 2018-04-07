@@ -19,18 +19,21 @@
 
 package com.github.sevntu.checkstyle.domain;
 
-import com.github.sevntu.checkstyle.analysis.MethodCallDependenciesModuleTestSupport;
-import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
-import com.github.sevntu.checkstyle.ordering.Method;
-import com.github.sevntu.checkstyle.ordering.MethodOrder;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.github.sevntu.checkstyle.analysis.MethodCallDependenciesModuleTestSupport;
+import com.github.sevntu.checkstyle.module.MethodCallDependencyCheckstyleModule;
+import com.github.sevntu.checkstyle.ordering.Method;
+import com.github.sevntu.checkstyle.ordering.MethodOrder;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
 
