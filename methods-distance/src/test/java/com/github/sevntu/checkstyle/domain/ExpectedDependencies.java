@@ -69,7 +69,7 @@ public final class ExpectedDependencies {
 
     public static final class Builder implements WithCallsToOrNewMethodOrGet, WithLineCol {
 
-        private final ExpectedDependencies ed = new ExpectedDependencies();
+        private final ExpectedDependencies expectedDependencies = new ExpectedDependencies();
 
         private MethodInvocation currentDependency;
 
@@ -77,28 +77,28 @@ public final class ExpectedDependencies {
 
         @Override
         public WithCallsToOrNewMethodOrGet method(String signature) {
-            ed.methodSignatures.add(signature);
+            expectedDependencies.methodSignatures.add(signature);
             return this;
         }
 
         @Override
         public WithLineCol callsTo(int calleeIndex) {
             currentDependency = new MethodInvocation();
-            currentDependency.caller = ed.methodSignatures.size() - 1;
+            currentDependency.caller = expectedDependencies.methodSignatures.size() - 1;
             currentDependency.callee = calleeIndex;
             return this;
         }
 
         @Override
         public ExpectedDependencies get() {
-            return ed;
+            return expectedDependencies;
         }
 
         @Override
         public WithCallsToOrNewMethodOrGet at(int line, int col) {
             currentDependency.atLine = line;
             currentDependency.atCol = col;
-            ed.methodDependencies.add(currentDependency);
+            expectedDependencies.methodDependencies.add(currentDependency);
             currentDependency = null;
             return this;
         }

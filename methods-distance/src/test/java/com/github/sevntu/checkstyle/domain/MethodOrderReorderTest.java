@@ -49,14 +49,18 @@ public class MethodOrderReorderTest extends MethodCallDependenciesModuleTestSupp
         compare(second, firstLikeSecond, screenLinesCount);
     }
 
-    private static void compare(final MethodOrder expected, final MethodOrder actual, final int screenLinesCount) {
+    private static void compare(final MethodOrder expected, final MethodOrder actual,
+            final int screenLinesCount) {
         assertEquals(expected.getAccessorsSplitCases(), actual.getAccessorsSplitCases());
-        assertEquals(expected.getDeclarationBeforeUsageCases(), actual.getDeclarationBeforeUsageCases());
+        assertEquals(expected.getDeclarationBeforeUsageCases(),
+                actual.getDeclarationBeforeUsageCases());
         assertEquals(expected.getDependenciesBetweenDistantMethodsCases(screenLinesCount),
-            actual.getDependenciesBetweenDistantMethodsCases(screenLinesCount));
+                actual.getDependenciesBetweenDistantMethodsCases(screenLinesCount));
         assertEquals(expected.getOverloadGroupsSplitCases(), actual.getOverloadGroupsSplitCases());
         assertEquals(expected.getOverrideGroupSplitCases(), actual.getOverrideGroupSplitCases());
-        assertEquals(expected.getRelativeOrderInconsistencyCases(), actual.getRelativeOrderInconsistencyCases());
-        assertEquals(expected.getTotalSumOfMethodDistances(), expected.getTotalSumOfMethodDistances());
+        assertEquals(expected.getRelativeOrderInconsistencyCases(),
+                actual.getRelativeOrderInconsistencyCases());
+        assertEquals(expected.getTotalSumOfMethodDistances(),
+                expected.getTotalSumOfMethodDistances());
     }
 }

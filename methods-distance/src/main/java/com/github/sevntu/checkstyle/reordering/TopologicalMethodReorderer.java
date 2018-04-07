@@ -175,17 +175,21 @@ public class TopologicalMethodReorderer implements MethodReorderer {
 
     private static Method getFirstMethod(MethodOrder order) {
         return Stream.<Supplier<Optional<Method>>>of(
-            () -> order.getMethods().stream()
+            () -> {
+                return order.getMethods().stream()
                 .filter(Method::isCtor)
                 .sorted((lhs, rhs) -> Integer.compare(lhs.getArgCount(), rhs.getArgCount()))
-                .findFirst(),
-            () -> order.getMethods().stream()
+                .findFirst();
+            },
+            () -> {
+                return order.getMethods().stream()
                 .sorted((lhs, rhs) -> {
                     final int lhsDeps = order.getMethodDependenciesInAppearanceOrder(lhs).size();
                     final int rhsDeps = order.getMethodDependenciesInAppearanceOrder(rhs).size();
                     return Integer.compare(rhsDeps, lhsDeps);
                 })
-                .findFirst(),
+                .findFirst();
+            },
             () -> Optional.of(order.getMethods().get(0)))
             .map(Supplier::get)
             .filter(Optional::isPresent)

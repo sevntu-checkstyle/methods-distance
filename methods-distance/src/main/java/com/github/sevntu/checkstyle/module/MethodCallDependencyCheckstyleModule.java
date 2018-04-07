@@ -99,14 +99,15 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
 
     @Override
     public void finishTree(DetailAST rootAST) {
-        topLevelClass.ifPresent(enclosingClass ->
+        topLevelClass.ifPresent(enclosingClass -> {
             consumer.ifPresent(informationConsumer -> {
                 final Dependencies dependencies =
                     buildDependencies(enclosingClass, methodInvocations);
                 final String inputFilePath =
                     new File(getFileContents().getFileName()).toURI().getPath();
                 informationConsumer.accept(inputFilePath, dependencies);
-            }));
+            });
+        });
     }
 
     private static Dependencies buildDependencies(DetailAST topLevelClass,
@@ -141,17 +142,20 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
         final MethodCall mc = new MethodCall(callNode);
         return Optional.of(mc)
             .filter(MethodCall::isThisClassMethodCall)
-            .flatMap(call -> classDefinition.getMethodsByName(call.getMethodName())
-                .stream()
-                .filter(method ->
-                    method.isVarArg() && method.getArgCount() <= call.getArgCount()
-                        || call.getArgCount() == method.getArgCount())
-                .findFirst()
-                .map(callee -> {
-                    final MethodDefinition caller = classDefinition.getMethodByAstNode(
-                        call.getEnclosingMethod());
-                    return new ResolvedCall(callNode, caller, callee);
-                }));
+            .flatMap(call -> {
+                return classDefinition.getMethodsByName(call.getMethodName())
+                    .stream()
+                    .filter(method -> {
+                        return method.isVarArg() && method.getArgCount() <= call.getArgCount()
+                            || call.getArgCount() == method.getArgCount();
+                    })
+                    .findFirst()
+                    .map(callee -> {
+                        final MethodDefinition caller = classDefinition.getMethodByAstNode(
+                            call.getEnclosingMethod());
+                        return new ResolvedCall(callNode, caller, callee);
+                    });
+            });
     }
 
     private static Optional<ResolvedCall> tryResolveRefCall(
@@ -160,9 +164,11 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
         final RefCall call = new RefCall(classDefinition, refCallNode);
         return Optional.of(call)
             .filter(RefCall::isRefToMethodOfEnclosingClass)
-            .map(refCall -> refCall.isRefToStaticMethodOfEnclosingClass()
-                ? classDefinition.getStaticMethodsByName(refCall.getMethodName())
-                : classDefinition.getInstanceMethodsByName(refCall.getMethodName()))
+            .map(refCall -> {
+                return refCall.isRefToStaticMethodOfEnclosingClass()
+                    ? classDefinition.getStaticMethodsByName(refCall.getMethodName())
+                    : classDefinition.getInstanceMethodsByName(refCall.getMethodName());
+            })
             .filter(list -> !list.isEmpty())
             .map(possibleMethods -> {
                 final MethodDefinition callee = possibleMethods.get(0);

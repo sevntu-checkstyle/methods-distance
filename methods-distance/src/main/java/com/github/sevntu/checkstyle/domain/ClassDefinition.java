@@ -99,8 +99,10 @@ public class ClassDefinition {
 
     public MethodDefinition getMethodByAstNode(DetailAST methodDef) {
         return methods.stream()
-                .filter(method -> method.getAstNode().getLineNo() == methodDef.getLineNo()
-                        && method.getAstNode().getColumnNo() == methodDef.getColumnNo())
+                .filter(method -> {
+                    return method.getAstNode().getLineNo() == methodDef.getLineNo()
+                        && method.getAstNode().getColumnNo() == methodDef.getColumnNo();
+                })
                 .findFirst()
                 .orElse(null);
     }

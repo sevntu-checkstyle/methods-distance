@@ -47,8 +47,8 @@ public final class DependencyInformationConsumerInjector implements ModuleFactor
             }
         }
         catch (InstantiationException | IllegalAccessException | ClassNotFoundException
-                | NoSuchMethodException | InvocationTargetException e) {
-            throw new CheckstyleException("Failed to instantiate module " + name, e);
+                | NoSuchMethodException | InvocationTargetException ex) {
+            throw new CheckstyleException("Failed to instantiate module " + name, ex);
         }
     }
 }

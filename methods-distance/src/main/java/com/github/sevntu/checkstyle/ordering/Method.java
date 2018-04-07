@@ -59,29 +59,29 @@ public class Method {
 
     private final int length;
 
-    public Method(MethodDefinition md) {
-        signature = md.getSignature();
-        initialIndex = md.getIndex();
-        argCount = md.getArgCount();
-        varArg = md.isVarArg();
-        name = md.getName();
-        instance = md.isInstance();
-        accessibility = md.getAccessibility();
-        override = md.isOverride();
-        overloaded = md.isOverloaded();
-        setter = md.isSetter();
-        getter = md.isGetter();
+    public Method(MethodDefinition methodDefinition) {
+        signature = methodDefinition.getSignature();
+        initialIndex = methodDefinition.getIndex();
+        argCount = methodDefinition.getArgCount();
+        varArg = methodDefinition.isVarArg();
+        name = methodDefinition.getName();
+        instance = methodDefinition.isInstance();
+        accessibility = methodDefinition.getAccessibility();
+        override = methodDefinition.isOverride();
+        overloaded = methodDefinition.isOverloaded();
+        setter = methodDefinition.isSetter();
+        getter = methodDefinition.isGetter();
         if (getter || setter) {
-            accessiblePropertyName = md.getAccessiblePropertyName();
+            accessiblePropertyName = methodDefinition.getAccessiblePropertyName();
         }
         else {
             accessiblePropertyName = null;
         }
-        ctor = md.isCtor();
-        returnsVoid = !ctor && md.isVoid();
-        initialLineNo = md.getLineNo();
-        columnNo = md.getAstNode().getColumnNo();
-        length = md.getLength();
+        ctor = methodDefinition.isCtor();
+        returnsVoid = !ctor && methodDefinition.isVoid();
+        initialLineNo = methodDefinition.getLineNo();
+        columnNo = methodDefinition.getAstNode().getColumnNo();
+        length = methodDefinition.getLength();
     }
 
     public boolean isVarArg() {
