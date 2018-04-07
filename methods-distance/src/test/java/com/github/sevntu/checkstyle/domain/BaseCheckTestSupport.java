@@ -142,7 +142,7 @@ public class BaseCheckTestSupport {
         // process each of the lines
         final ByteArrayInputStream inputStream =
                 new ByteArrayInputStream(stream.toByteArray());
-        try (final LineNumberReader lnr = new LineNumberReader(
+        try (LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
             for (int i = 0; i < expected.length; i++) {
@@ -216,7 +216,7 @@ public class BaseCheckTestSupport {
         final ByteArrayInputStream inputStream =
                 new ByteArrayInputStream(stream.toByteArray());
 
-        try (final LineNumberReader lnr = new LineNumberReader(
+        try (LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
             final Map<String, List<String>> actualViolations = new HashMap<>();

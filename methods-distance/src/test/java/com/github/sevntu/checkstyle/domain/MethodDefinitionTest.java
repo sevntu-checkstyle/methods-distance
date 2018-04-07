@@ -13,17 +13,17 @@ public class MethodDefinitionTest extends MethodCallDependenciesModuleTestSuppor
     @Test
     public void testGetterSetterRecognition() throws Exception {
         final MethodOrder dc = withDefaultConfigOrdering("InputMethodDefinition1.java");
-        for(final int index : new int[]{0, 1, 2, 3, 4}) {
+        for (final int index : new int[]{0, 1, 2, 3, 4}) {
             final Method method = dc.getMethodByInitialIndex(index);
             assertTrue(method.isGetter());
             assertFalse(method.isSetter());
         }
-        for(final int index : new int[]{7}) {
+        for (final int index : new int[]{7}) {
             final Method method = dc.getMethodByInitialIndex(index);
             assertFalse(method.isGetter());
             assertTrue(method.isSetter());
         }
-        for(final int index : new int[]{5, 6, 8, 9, 10, 11}) {
+        for (final int index : new int[]{5, 6, 8, 9, 10, 11}) {
             final Method method = dc.getMethodByInitialIndex(index);
             assertFalse(method.isGetter());
             assertFalse(method.isSetter());

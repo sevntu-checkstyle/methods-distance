@@ -18,24 +18,16 @@
     <suppress checks="SuppressWarnings" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="UncommentedMain" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="AvoidInlineConditionals" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="TrailingComment" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="Indentation" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="LineLength" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="WhitespaceAfter|WhitespaceAround" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="ImportOrder" files=".*"/>
     <suppress checks="AvoidStarImport" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="EmptyLineSeparator" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="Header" files=".*"/>
     <suppress checks="VisibilityModifier" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="FinalClass" files=".*"/>
     <suppress checks="MemberName" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="LocalVariableName" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="ParameterName" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="ReturnCount" files=".*"/>
     <suppress checks="ImportControl" files=".*"/>
     <suppress checks="NeedBraces" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="NewlineAtEndOfFile" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="RedundantModifier" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="ClassDataAbstractionCoupling" files=".*"/>
     <!-- END of legacy code -->
 

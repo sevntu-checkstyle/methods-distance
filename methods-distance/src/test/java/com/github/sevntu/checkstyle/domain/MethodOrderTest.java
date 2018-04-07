@@ -97,7 +97,7 @@ public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
         expected.put("InputDependenciesOrderInconsistency4.java", 1);
         expected.put("InputDependenciesOrderInconsistency5.java", 1);
         expected.put("InputDependenciesOrderInconsistency6.java", 0);
-        for(final Map.Entry<String,Integer> e : expected.entrySet()) {
+        for (final Map.Entry<String, Integer> e : expected.entrySet()) {
             final String msg = String.format("Incorrect result for input \"%s\"", e.getKey());
             assertEquals(msg, e.getValue().longValue(), withDefaultConfigOrdering(e.getKey()).getRelativeOrderInconsistencyCases());
         }
@@ -117,7 +117,7 @@ public class MethodOrderTest extends MethodCallDependenciesModuleTestSupport {
         expected.put("InputDependenciesDistantMethodCall2.java", 2);
         expected.put("InputDependenciesDistantMethodCall3.java", 1);
         expected.put("InputDependenciesDistantMethodCall4.java", 0);
-        for(final Map.Entry<String, Integer> e : expected.entrySet()) {
+        for (final Map.Entry<String, Integer> e : expected.entrySet()) {
             final MethodOrder dependencies = withDefaultConfigOrdering(e.getKey());
             final String msg = String.format("Incorrect result for input \"%s\"", e.getKey());
             assertEquals(msg, e.getValue().intValue(),

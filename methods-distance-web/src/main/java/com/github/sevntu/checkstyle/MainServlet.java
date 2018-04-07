@@ -64,7 +64,7 @@ public class MainServlet extends HttpServlet {
     }
 
     private void processDsm(URL sourceUrl, HttpServletResponse resp)
-        throws CheckstyleException, IOException {
+            throws CheckstyleException, IOException {
 
         class DsmDependencyInformationConsumer implements DependencyInformationConsumer {
 
@@ -100,7 +100,7 @@ public class MainServlet extends HttpServlet {
     }
 
     private void processDot(URL sourceUrl, HttpServletResponse resp)
-        throws CheckstyleException, IOException {
+            throws CheckstyleException, IOException {
 
         final DependencyInformationConsumer consumer = (filePath, dependencies) -> {
             try {

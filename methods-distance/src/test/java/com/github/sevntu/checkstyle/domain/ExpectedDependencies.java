@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ExpectedDependencies {
+public final class ExpectedDependencies {
 
     private final List<String> methodSignatures = new ArrayList<>();
 
     private final List<MethodInvocation> methodDependencies = new ArrayList<>();
 
-    private ExpectedDependencies() {}
+    private ExpectedDependencies() { }
 
     public static WithCallsToOrNewMethodOrGet build() {
         return new Builder();
@@ -35,7 +35,7 @@ public class ExpectedDependencies {
         return methodSignatures.get(index);
     }
 
-    public static class MethodInvocation {
+    public static final class MethodInvocation {
 
         public int caller;
 
@@ -45,10 +45,10 @@ public class ExpectedDependencies {
 
         public int atCol;
 
-        private MethodInvocation() {}
+        private MethodInvocation() { }
     }
 
-    public static class Builder implements WithCallsToOrNewMethodOrGet, WithLineCol {
+    public static final class Builder implements WithCallsToOrNewMethodOrGet, WithLineCol {
 
         private final ExpectedDependencies ed = new ExpectedDependencies();
 
@@ -87,7 +87,9 @@ public class ExpectedDependencies {
 
     public interface WithCallsToOrNewMethodOrGet {
         WithCallsToOrNewMethodOrGet method(String signature);
+
         WithLineCol callsTo(int calleeIndex);
+
         ExpectedDependencies get();
     }
 

@@ -58,22 +58,22 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
     }
 
     private static void mustBeSame(final ExpectedDependencies expected, final MethodOrder actual) {
-        for(final String expectedMethod : expected.getMethods()) {
+        for (final String expectedMethod : expected.getMethods()) {
             assertTrue("Method " + expectedMethod + " is not present is actual info",
                     actual.getMethods().stream().anyMatch(md -> expectedMethod.equals(md.getSignature())));
         }
-        for(final Method actualMethod: actual.getMethods()) {
+        for (final Method actualMethod: actual.getMethods()) {
             assertTrue("Method " + actualMethod.getSignature() + " is not present in expected info",
                     expected.getMethods().stream().anyMatch(mi -> mi.equals(actualMethod.getSignature())));
         }
-        for(final String method : expected.getMethods()) {
+        for (final String method : expected.getMethods()) {
             final Method caller = actual.getMethods().stream()
                     .filter(m -> m.getSignature().equals(method)).findFirst().get();
             final List<Method> dependencies = actual.getMethodDependenciesInAppearanceOrder(caller);
             final List<ExpectedDependencies.MethodInvocation> invocations = expected.getInvocationsFromMethod(method);
             assertEquals("Actual method dependencies count and count of invocations from method "
                     + method + " does not match", invocations.size(), dependencies.size());
-            for(int i = 0; i < invocations.size(); ++i) {
+            for (int i = 0; i < invocations.size(); ++i) {
                 final Method calledMethod = dependencies.get(i);
                 final ExpectedDependencies.MethodInvocation invocationOfMethod = invocations.get(i);
                 assertTrue("Method " + calledMethod.getSignature() + " is present as actual "
