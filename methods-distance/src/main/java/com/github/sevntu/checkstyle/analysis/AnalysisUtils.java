@@ -36,15 +36,19 @@ public final class AnalysisUtils {
     public static boolean isInsideClassDef(DetailAST node) {
         final DetailAST parent = getClosestParentOfTypes(node, TokenTypes.CLASS_DEF,
                 TokenTypes.LITERAL_NEW, TokenTypes.INTERFACE_DEF);
+        final boolean result;
         switch (parent.getType()) {
             case TokenTypes.CLASS_DEF:
-                return true;
+                result = true;
+                break;
             case TokenTypes.LITERAL_NEW:
             case TokenTypes.INTERFACE_DEF:
-                return false;
+                result = false;
+                break;
             default:
                 throw new UnexpectedTokenTypeException(parent);
         }
+        return result;
     }
 
     public static DetailAST getEnclosingClass(DetailAST node) {
@@ -54,15 +58,19 @@ public final class AnalysisUtils {
     public static boolean isNestedInsideMethodDef(DetailAST node) {
         final DetailAST parent = getClosestParentOfTypes(node, TokenTypes.METHOD_DEF,
                 TokenTypes.CTOR_DEF, TokenTypes.VARIABLE_DEF);
+        final boolean result;
         switch (parent.getType()) {
             case TokenTypes.METHOD_DEF:
             case TokenTypes.CTOR_DEF:
-                return true;
+                result = true;
+                break;
             case TokenTypes.VARIABLE_DEF:
-                return !isFieldDeclaration(parent) && isNestedInsideMethodDef(parent);
+                result = !isFieldDeclaration(parent) && isNestedInsideMethodDef(parent);
+                break;
             default:
                 throw new UnexpectedTokenTypeException(parent);
         }
+        return result;
     }
 
     public static boolean isFieldDeclaration(DetailAST variableDef) {

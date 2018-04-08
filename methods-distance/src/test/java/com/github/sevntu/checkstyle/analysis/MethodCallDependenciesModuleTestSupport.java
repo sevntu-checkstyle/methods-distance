@@ -42,7 +42,7 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSupport {
 
-    protected final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
     private DependencyInformationCollector collector = new DependencyInformationCollector();
 
@@ -104,7 +104,7 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
                 assertTrue("Method " + calledMethod.getSignature() + " is present as actual "
                                 + i + " dependency of " + method + " but should not be!",
                         calledMethod.getSignature()
-                            .equals(expected.getMethodByIndex(invocationOfMethod.callee)));
+                            .equals(expected.getMethodByIndex(invocationOfMethod.getCallee())));
             }
         }
     }

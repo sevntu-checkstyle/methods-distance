@@ -65,14 +65,16 @@ public class ResolvedCall {
     }
 
     public boolean isNestedInside(ResolvedCall other) {
+        boolean result = false;
         for (DetailAST parent = getAstNode().getParent(); parent != null;
             parent = parent.getParent()) {
             if (parent.getLineNo() == other.getAstNode().getLineNo()
                 && parent.getColumnNo() == other.getAstNode().getColumnNo()) {
-                return true;
+                result = true;
+                break;
             }
         }
-        return false;
+        return result;
     }
 
     @Override

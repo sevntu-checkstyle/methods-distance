@@ -113,51 +113,65 @@ public final class DependencyInfoGraphSerializer {
     }
 
     private static Colors getColorForMethod(Method method) {
+        final Colors result;
         switch (method.getAccessibility()) {
-            case PUBLIC: return Colors.GREEN;
-            case PROTECTED: return Colors.YELLOW;
-            case PRIVATE: return Colors.BLACK;
-            case DEFAULT: return Colors.BLUE;
+            case PUBLIC:
+                result = Colors.GREEN;
+                break;
+            case PROTECTED:
+                result = Colors.YELLOW;
+                break;
+            case PRIVATE:
+                result = Colors.BLACK;
+                break;
+            case DEFAULT:
+                result = Colors.BLUE;
+                break;
             default: throw new IllegalArgumentException(
                 "Unexpected accessibility type " + method.getAccessibility());
         }
+        return result;
     }
 
     private static Shapes getShapeForMethod(Method method) {
+        final Shapes result;
         if (method.isStatic()) {
-            return Shapes.POLYGON;
+            result = Shapes.POLYGON;
         }
         else if (method.isOverride()) {
-            return Shapes.TRAPEZIUM;
+            result = Shapes.TRAPEZIUM;
         }
         else if (method.isOverloaded()) {
-            return Shapes.INVTRIANGLE;
+            result = Shapes.INVTRIANGLE;
         }
         else {
-            return Shapes.ELLIPSE;
+            result = Shapes.ELLIPSE;
         }
+        return result;
     }
 
     private static String serializeElement(Element element) {
+        final String result;
         if (element instanceof Graph) {
-            return serialize((Graph) element);
+            result = serialize((Graph) element);
         }
         else if (element instanceof Node) {
-            return serialize((Node) element);
+            result = serialize((Node) element);
         }
         else if (element instanceof Edge) {
-            return serialize((Edge) element);
+            result = serialize((Edge) element);
         }
         else if (element instanceof Comment) {
-            return serialize((Comment) element);
+            result = serialize((Comment) element);
         }
         else if (element instanceof Cluster) {
-            return serialize((Cluster) element);
+            result = serialize((Cluster) element);
         }
         else {
             throw new IllegalArgumentException(
                 "Illegal DOT node type " + element.getClass().getName());
         }
+        return result;
     }
 
     private static String serialize(Graph graph) {
@@ -167,22 +181,26 @@ public final class DependencyInfoGraphSerializer {
     }
 
     private static String serialize(Node node) {
+        final String result;
         if (node.hasAttributes()) {
-            return fmt("\"%s\" %s;\n", node.getId(), serializeAttributes(node));
+            result = fmt("\"%s\" %s;\n", node.getId(), serializeAttributes(node));
         }
         else {
-            return fmt("\"%s\";\n", node.getId());
+            result = fmt("\"%s\";\n", node.getId());
         }
+        return result;
     }
 
     private static String serialize(Edge edge) {
+        final String result;
         if (edge.hasAttributes()) {
-            return fmt("\"%s\" -> \"%s\" %s;\n", edge.getStart().getId(), edge.getEnd().getId(),
+            result = fmt("\"%s\" -> \"%s\" %s;\n", edge.getStart().getId(), edge.getEnd().getId(),
                 serializeAttributes(edge));
         }
         else {
-            return fmt("\"%s\" -> \"%s\";", edge.getStart().getId(), edge.getEnd().getId());
+            result = fmt("\"%s\" -> \"%s\";", edge.getStart().getId(), edge.getEnd().getId());
         }
+        return result;
     }
 
     private static String serialize(Comment comment) {

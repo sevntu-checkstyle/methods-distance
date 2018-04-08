@@ -45,15 +45,19 @@ public class MethodCall {
     }
 
     private static String getMethodNameImpl(DetailAST methodCallNode) {
+        final String result;
         final DetailAST methodCallFirstChild = methodCallNode.getFirstChild();
         switch (methodCallFirstChild.getType()) {
             case TokenTypes.IDENT:
-                return methodCallFirstChild.getText();
+                result = methodCallFirstChild.getText();
+                break;
             case TokenTypes.DOT:
-                return methodCallFirstChild.getLastChild().getText();
+                result = methodCallFirstChild.getLastChild().getText();
+                break;
             default:
                 throw new UnexpectedTokenTypeException(methodCallFirstChild);
         }
+        return result;
     }
 
     private static boolean isThisClassMethodCallImpl(DetailAST methodCallNode) {

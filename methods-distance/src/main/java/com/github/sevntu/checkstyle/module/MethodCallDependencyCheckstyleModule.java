@@ -127,14 +127,20 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
 
     private static Optional<ResolvedCall> tryResolveCall(
         ClassDefinition classDefinition, DetailAST invocation) {
+        final Optional<ResolvedCall> result;
 
         switch (invocation.getType()) {
-            case TokenTypes.METHOD_CALL: return tryResolveMethodCall(classDefinition, invocation);
-            case TokenTypes.METHOD_REF: return tryResolveRefCall(classDefinition, invocation);
+            case TokenTypes.METHOD_CALL:
+                result = tryResolveMethodCall(classDefinition, invocation);
+                break;
+            case TokenTypes.METHOD_REF:
+                result = tryResolveRefCall(classDefinition, invocation);
+                break;
             default:
                 throw new IllegalArgumentException("Expected METHOD_CALL or METHOD_REF, "
                     + "got " + TokenUtils.getTokenName(invocation.getType()));
         }
+        return result;
     }
 
     private static Optional<ResolvedCall> tryResolveMethodCall(
@@ -165,9 +171,14 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
         return Optional.of(call)
             .filter(RefCall::isRefToMethodOfEnclosingClass)
             .map(refCall -> {
-                return refCall.isRefToStaticMethodOfEnclosingClass()
-                    ? classDefinition.getStaticMethodsByName(refCall.getMethodName())
-                    : classDefinition.getInstanceMethodsByName(refCall.getMethodName());
+                final List<MethodDefinition> result;
+                if (refCall.isRefToStaticMethodOfEnclosingClass()) {
+                    result = classDefinition.getStaticMethodsByName(refCall.getMethodName());
+                }
+                else {
+                    result = classDefinition.getInstanceMethodsByName(refCall.getMethodName());
+                }
+                return result;
             })
             .filter(list -> !list.isEmpty())
             .map(possibleMethods -> {

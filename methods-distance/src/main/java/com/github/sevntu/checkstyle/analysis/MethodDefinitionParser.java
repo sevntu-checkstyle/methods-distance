@@ -96,22 +96,31 @@ public final class MethodDefinitionParser {
     }
 
     private int getArgCount() {
+        final int result;
         final int parameterCount = methodDef.findFirstToken(TokenTypes.PARAMETERS).getChildCount(
             TokenTypes.PARAMETER_DEF);
-        return isVarArg() ? parameterCount - 1 : parameterCount;
+        if (isVarArg()) {
+            result = parameterCount - 1;
+        }
+        else {
+            result = parameterCount;
+        }
+        return result;
     }
 
     private boolean isVarArg() {
+        final boolean result;
         final List<DetailAST> parameterDefs = AnalysisUtils.getNodeChildren(
             methodDef.findFirstToken(TokenTypes.PARAMETERS),
             TokenTypes.PARAMETER_DEF);
         if (parameterDefs.isEmpty()) {
-            return false;
+            result = false;
         }
         else {
             final DetailAST lastParameterDef = parameterDefs.get(parameterDefs.size() - 1);
-            return lastParameterDef.findFirstToken(TokenTypes.ELLIPSIS) != null;
+            result = lastParameterDef.findFirstToken(TokenTypes.ELLIPSIS) != null;
         }
+        return result;
     }
 
     private String getName() {
@@ -168,18 +177,20 @@ public final class MethodDefinitionParser {
     }
 
     private MethodDefinition.Accessibility getAccessibility() {
+        final MethodDefinition.Accessibility result;
         if (isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PUBLIC)) {
-            return MethodDefinition.Accessibility.PUBLIC;
+            result = MethodDefinition.Accessibility.PUBLIC;
         }
         else if (isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PROTECTED)) {
-            return MethodDefinition.Accessibility.PROTECTED;
+            result = MethodDefinition.Accessibility.PROTECTED;
         }
         else if (isMethodDefHasModifier(methodDef, TokenTypes.LITERAL_PRIVATE)) {
-            return MethodDefinition.Accessibility.PRIVATE;
+            result = MethodDefinition.Accessibility.PRIVATE;
         }
         else {
-            return MethodDefinition.Accessibility.DEFAULT;
+            result = MethodDefinition.Accessibility.DEFAULT;
         }
+        return result;
     }
 
     private boolean isOverride() {

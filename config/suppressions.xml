@@ -7,7 +7,7 @@
 <suppressions>
     <!-- START of legacy code, all violations will be resolved during transition to main project -->
     <suppress message="Missing a Javadoc comment|Missing package-info.java file" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="DesignForExtension" files=".*"/>
+    <suppress checks="DesignForExtension" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="WriteTag" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="JavadocMethod" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="JavadocType" files=".*[\\/]src[\\/]main[\\/]"/>
@@ -17,10 +17,7 @@
     <suppress checks="NonEmptyAtclauseDescription" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="SuppressWarnings" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="UncommentedMain" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="AvoidInlineConditionals" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="VisibilityModifier" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="ReturnCount" files=".*"/>
-    <suppress checks="ClassDataAbstractionCoupling" files=".*"/>
+    <suppress checks="ClassDataAbstractionCoupling" files="[\\/]DependencyInfoGraphSerializer\.java"/>
     <!-- END of legacy code -->
 
     <!-- Tone down the checking for test code -->
@@ -28,6 +25,7 @@
     <suppress checks="MagicNumber" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="AvoidStaticImport" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="WriteTag" files=".*[\\/]src[\\/]test[\\/]"/>
+    <suppress checks="ClassDataAbstractionCoupling" files=".*[\\/]src[\\/]test[\\/]"/>
 
     <!-- Fixing these cases will decrease code readability -->
     <suppress checks="MultipleStringLiterals" files=".*[\\/]src[\\/]test[\\/]"/>
