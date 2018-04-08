@@ -54,6 +54,7 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
      * Estimated line count of source code that fit on screen at once.
      *
      * @param screenLinesCount
+     *     The number of lines that can fit on the screen.
      */
     public void setScreenLinesCount(int screenLinesCount) {
         // This setter is created only to allow putting this property to CS module config.

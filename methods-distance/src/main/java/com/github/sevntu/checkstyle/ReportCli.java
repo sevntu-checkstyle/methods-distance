@@ -39,6 +39,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
  * Application entry point that accepts file path, processes it, extracts methods
  * dependency information, calculates other method order and generates instructions
  * on how to convert current methods order to calculated one.
+ * @author Zuy Alexey
  */
 public final class ReportCli {
 

@@ -26,6 +26,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 /**
  * Method call using round parenthesis syntax. Called method is not known.
+ * @author Zuy Alexey
  */
 public class MethodCall {
 
