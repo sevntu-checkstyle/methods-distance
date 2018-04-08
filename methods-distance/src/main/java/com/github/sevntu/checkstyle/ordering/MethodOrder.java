@@ -194,21 +194,31 @@ public class MethodOrder {
     }
 
     public int getCtorGroupsSplitCases() {
+        final int result;
         final List<Method> constructors = currentOrdering.stream()
             .filter(Method::isCtor)
             .collect(Collectors.toList());
-        return constructors.isEmpty()
-            ? 0
-            : getMethodGroupSplitCount(constructors);
+        if (constructors.isEmpty()) {
+            result = 0;
+        }
+        else {
+            result = getMethodGroupSplitCount(constructors);
+        }
+        return result;
     }
 
     public int getOverrideGroupSplitCases() {
+        final int result;
         final List<Method> overrideMethods = currentOrdering.stream()
             .filter(Method::isOverride)
             .collect(Collectors.toList());
-        return overrideMethods.isEmpty()
-            ? 0
-            : getMethodGroupSplitCount(overrideMethods);
+        if (overrideMethods.isEmpty()) {
+            result = 0;
+        }
+        else {
+            result = getMethodGroupSplitCount(overrideMethods);
+        }
+        return result;
     }
 
     public int getOverloadGroupsSplitCases() {
@@ -365,19 +375,21 @@ public class MethodOrder {
 
         @Override
         public int compare(MethodInvocation lhs, MethodInvocation rhs) {
+            final int result;
             if (invocationNesting.containsMapping(lhs, rhs)) {
-                return -1;
+                result = -1;
             }
             else if (invocationNesting.containsMapping(rhs, lhs)) {
-                return 1;
+                result = 1;
             }
             else {
-                return new CompareToBuilder()
+                result = new CompareToBuilder()
                     .append(translateInitialLineNo(lhs.getInitialLineNo()),
                         translateInitialLineNo(rhs.getInitialLineNo()))
                     .append(lhs.getColumnNo(), rhs.getColumnNo())
                     .toComparison();
             }
+            return result;
         }
     }
 

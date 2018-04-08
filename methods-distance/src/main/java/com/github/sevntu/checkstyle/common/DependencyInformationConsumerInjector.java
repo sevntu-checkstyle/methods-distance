@@ -36,19 +36,21 @@ public final class DependencyInformationConsumerInjector implements ModuleFactor
 
     @Override
     public Object createModule(String name) throws CheckstyleException {
+        final Object result;
         try {
             final Class<?> moduleClass = Class.forName(name);
             if (moduleClass.equals(MethodCallDependencyCheckstyleModule.class)) {
-                return moduleClass.getConstructor(DependencyInformationConsumer.class)
+                result = moduleClass.getConstructor(DependencyInformationConsumer.class)
                         .newInstance(consumer);
             }
             else {
-                return moduleClass.newInstance();
+                result = moduleClass.newInstance();
             }
         }
         catch (InstantiationException | IllegalAccessException | ClassNotFoundException
                 | NoSuchMethodException | InvocationTargetException ex) {
             throw new CheckstyleException("Failed to instantiate module " + name, ex);
         }
+        return result;
     }
 }

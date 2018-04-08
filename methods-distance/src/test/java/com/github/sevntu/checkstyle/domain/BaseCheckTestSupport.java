@@ -52,7 +52,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 public class BaseCheckTestSupport {
-    protected final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
     protected static DefaultConfiguration createCheckConfig(Class<?> clazz) {
         return new DefaultConfiguration(clazz.getName());
@@ -268,16 +268,18 @@ public class BaseCheckTestSupport {
      * @param arguments  the arguments of message in 'messages.properties' file.
      */
     protected String getCheckMessage(String messageKey, Object... arguments) {
+        String result = null;
         final Properties pr = new Properties();
         try {
             pr.load(getClass().getResourceAsStream("messages.properties"));
+            final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey),
+                    Locale.ROOT);
+            result = formatter.format(arguments);
         }
         catch (IOException ex) {
-            return null;
+            // no code needed
         }
-        final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey),
-                Locale.ROOT);
-        return formatter.format(arguments);
+        return result;
     }
 
     /**

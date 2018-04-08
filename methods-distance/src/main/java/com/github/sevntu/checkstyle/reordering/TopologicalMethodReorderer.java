@@ -122,15 +122,17 @@ public class TopologicalMethodReorderer implements MethodReorderer {
     }
 
     private MethodOrder overrideMethodGrouping(MethodOrder methodOrder) {
+        final MethodOrder result;
         final List<Method> overrideMethods = methodOrder.getMethods().stream()
             .filter(Method::isOverride)
             .collect(Collectors.toList());
         if (overrideMethods.size() > 1) {
-            return methodGroupsGrouping(methodOrder, Collections.singletonList(overrideMethods));
+            result = methodGroupsGrouping(methodOrder, Collections.singletonList(overrideMethods));
         }
         else {
-            return methodOrder;
+            result = methodOrder;
         }
+        return result;
     }
 
     private MethodOrder accessorMethodGrouping(MethodOrder methodOrder) {
@@ -164,13 +166,15 @@ public class TopologicalMethodReorderer implements MethodReorderer {
     }
 
     private MethodOrder getBestOrdering(MethodOrder lhs, MethodOrder rhs) {
+        final MethodOrder result;
         if (calculator.getPenalty(lhs, screenLinesCount)
             < calculator.getPenalty(rhs, screenLinesCount)) {
-            return lhs;
+            result = lhs;
         }
         else {
-            return rhs;
+            result = rhs;
         }
+        return result;
     }
 
     private static Method getFirstMethod(MethodOrder order) {

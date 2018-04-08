@@ -56,15 +56,31 @@ public final class ExpectedDependencies {
 
     public static final class MethodInvocation {
 
-        public int caller;
+        private int caller;
 
-        public int callee;
+        private int callee;
 
-        public int atLine;
+        private int atLine;
 
-        public int atCol;
+        private int atCol;
 
         private MethodInvocation() { }
+
+        public int getCaller() {
+            return caller;
+        }
+
+        public int getCallee() {
+            return callee;
+        }
+
+        public int getAtLine() {
+            return atLine;
+        }
+
+        public int getAtCol() {
+            return atCol;
+        }
     }
 
     public static final class Builder implements WithCallsToOrNewMethodOrGet, WithLineCol {
