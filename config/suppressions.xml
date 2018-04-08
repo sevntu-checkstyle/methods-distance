@@ -6,15 +6,8 @@
 
 <suppressions>
     <!-- START of legacy code, all violations will be resolved during transition to main project -->
-    <suppress message="Missing a Javadoc comment|Missing package-info.java file" files=".*[\\/]src[\\/]main[\\/]"/>
+    <suppress message="Missing a Javadoc comment|Missing package-info.java file|Javadoc comment is missing null tag" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="DesignForExtension" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="WriteTag" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="JavadocMethod" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="JavadocType" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="JavadocStyle" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="JavadocParagraph" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="SummaryJavadoc" files=".*[\\/]src[\\/]main[\\/]"/>
-    <suppress checks="NonEmptyAtclauseDescription" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="SuppressWarnings" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="UncommentedMain" files=".*[\\/]src[\\/]main[\\/]"/>
     <suppress checks="ClassDataAbstractionCoupling" files="[\\/]DependencyInfoGraphSerializer\.java"/>

@@ -25,9 +25,10 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 public interface DependencyInformationConsumer {
 
     /**
-     * Override this method to get instance of {@link Configuration}
+     * Override this method to get instance of {@link Configuration}.
      *
      * @param configuration
+     *     The {@link Configuration} being set.
      */
     default void setConfiguration(Configuration configuration) {
         // default implementation
@@ -37,6 +38,7 @@ public interface DependencyInformationConsumer {
      * Override this method to get instance of {@link MethodCallDependencyCheckstyleModule}.
      *
      * @param module
+     *     The {@link MethodCallDependencyCheckstyleModule} being set.
      */
     default void setModule(MethodCallDependencyCheckstyleModule module) {
         // default implementation

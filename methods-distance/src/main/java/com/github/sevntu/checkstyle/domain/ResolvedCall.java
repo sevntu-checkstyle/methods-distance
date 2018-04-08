@@ -26,9 +26,11 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 /**
  * Resolved method invocation.
- *
+ * <p>
  * That is method invocation using round parenthesis syntax or method reference syntax for which
  * caller method and called method are known(resolved).
+ * </p>
+ * @author Zuy Alexey
  */
 public class ResolvedCall {
 
