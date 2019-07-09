@@ -4,7 +4,7 @@ jdk:
 
 cache:
   directories:
-   - ~\.m2
+   - ~/.m2
 
 deploy:
   provider: heroku
