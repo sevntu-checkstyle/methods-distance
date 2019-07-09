@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -160,7 +160,10 @@ public class MethodOrder {
 
     public boolean isMethodDependsOn(Method caller, Method callee) {
         return invocations.stream()
-            .anyMatch(mi -> mi.getCaller().equals(caller) && mi.getCallee().equals(callee));
+            .anyMatch(methodInvocation -> {
+                return methodInvocation.getCaller().equals(caller)
+                        && methodInvocation.getCallee().equals(callee);
+            });
     }
 
     public int getMethodsIndexDifference(Method caller, Method callee) {
@@ -332,9 +335,11 @@ public class MethodOrder {
                 final ResolvedCall resolvedCall = entry.getKey();
                 final MethodInvocation methodInvocation = entry.getValue();
                 callToInvocation.keySet().stream()
-                    .filter(rc -> !rc.equals(resolvedCall))
+                    .filter(call -> !call.equals(resolvedCall))
                     .filter(resolvedCall::isNestedInside)
-                    .forEach(rc -> nestedInside.put(methodInvocation, callToInvocation.get(rc)));
+                    .forEach(call -> {
+                        nestedInside.put(methodInvocation, callToInvocation.get(call));
+                    });
             });
         return nestedInside;
     }

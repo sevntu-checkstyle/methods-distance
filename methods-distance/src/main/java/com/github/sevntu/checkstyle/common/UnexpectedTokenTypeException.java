@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 package com.github.sevntu.checkstyle.common;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 public class UnexpectedTokenTypeException extends RuntimeException {
 
@@ -33,6 +33,6 @@ public class UnexpectedTokenTypeException extends RuntimeException {
     @Override
     public String getMessage() {
         return String.format("Unexpected token %s of type %s",
-                node, TokenUtils.getTokenName(node.getType()));
+                node, TokenUtil.getTokenName(node.getType()));
     }
 }

@@ -27,14 +27,14 @@
 
   <subpackage name="analysis">
     <allow pkg="com.github.sevntu.checkstyle.domain"/>
-    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtils"/>
+    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtil"/>
     <allow class="com.google.common.collect.ImmutableSet"/>
   </subpackage>
 
   <subpackage name="common">
     <allow pkg="com.github.sevntu.checkstyle.module"/>
     <allow pkg="com.puppycrawl.tools.checkstyle" exact-match="true"/>
-    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtils"/>
+    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtil"/>
     <allow class="java.lang.reflect.InvocationTargetException"/>
   </subpackage>
 
@@ -60,7 +60,7 @@
     <allow pkg="com.github.sevntu.checkstyle.domain"/>
     <allow pkg="com.github.sevntu.checkstyle.ordering"/>
     <allow pkg="com.github.sevntu.checkstyle.reordering"/>
-    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtils"/>
+    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtil"/>
   </subpackage>
 
   <subpackage name="ordering">

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,9 @@ public final class ExpectedDependencies {
 
     private final List<MethodInvocation> methodDependencies = new ArrayList<>();
 
-    private ExpectedDependencies() { }
+    private ExpectedDependencies() {
+        // no code
+    }
 
     public static WithCallsToOrNewMethodOrGet build() {
         return new Builder();
@@ -46,7 +48,7 @@ public final class ExpectedDependencies {
     public List<MethodInvocation> getInvocationsFromMethod(final String callerSignature) {
         final int callerIndex = methodSignatures.indexOf(callerSignature);
         return methodDependencies.stream()
-                .filter(md -> md.caller == callerIndex)
+                .filter(methodDep -> methodDep.caller == callerIndex)
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +66,9 @@ public final class ExpectedDependencies {
 
         private int atCol;
 
-        private MethodInvocation() { }
+        private MethodInvocation() {
+            // no code
+        }
 
         public int getCaller() {
             return caller;
@@ -89,7 +93,9 @@ public final class ExpectedDependencies {
 
         private MethodInvocation currentDependency;
 
-        private Builder() { }
+        private Builder() {
+            // no code
+        }
 
         @Override
         public WithCallsToOrNewMethodOrGet method(String signature) {

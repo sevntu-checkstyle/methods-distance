@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,11 +27,13 @@ import java.util.stream.Collectors;
 import com.github.sevntu.checkstyle.common.UnexpectedTokenTypeException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 public final class AnalysisUtils {
 
-    private AnalysisUtils() { }
+    private AnalysisUtils() {
+        // no code
+    }
 
     public static boolean isInsideClassDef(DetailAST node) {
         final DetailAST parent = getClosestParentOfTypes(node, TokenTypes.CLASS_DEF,
@@ -88,11 +90,11 @@ public final class AnalysisUtils {
             }
         }
         final String tokenTypeNames = Arrays.stream(ofTypes)
-                .map(TokenUtils::getTokenName)
+                .map(TokenUtil::getTokenName)
                 .collect(Collectors.joining(", "));
         final String msg = String.format(
                 "Node of type %s is not contained within node of types %s",
-                TokenUtils.getTokenName(node.getType()),
+                TokenUtil.getTokenName(node.getType()),
                 tokenTypeNames);
         throw new IllegalStateException(msg);
     }

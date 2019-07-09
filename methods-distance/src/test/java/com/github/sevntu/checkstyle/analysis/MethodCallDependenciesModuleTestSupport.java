@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -83,16 +83,16 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         for (final String expectedMethod : expected.getMethods()) {
             assertTrue("Method " + expectedMethod + " is not present is actual info",
                     actual.getMethods().stream()
-                        .anyMatch(md -> expectedMethod.equals(md.getSignature())));
+                        .anyMatch(method -> expectedMethod.equals(method.getSignature())));
         }
         for (final Method actualMethod: actual.getMethods()) {
             assertTrue("Method " + actualMethod.getSignature() + " is not present in expected info",
                     expected.getMethods().stream()
-                        .anyMatch(mi -> mi.equals(actualMethod.getSignature())));
+                        .anyMatch(method -> method.equals(actualMethod.getSignature())));
         }
         for (final String method : expected.getMethods()) {
             final Method caller = actual.getMethods().stream()
-                    .filter(m -> m.getSignature().equals(method)).findFirst().get();
+                    .filter(method1 -> method1.getSignature().equals(method)).findFirst().get();
             final List<Method> dependencies = actual.getMethodDependenciesInAppearanceOrder(caller);
             final List<ExpectedDependencies.MethodInvocation> invocations = expected
                     .getInvocationsFromMethod(method);

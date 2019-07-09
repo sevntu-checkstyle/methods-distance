@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,9 @@ import com.github.sevntu.checkstyle.utils.FileUtils;
 
 public final class DependencyInfoGraphSerializer {
 
-    private DependencyInfoGraphSerializer() { }
+    private DependencyInfoGraphSerializer() {
+        // no code
+    }
 
     public static void writeToFile(Dependencies info, String fileName) {
         try (PrintWriter file = new PrintWriter(new File(fileName))) {

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,7 @@ import com.github.sevntu.checkstyle.domain.ResolvedCall;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
 
@@ -139,7 +139,7 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
                 break;
             default:
                 throw new IllegalArgumentException("Expected METHOD_CALL or METHOD_REF, "
-                    + "got " + TokenUtils.getTokenName(invocation.getType()));
+                    + "got " + TokenUtil.getTokenName(invocation.getType()));
         }
         return result;
     }
