@@ -8,22 +8,24 @@ Running:
 mvn package
 ```
 - run
-```
+`
 java -jar methods-distance/target/methods-distance-1.0-SNAPSHOT-jar-with-dependencies.jar --generate-dsm --generate-dot path/to/sources/InputFile.java
-```
+`
+
 This will produce files 'InputFile.java.html' and 'InputFile.java.dot' in working directory.
 
 Alternatively you can try to use web service for generating these files.
 Web service is hosted at [herooku](https://methods-distance.herokuapp.com).
 To get .html file perform GET request at /dsm uri with parameter source_url pointing to
 url of Java source file. [For example](https://methods-distance.herokuapp.com/dsm?source_url=https://raw.githubusercontent.com/checkstyle/checkstyle/b4e884c2ff3bef182b045692b59c1aceae3cb892/src/main/java/com/puppycrawl/tools/checkstyle/Checker.java):
-```
+`
 https://methods-distance.herokuapp.com/dsm?source_url=https://raw.githubusercontent.com/checkstyle/checkstyle/b4e884c2ff3bef182b045692b59c1aceae3cb892/src/main/java/com/puppycrawl/tools/checkstyle/Checker.java
-```
+`
+
 To get .dot file perform GET request using /dot uri with parameter source_url. [For example](https://methods-distance.herokuapp.com/dot?source_url=https://raw.githubusercontent.com/checkstyle/checkstyle/b4e884c2ff3bef182b045692b59c1aceae3cb892/src/main/java/com/puppycrawl/tools/checkstyle/Checker.java)
-```
+`
 https://methods-distance.herokuapp.com/dot?source_url=https://raw.githubusercontent.com/checkstyle/checkstyle/b4e884c2ff3bef182b045692b59c1aceae3cb892/src/main/java/com/puppycrawl/tools/checkstyle/Checker.java
-```
+`
 
 Output .html file will contain design structure matrix of dependencies between methods.
 This matrix looks like [this](https://github.com/checkstyle/checkstyle/blob/b4e884c2ff3bef182b045692b59c1aceae3cb892/src/main/java/com/puppycrawl/tools/checkstyle/Checker.java) java file:
