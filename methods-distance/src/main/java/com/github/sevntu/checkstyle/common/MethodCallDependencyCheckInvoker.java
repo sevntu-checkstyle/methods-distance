@@ -30,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
@@ -56,7 +57,7 @@ public class MethodCallDependencyCheckInvoker {
         checker = new Checker();
         checker.setModuleFactory(moduleFactory);
         checker.addFileSetCheck(tw);
-        checker.addListener(new DefaultLogger(System.out, false));
+        checker.addListener(new DefaultLogger(System.out, AutomaticBean.OutputStreamOptions.NONE));
     }
 
     private static Configuration getCompleteConfig(Map<String, String> configAttributes) {
