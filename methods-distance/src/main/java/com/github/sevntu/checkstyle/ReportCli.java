@@ -33,6 +33,7 @@ import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
 /**
@@ -61,7 +62,8 @@ public final class ReportCli {
         tw.finishLocalSetup();
         tw.setupChild(moduleConfig);
 
-        final AuditListener listener = new DefaultLogger(System.out, false);
+        final AuditListener listener = new DefaultLogger(System.out,
+                AutomaticBean.OutputStreamOptions.NONE);
 
         final Checker checker = new Checker();
         checker.setModuleFactory(moduleFactory);

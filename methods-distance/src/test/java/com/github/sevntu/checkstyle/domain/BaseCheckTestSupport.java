@@ -288,11 +288,11 @@ public class BaseCheckTestSupport {
     protected static class BriefLogger
         extends DefaultLogger {
         public BriefLogger(OutputStream out) {
-            super(out, true, out, false);
+            super(out, OutputStreamOptions.CLOSE, out, OutputStreamOptions.NONE);
         }
 
         public BriefLogger(OutputStream out, boolean printSeverity) {
-            super(out, true, out, false);
+            super(out, OutputStreamOptions.CLOSE, out, OutputStreamOptions.NONE);
         }
 
         @Override

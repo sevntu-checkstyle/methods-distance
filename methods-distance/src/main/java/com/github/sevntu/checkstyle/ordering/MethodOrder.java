@@ -236,16 +236,19 @@ public class MethodOrder {
         return invocations.stream()
             .collect(Collectors.groupingBy(MethodInvocation::getCaller))
             .values().stream()
-            .collect(Collectors.summingInt(callerInvocations -> (int) callerInvocations.stream()
-                    .filter(invocation -> {
-                        final int invocationLineNo =
-                            translateInitialLineNo(invocation.getInitialLineNo());
-                        final int calleeLineNo =
-                            translateInitialLineNo(invocation.getCallee().getInitialLineNo());
-                        return Math.abs(calleeLineNo - invocationLineNo) > screenLinesCount;
-                    })
-                    .filter(new UniqueCallerCalleeMethodInvocationFilter())
-                    .count()
+            .collect(Collectors.summingInt(callerInvocations -> {
+                    return (int) callerInvocations.stream()
+                            .filter(invocation -> {
+                                final int invocationLineNo =
+                                        translateInitialLineNo(invocation.getInitialLineNo());
+                                final int calleeLineNo =
+                                        translateInitialLineNo(invocation
+                                                .getCallee().getInitialLineNo());
+                                return Math.abs(calleeLineNo - invocationLineNo) > screenLinesCount;
+                            })
+                            .filter(new UniqueCallerCalleeMethodInvocationFilter())
+                            .count();
+            }
             ));
     }
 
@@ -304,8 +307,10 @@ public class MethodOrder {
                     - sumOfLengthsPresidingMethodsInInitialOrder;
                 return lineNo + change;
             })
-            .orElseThrow(() -> new IllegalArgumentException(
-                String.format("Line #%d does lies within any method", lineNo)));
+            .orElseThrow(() -> {
+                return new IllegalArgumentException(
+                    String.format("Line #%d does lies within any method", lineNo));
+            });
     }
 
     private static Map<String, Method> getAllMethods(Dependencies dependencies) {

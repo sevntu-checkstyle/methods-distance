@@ -198,8 +198,10 @@ public final class MethodDefinitionParser {
         final List<DetailAST> annotations =
             AnalysisUtils.getNodeChildren(modifiers, TokenTypes.ANNOTATION);
         return annotations.stream()
-            .anyMatch(annotation -> OVERRIDE_ANNOTATION_NAME.equals(
-                annotation.findFirstToken(TokenTypes.IDENT).getText()));
+            .anyMatch(annotation -> {
+                return OVERRIDE_ANNOTATION_NAME.equals(
+                        annotation.findFirstToken(TokenTypes.IDENT).getText());
+            });
     }
 
     private int getIndex() {
