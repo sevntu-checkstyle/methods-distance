@@ -61,7 +61,7 @@ public final class MethodDefinition {
     private String accessiblePropertyName;
 
     private MethodDefinition() {
-        //This constructor is intended to prevent instantiation from outside of class
+        // This constructor is intended to prevent instantiation from outside of class
     }
 
     public DetailAST getAstNode() {
