@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle-version>8.30</checkstyle-version>
         <checkstyle.configLocation>https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-${checkstyle-version}/config/checkstyle_checks.xml</checkstyle.configLocation>
-        <maven.checktyle-plugin.version>3.1.0</maven.checktyle-plugin.version>
+        <maven.checktyle-plugin.version>3.1.1</maven.checktyle-plugin.version>
         <maven.pmd.plugin.version>3.6</maven.pmd.plugin.version>
         <jetty.maven.plugin.version>9.3.8.v20160314</jetty.maven.plugin.version>
         <maven.assembly.plugin.version>2.6</maven.assembly.plugin.version>
