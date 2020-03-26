@@ -261,8 +261,12 @@ public final class MethodDefinitionParser {
     }
 
     private int getLength() {
-        final DetailAST rightCurly = methodDef.findFirstToken(TokenTypes.SLIST)
-            .findFirstToken(TokenTypes.RCURLY);
-        return rightCurly.getLineNo() - methodDef.getLineNo();
+        final DetailAST methodBody = methodDef.findFirstToken(TokenTypes.SLIST);
+        int methodBodyLength = 0;
+        if (methodBody != null) {
+            final DetailAST rightCurly = methodBody.findFirstToken(TokenTypes.RCURLY);
+            methodBodyLength = rightCurly.getLineNo() - methodDef.getLineNo();
+        }
+        return methodBodyLength;
     }
 }
