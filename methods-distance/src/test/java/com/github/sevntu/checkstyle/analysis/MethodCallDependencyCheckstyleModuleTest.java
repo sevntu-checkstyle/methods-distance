@@ -221,4 +221,22 @@ public class MethodCallDependencyCheckstyleModuleTest extends
                 .get();
         verifyInfo(dc, "InputAppearanceOrder.java", expected);
     }
+
+    @Test
+    public void testAbstractClass() throws Exception {
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final ExpectedDependencies dependencies = ExpectedDependencies.build()
+                .method("InputAbstractClass()")
+                .callsTo(1).at(6, 17)
+                .method("dependant()")
+                .callsTo(2).at(10, 18)
+                .method("dependency()")
+                .callsTo(3).at(14, 29)
+                .callsTo(4).at(15, 29)
+                .method("dependencyDependency1()")
+                .method("dependencyDependency2()")
+                .get();
+        verifyInfo(dc, "InputAbstractClass.java", dependencies);
+    }
 }
