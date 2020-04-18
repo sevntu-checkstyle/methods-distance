@@ -239,4 +239,16 @@ public class MethodCallDependencyCheckstyleModuleTest extends
                 .get();
         verifyInfo(dc, "InputAbstractClass.java", dependencies);
     }
+
+    @Test
+    public void testMethodCallChildOfNew() throws Exception {
+        final DefaultConfiguration dc =
+            createCheckConfig(MethodCallDependencyCheckstyleModule.class);
+        final ExpectedDependencies expected = ExpectedDependencies.build()
+                .method("foo()")
+                .callsTo(1).at(6, 7)
+                .method("bar()")
+                .get();
+        verifyInfo(dc, "InputMethodCallChildOfNew.java", expected);
+    }
 }
