@@ -44,6 +44,8 @@ public final class AnalysisUtils {
                 result = true;
                 break;
             case TokenTypes.LITERAL_NEW:
+                result = !isAnonymousClassDef(parent);
+                break;
             case TokenTypes.INTERFACE_DEF:
                 result = false;
                 break;
@@ -115,5 +117,17 @@ public final class AnalysisUtils {
             }
         }
         return result;
+    }
+
+    /**
+     * Whether the AST is a definition of an anonymous class.
+     *
+     * @param ast the AST to process.
+     * @return true if the AST is a definition of an anonymous class.
+     */
+    private static boolean isAnonymousClassDef(DetailAST ast) {
+        final DetailAST lastChild = ast.getLastChild();
+        return lastChild != null
+            && lastChild.getType() == TokenTypes.OBJBLOCK;
     }
 }
