@@ -39,6 +39,7 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 /**
  * Application entry point that accepts file paths as command line arguments and
  * generates DSM and DOT files in working directory.
+ *
  * @author Zuy Alexey
  */
 public final class Main {

@@ -25,6 +25,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 /**
  * Method invocation using method reference syntax. Called method is unknown.
+ *
  * @author Zuy Alexey
  */
 public class RefCall {

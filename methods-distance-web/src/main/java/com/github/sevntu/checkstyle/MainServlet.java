@@ -49,6 +49,7 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 /**
  * Servlet which handles requests for generation of DSM and DOT from
  * source code.
+ *
  * @author Zuy Alexey
  */
 public class MainServlet extends HttpServlet {
