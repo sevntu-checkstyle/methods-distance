@@ -237,19 +237,8 @@ public class MethodOrder {
             .collect(Collectors.groupingBy(MethodInvocation::getCaller))
             .values().stream()
             .collect(Collectors.summingInt(callerInvocations -> {
-                    return (int) callerInvocations.stream()
-                            .filter(invocation -> {
-                                final int invocationLineNo =
-                                        translateInitialLineNo(invocation.getInitialLineNo());
-                                final int calleeLineNo =
-                                        translateInitialLineNo(invocation
-                                                .getCallee().getInitialLineNo());
-                                return Math.abs(calleeLineNo - invocationLineNo) > screenLinesCount;
-                            })
-                            .filter(new UniqueCallerCalleeMethodInvocationFilter())
-                            .count();
-            }
-            ));
+                return isBiggerThanScreenLinesCount(screenLinesCount, callerInvocations);
+            }));
     }
 
     public int getAccessorsSplitCases() {
@@ -262,20 +251,37 @@ public class MethodOrder {
 
     public int getRelativeOrderInconsistencyCases() {
         return getMethods().stream()
-            .collect(Collectors.summingInt(caller -> {
-                int maxCalleeIndex = 0;
-                int orderViolations = 0;
-                for (final Method callee : getMethodDependenciesInAppearanceOrder(caller)) {
-                    final int calleeIndex = getMethodIndex(callee);
-                    if (calleeIndex < maxCalleeIndex) {
-                        ++orderViolations;
-                    }
-                    else {
-                        maxCalleeIndex = calleeIndex;
-                    }
-                }
-                return orderViolations;
-            }));
+            .collect(Collectors.summingInt(this::countViolations));
+    }
+
+    private int countViolations(Method caller) {
+        int maxCalleeIndex = 0;
+        int orderViolations = 0;
+        for (final Method callee : getMethodDependenciesInAppearanceOrder(caller)) {
+            final int calleeIndex = getMethodIndex(callee);
+            if (calleeIndex < maxCalleeIndex) {
+                ++orderViolations;
+            }
+            else {
+                maxCalleeIndex = calleeIndex;
+            }
+        }
+        return orderViolations;
+    }
+
+    private int isBiggerThanScreenLinesCount(int screenLinesCount,
+                                             List<MethodInvocation> callerInvocations) {
+        return (int) callerInvocations.stream()
+            .filter(invocation -> {
+                final int invocationLineNo =
+                    translateInitialLineNo(invocation.getInitialLineNo());
+                final int calleeLineNo =
+                    translateInitialLineNo(invocation
+                        .getCallee().getInitialLineNo());
+                return Math.abs(calleeLineNo - invocationLineNo) > screenLinesCount;
+            })
+            .filter(new UniqueCallerCalleeMethodInvocationFilter())
+            .count();
     }
 
     private int getMethodGroupSplitCount(Collection<Method> methodGroup) {
@@ -294,23 +300,25 @@ public class MethodOrder {
                 return start <= lineNo && lineNo <= end;
             })
             .findFirst()
-            .map(method -> {
-                final int initialMethodIndex = initialOrdering.indexOf(method);
-                final int currentMethodIndex = currentOrdering.indexOf(method);
-                final int sumOfLengthsPresidingMethodsInInitialOrder = initialOrdering
-                    .subList(0, initialMethodIndex).stream()
-                    .collect(Collectors.summingInt(Method::getLength));
-                final int sumOfLengthsPresidingMethodInCurrentOrder = currentOrdering
-                    .subList(0, currentMethodIndex).stream()
-                    .collect(Collectors.summingInt(Method::getLength));
-                final int change = sumOfLengthsPresidingMethodInCurrentOrder
-                    - sumOfLengthsPresidingMethodsInInitialOrder;
-                return lineNo + change;
-            })
+            .map(method -> getLineCount(lineNo, method))
             .orElseThrow(() -> {
                 return new IllegalArgumentException(
                     String.format("Line #%d does lies within any method", lineNo));
             });
+    }
+
+    private Integer getLineCount(int lineNo, Method method) {
+        final int initialMethodIndex = initialOrdering.indexOf(method);
+        final int currentMethodIndex = currentOrdering.indexOf(method);
+        final int sumOfLengthsPresidingMethodsInInitialOrder = initialOrdering
+            .subList(0, initialMethodIndex).stream()
+            .collect(Collectors.summingInt(Method::getLength));
+        final int sumOfLengthsPresidingMethodInCurrentOrder = currentOrdering
+            .subList(0, currentMethodIndex).stream()
+            .collect(Collectors.summingInt(Method::getLength));
+        final int change = sumOfLengthsPresidingMethodInCurrentOrder
+            - sumOfLengthsPresidingMethodsInInitialOrder;
+        return lineNo + change;
     }
 
     private static Map<String, Method> getAllMethods(Dependencies dependencies) {

@@ -149,19 +149,22 @@ public class MethodCallDependencyCheckstyleModule extends AbstractCheck {
         final MethodCall mc = new MethodCall(callNode);
         return Optional.of(mc)
             .filter(MethodCall::isThisClassMethodCall)
-            .flatMap(call -> {
-                return classDefinition.getMethodsByName(call.getMethodName())
-                    .stream()
-                    .filter(method -> {
-                        return method.isVarArg() && method.getArgCount() <= call.getArgCount()
-                            || call.getArgCount() == method.getArgCount();
-                    })
-                    .findFirst()
-                    .map(callee -> {
-                        final MethodDefinition caller = classDefinition.getMethodByAstNode(
-                            call.getEnclosingMethod());
-                        return new ResolvedCall(callNode, caller, callee);
-                    });
+            .flatMap(call -> convertToResolvedCall(classDefinition, callNode, call));
+    }
+
+    private static Optional<ResolvedCall> convertToResolvedCall(
+        ClassDefinition classDefinition, DetailAST callNode, MethodCall call) {
+        return classDefinition.getMethodsByName(call.getMethodName())
+            .stream()
+            .filter(method -> {
+                return method.isVarArg() && method.getArgCount() <= call.getArgCount()
+                    || call.getArgCount() == method.getArgCount();
+            })
+            .findFirst()
+            .map(callee -> {
+                final MethodDefinition caller = classDefinition.getMethodByAstNode(
+                    call.getEnclosingMethod());
+                return new ResolvedCall(callNode, caller, callee);
             });
     }
 
