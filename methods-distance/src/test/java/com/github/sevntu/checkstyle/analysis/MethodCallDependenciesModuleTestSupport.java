@@ -63,6 +63,7 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         return new MethodOrder(invokeCheckAndGetDependencies(config, fileName));
     }
 
+    @Override
     protected final Checker createChecker(Configuration checkConfig) throws Exception {
         final DefaultConfiguration dc = createCheckerConfig(checkConfig);
         final Checker checker = new Checker();
