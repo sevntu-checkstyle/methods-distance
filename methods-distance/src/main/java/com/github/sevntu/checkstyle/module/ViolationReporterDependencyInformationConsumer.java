@@ -44,7 +44,7 @@ public class ViolationReporterDependencyInformationConsumer
         logFirstMethodOutOfOrder(module, optimizedMethodOrder);
     }
 
-    private void logFirstMethodOutOfOrder(
+    private static void logFirstMethodOutOfOrder(
         MethodCallDependencyCheckstyleModule check, MethodOrder optimizedMethodOrder) {
 
         optimizedMethodOrder.getMethods().stream()

@@ -85,7 +85,7 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void processDsm(URL sourceUrl, HttpServletResponse resp)
+    private static void processDsm(URL sourceUrl, HttpServletResponse resp)
             throws CheckstyleException, IOException {
 
         class DsmDependencyInformationConsumer implements DependencyInformationConsumer {
@@ -121,7 +121,7 @@ public class MainServlet extends HttpServlet {
         invoker.invoke(Collections.singletonList(downloadSource(sourceUrl)));
     }
 
-    private void processDot(URL sourceUrl, HttpServletResponse resp)
+    private static void processDot(URL sourceUrl, HttpServletResponse resp)
             throws CheckstyleException, IOException {
 
         final DependencyInformationConsumer consumer = (filePath, dependencies) -> {
@@ -141,11 +141,11 @@ public class MainServlet extends HttpServlet {
         invoker.invoke(Collections.singletonList(downloadSource(sourceUrl)));
     }
 
-    private void processNotFound(HttpServletResponse resp) {
+    private static void processNotFound(HttpServletResponse resp) {
         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 
-    private Map<String, String> getCheckConfiguration() {
+    private static Map<String, String> getCheckConfiguration() {
         final Map<String, String> config = new HashMap<>();
         config.put("screenLinesCount", "50");
         return config;

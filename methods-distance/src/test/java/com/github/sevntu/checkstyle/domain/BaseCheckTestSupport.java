@@ -20,30 +20,19 @@
 package com.github.sevntu.checkstyle.domain;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.MapDifference.ValueDifference;
-import com.google.common.collect.Maps;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
@@ -73,22 +62,6 @@ public class BaseCheckTestSupport {
         return checker;
     }
 
-    protected Checker createChecker(Configuration checkConfig, boolean printSeverity)
-            throws Exception {
-
-        final DefaultConfiguration dc = createCheckerConfig(checkConfig);
-        final Checker checker = new Checker();
-        // make sure the tests always run with english error messages
-        // so the tests don't fail in supported locales like german
-        final Locale locale = Locale.ENGLISH;
-        checker.setLocaleCountry(locale.getCountry());
-        checker.setLocaleLanguage(locale.getLanguage());
-        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
-        checker.configure(dc);
-        checker.addListener(new BriefLogger(stream, printSeverity));
-        return checker;
-    }
-
     protected DefaultConfiguration createCheckerConfig(Configuration config) {
         final DefaultConfiguration dc = new DefaultConfiguration("configuration");
         final DefaultConfiguration twConf = createCheckConfig(TreeWalker.class);
@@ -99,34 +72,9 @@ public class BaseCheckTestSupport {
         return dc;
     }
 
-    protected String getPath(String filename) throws IOException {
-        return new File("src/test/resources/com/puppycrawl/tools/checkstyle/" + filename)
-                .getCanonicalPath();
-    }
-
-    protected String getUriString(String filename) {
-        return new File("src/test/resources/com/puppycrawl/tools/checkstyle/" + filename).toURI()
-                .toString();
-    }
-
-    protected String getSrcPath(String filename) throws IOException {
-        return new File("src/test/java/com/puppycrawl/tools/checkstyle/" + filename)
-                .getCanonicalPath();
-    }
-
-    protected String getNonCompilablePath(String filename) throws IOException {
-        return new File("src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/"
-                + filename).getCanonicalPath();
-    }
-
     protected void verify(Configuration aConfig, String fileName, String... expected)
             throws Exception {
         verify(createChecker(aConfig), fileName, fileName, expected);
-    }
-
-    protected void verify(Configuration aConfig, boolean printSeverity,
-                          String filename, String... expected) throws Exception {
-        verify(createChecker(aConfig, printSeverity), filename, filename, expected);
     }
 
     protected void verify(Checker checker, String fileName, String... expected)
@@ -177,111 +125,6 @@ public class BaseCheckTestSupport {
         checker.destroy();
     }
 
-    protected void verify(Checker checker,
-                          File[] processedFiles,
-                          Map<String, List<String>> expectedViolations)
-            throws Exception {
-        stream.flush();
-        final List<File> theFiles = Lists.newArrayList();
-        Collections.addAll(theFiles, processedFiles);
-        final int errs = checker.process(theFiles);
-
-        // process each of the lines
-        final Map<String, List<String>> actualViolations = getActualViolations(errs);
-        final Map<String, List<String>> realExpectedViolations =
-                Maps.filterValues(expectedViolations, new Predicate<List<String>>() {
-                    @Override
-                    public boolean apply(List<String> input) {
-                        return !input.isEmpty();
-                    }
-                });
-        final MapDifference<String, List<String>> violationDifferences =
-                Maps.difference(realExpectedViolations, actualViolations);
-
-        final Map<String, List<String>> missingViolations =
-                violationDifferences.entriesOnlyOnLeft();
-        final Map<String, List<String>> unexpectedViolations =
-                violationDifferences.entriesOnlyOnRight();
-        final Map<String, ValueDifference<List<String>>> differingViolations =
-                violationDifferences.entriesDiffering();
-
-        final StringBuilder message = new StringBuilder();
-        if (!missingViolations.isEmpty()) {
-            message.append("missing violations: ").append(missingViolations);
-        }
-        if (!unexpectedViolations.isEmpty()) {
-            if (message.length() > 0) {
-                message.append('\n');
-            }
-            message.append("unexpected violations: ").append(unexpectedViolations);
-        }
-        if (!differingViolations.isEmpty()) {
-            if (message.length() > 0) {
-                message.append('\n');
-            }
-            message.append("differing violations: ").append(differingViolations);
-        }
-
-        assertTrue(message.toString(),
-                missingViolations.isEmpty()
-                        && unexpectedViolations.isEmpty()
-                        && differingViolations.isEmpty());
-
-        checker.destroy();
-    }
-
-    private Map<String, List<String>> getActualViolations(int errorCount) throws IOException {
-        // process each of the lines
-        final ByteArrayInputStream inputStream =
-                new ByteArrayInputStream(stream.toByteArray());
-
-        try (LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-
-            final Map<String, List<String>> actualViolations = new HashMap<>();
-            for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= errorCount;
-                 line = lnr.readLine()) {
-                // have at least 2 characters before the splitting colon,
-                // to not split after the drive letter on windows
-                final String[] actualViolation = line.split("(?<=.{2}):", 2);
-                final String actualViolationFileName = actualViolation[0];
-                final String actualViolationMessage = actualViolation[1];
-
-                List<String> actualViolationsPerFile =
-                        actualViolations.get(actualViolationFileName);
-                if (actualViolationsPerFile == null) {
-                    actualViolationsPerFile = new ArrayList<>();
-                    actualViolations.put(actualViolationFileName, actualViolationsPerFile);
-                }
-                actualViolationsPerFile.add(actualViolationMessage);
-            }
-
-            return actualViolations;
-        }
-    }
-
-    /**
-     * Gets the module message 'as is' from appropriate 'messages.properties'
-     * file.
-     *
-     * @param messageKey the key of message in 'messages.properties' file.
-     * @param arguments  the arguments of message in 'messages.properties' file.
-     */
-    protected String getCheckMessage(String messageKey, Object... arguments) {
-        String result = null;
-        final Properties pr = new Properties();
-        try {
-            pr.load(getClass().getResourceAsStream("messages.properties"));
-            final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey),
-                    Locale.ROOT);
-            result = formatter.format(arguments);
-        }
-        catch (IOException ex) {
-            // no code needed
-        }
-        return result;
-    }
-
     /**
      * A brief logger that only display info about errors.
      */
@@ -291,12 +134,9 @@ public class BaseCheckTestSupport {
             super(out, OutputStreamOptions.CLOSE, out, OutputStreamOptions.NONE);
         }
 
-        public BriefLogger(OutputStream out, boolean printSeverity) {
-            super(out, OutputStreamOptions.CLOSE, out, OutputStreamOptions.NONE);
-        }
-
         @Override
         public void auditStarted(AuditEvent event) {
+            // no code
         }
     }
 }
