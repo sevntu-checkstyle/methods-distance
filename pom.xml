@@ -16,14 +16,14 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle-version>8.30</checkstyle-version>
+        <checkstyle-version>8.43</checkstyle-version>
         <checkstyle.configLocation>https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-${checkstyle-version}/config/checkstyle_checks.xml</checkstyle.configLocation>
-        <maven.checktyle-plugin.version>3.1.1</maven.checktyle-plugin.version>
+        <maven.checktyle-plugin.version>3.1.2</maven.checktyle-plugin.version>
         <maven.pmd.plugin.version>3.6</maven.pmd.plugin.version>
         <jetty.maven.plugin.version>9.3.8.v20160314</jetty.maven.plugin.version>
         <maven.assembly.plugin.version>2.6</maven.assembly.plugin.version>
-        <maven.war.plugin.version>2.3</maven.war.plugin.version>
-        <maven.dependency.plugin.version>2.3</maven.dependency.plugin.version>
+        <maven.war.plugin.version>3.3.2</maven.war.plugin.version>
+        <maven.dependency.plugin.version>3.2.0</maven.dependency.plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -31,7 +31,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.13.1</version>
+                <version>4.13.2</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
