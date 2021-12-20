@@ -230,7 +230,7 @@ public class TopologicalMethodReorderer implements MethodReorderer {
         private final MethodOrder order;
 
         private MethodIndexComparator(MethodOrder methodOrder) {
-            this.order = methodOrder;
+            order = methodOrder;
         }
 
         @Override

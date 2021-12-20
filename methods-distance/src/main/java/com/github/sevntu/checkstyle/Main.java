@@ -76,7 +76,7 @@ public final class Main {
 
         @Override
         public void setConfiguration(Configuration config) {
-            this.configuration = config;
+            configuration = config;
         }
 
         @Override
