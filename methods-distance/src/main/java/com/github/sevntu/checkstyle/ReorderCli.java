@@ -71,7 +71,7 @@ public final class ReorderCli {
 
         @Override
         public void setConfiguration(Configuration config) {
-            this.configuration = config;
+            configuration = config;
         }
 
         @Override

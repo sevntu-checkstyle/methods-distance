@@ -42,10 +42,10 @@ public class ClassDefinition {
 
     public ClassDefinition(DetailAST classDef) {
         this.classDef = classDef;
-        this.className = getClassNameImpl(classDef);
-        this.methodDefs = getMethodDefsAstNodesImpl(classDef);
-        this.methods = getDeclaredMethods();
-        this.propertyAccessors = getPropertiesAccessorsImpl(this.methods);
+        className = getClassNameImpl(classDef);
+        methodDefs = getMethodDefsAstNodesImpl(classDef);
+        methods = getDeclaredMethods();
+        propertyAccessors = getPropertiesAccessorsImpl(this.methods);
     }
 
     private static String getClassNameImpl(DetailAST classDef) {

@@ -58,22 +58,22 @@ public class MethodOrder {
     private final MultiValuedMap<MethodInvocation, MethodInvocation> invocationNesting;
 
     public MethodOrder(Dependencies dependencies) {
-        this.methods = MapUtils.unmodifiableMap(getAllMethods(dependencies));
-        this.initialOrdering = ListUtils.unmodifiableList(getInitialMethodOrdering(methods));
-        this.currentOrdering = this.initialOrdering;
+        methods = MapUtils.unmodifiableMap(getAllMethods(dependencies));
+        initialOrdering = ListUtils.unmodifiableList(getInitialMethodOrdering(methods));
+        currentOrdering = initialOrdering;
         final Map<ResolvedCall, MethodInvocation> callsToInvocations =
             getAllInvocations(dependencies, methods);
-        this.invocations = SetUtils.unmodifiableSet(new HashSet<>(callsToInvocations.values()));
-        this.invocationNesting = MultiMapUtils.unmodifiableMultiValuedMap(
+        invocations = SetUtils.unmodifiableSet(new HashSet<>(callsToInvocations.values()));
+        invocationNesting = MultiMapUtils.unmodifiableMultiValuedMap(
             getMethodInvocationsNesting(callsToInvocations));
     }
 
     private MethodOrder(MethodOrder methodOrder, final List<Method> newMethodOrdering) {
-        this.currentOrdering = ListUtils.unmodifiableList(newMethodOrdering);
-        this.initialOrdering = methodOrder.initialOrdering;
-        this.methods = methodOrder.methods;
-        this.invocations = methodOrder.invocations;
-        this.invocationNesting = methodOrder.invocationNesting;
+        currentOrdering = ListUtils.unmodifiableList(newMethodOrdering);
+        initialOrdering = methodOrder.initialOrdering;
+        methods = methodOrder.methods;
+        invocations = methodOrder.invocations;
+        invocationNesting = methodOrder.invocationNesting;
     }
 
     public List<Method> getMethods() {

@@ -150,7 +150,7 @@ public final class MethodDefinition {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || o.getClass() != this.getClass()) {
+        if (o == null || o.getClass() != getClass()) {
             return false;
         }
         else if (o == this) {

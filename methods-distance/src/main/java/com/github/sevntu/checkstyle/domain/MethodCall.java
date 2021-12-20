@@ -40,10 +40,10 @@ public class MethodCall {
     private final DetailAST enclosingMethod;
 
     public MethodCall(DetailAST methodCall) {
-        this.methodName = getMethodNameImpl(methodCall);
-        this.thisClassMethodCall = isThisClassMethodCallImpl(methodCall);
-        this.argCount = getArgCountImpl(methodCall);
-        this.enclosingMethod = getEnclosingMethodImpl(methodCall);
+        methodName = getMethodNameImpl(methodCall);
+        thisClassMethodCall = isThisClassMethodCallImpl(methodCall);
+        argCount = getArgCountImpl(methodCall);
+        enclosingMethod = getEnclosingMethodImpl(methodCall);
     }
 
     private static String getMethodNameImpl(DetailAST methodCallNode) {

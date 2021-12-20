@@ -43,7 +43,7 @@ public class MethodCallDependencyCheckInvoker {
     public MethodCallDependencyCheckInvoker(Map<String, String> configAttributes,
         DependencyInformationConsumer consumer) throws CheckstyleException {
 
-        this.configuration = getCompleteConfig(configAttributes);
+        configuration = getCompleteConfig(configAttributes);
 
         consumer.setConfiguration(configuration);
 
