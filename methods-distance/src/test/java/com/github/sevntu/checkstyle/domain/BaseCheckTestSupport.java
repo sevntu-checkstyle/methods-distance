@@ -112,10 +112,11 @@ public class BaseCheckTestSupport {
         try (LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
-            for (int i = 0; i < expected.length; i++) {
-                final String expectedResult = messageFileName + ":" + expected[i];
+            for (int index = 0; index < expected.length; index++) {
+                final String expectedResult = messageFileName + ":" + expected[index];
                 final String actual = lnr.readLine();
-                assertEquals("error message " + i, expectedResult, actual);
+                assertEquals("Error message at position %s of 'expected' does"
+                        + " not match actual message", expectedResult, actual);
             }
 
             assertEquals("unexpected output: " + lnr.readLine(),

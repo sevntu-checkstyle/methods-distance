@@ -99,11 +99,12 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
                     .getInvocationsFromMethod(method);
             assertEquals("Actual method dependencies count and count of invocations from method "
                     + method + " does not match", invocations.size(), dependencies.size());
-            for (int i = 0; i < invocations.size(); ++i) {
-                final Method calledMethod = dependencies.get(i);
-                final ExpectedDependencies.MethodInvocation invocationOfMethod = invocations.get(i);
+            for (int index = 0; index < invocations.size(); ++index) {
+                final Method calledMethod = dependencies.get(index);
+                final ExpectedDependencies.MethodInvocation invocationOfMethod
+                        = invocations.get(index);
                 assertTrue("Method " + calledMethod.getSignature() + " is present as actual "
-                                + i + " dependency of " + method + " but should not be!",
+                                + index + " dependency of " + method + " but should not be!",
                         calledMethod.getSignature()
                             .equals(expected.getMethodByIndex(invocationOfMethod.getCallee())));
             }

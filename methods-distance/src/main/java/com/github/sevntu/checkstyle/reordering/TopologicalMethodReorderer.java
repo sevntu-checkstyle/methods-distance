@@ -79,8 +79,9 @@ public class TopologicalMethodReorderer implements MethodReorderer {
                     .collect(Collectors.toList());
                 final List<Method> optimized = new ArrayList<>(currentMethodOrder.getMethods());
                 optimized.removeAll(dependenciesInAppearanceOrder);
-                for (int i = 0; i < dependenciesIndices.size(); ++i) {
-                    optimized.add(dependenciesIndices.get(i), dependenciesInAppearanceOrder.get(i));
+                for (int index = 0; index < dependenciesIndices.size(); ++index) {
+                    optimized.add(dependenciesIndices.get(index)
+                        , dependenciesInAppearanceOrder.get(index));
                 }
                 final MethodOrder optimizedMethodOrder = currentMethodOrder.reorder(optimized);
                 currentMethodOrder = getBestOrdering(currentMethodOrder, optimizedMethodOrder);
