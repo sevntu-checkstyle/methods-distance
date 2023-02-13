@@ -388,7 +388,7 @@ public class MethodOrder {
         }
     }
 
-    private class AppearanceOrderMethodInvocationComparator
+    private final class AppearanceOrderMethodInvocationComparator
         implements Comparator<MethodInvocation> {
 
         @Override
@@ -411,7 +411,7 @@ public class MethodOrder {
         }
     }
 
-    private static class UniqueCallerCalleeMethodInvocationFilter
+    private static final class UniqueCallerCalleeMethodInvocationFilter
         implements Predicate<MethodInvocation> {
 
         private final Set<MethodInvocation> set = new TreeSet<>(new Comparator<MethodInvocation>() {

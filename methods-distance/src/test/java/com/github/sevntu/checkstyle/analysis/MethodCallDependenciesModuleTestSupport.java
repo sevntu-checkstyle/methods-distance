@@ -124,7 +124,8 @@ public class MethodCallDependenciesModuleTestSupport extends BaseCheckTestSuppor
         return new MethodOrder(withDefaultConfig(fileName));
     }
 
-    private static class DependencyInformationCollector implements DependencyInformationConsumer {
+    private static final class DependencyInformationCollector
+            implements DependencyInformationConsumer {
 
         private Map<String, Dependencies> filePathToDependencies = new HashMap<>();
 
