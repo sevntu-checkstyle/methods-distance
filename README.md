@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/sevntu-checkstyle/methods-distance.svg?branch=master)](https://travis-ci.org/sevntu-checkstyle/methods-distance)
-[![Build status](https://ci.appveyor.com/api/projects/status/1pex335cc3ow5mxx/branch/master?svg=true)](https://ci.appveyor.com/project/Checkstyle/methods-distance/branch/master)
+[![][circleci img]][circleci]
 
 Running:
 - clone sources
@@ -85,3 +84,6 @@ Node shape:
 ```
 This graph looks like this:
 ![Graph example](http://alex-zuy.github.io/methods-distance-dsm/checker-dot.png)
+
+[circleci]: https://circleci.com/gh/sevntu-checkstyle/checkstyle-samples/tree/master
+[circleci img]: https://circleci.com/gh/sevntu-checkstyle/checkstyle-samples/tree/master.svg?style=svg
