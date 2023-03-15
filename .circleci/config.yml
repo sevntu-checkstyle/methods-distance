@@ -1,14 +1,19 @@
 version: 2.1
 
+parameters:
+  heroku-deploy:
+    type: boolean
+    default: false
+    description: "Trigger pipeline on master branch, 
+        with heroku-deploy = true to deploy to heroku."
+
 orbs:
   heroku: circleci/heroku@2.0.0
 
 workflows:
   heroku_deploy:
+    when: << pipeline.parameters.heroku-deploy >>
     jobs:
       - heroku/deploy-via-git:
-          filters:
-            branches:
-              only: master
           app-name: methods-distance
           context: heroku-context
