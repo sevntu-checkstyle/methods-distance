@@ -85,5 +85,5 @@ Node shape:
 This graph looks like this:
 ![Graph example](http://alex-zuy.github.io/methods-distance-dsm/checker-dot.png)
 
-[circleci]: https://circleci.com/gh/sevntu-checkstyle/checkstyle-samples/tree/master
-[circleci img]: https://circleci.com/gh/sevntu-checkstyle/checkstyle-samples/tree/master.svg?style=svg
+[circleci]: https://app.circleci.com/pipelines/github/sevntu-checkstyle/methods-distance?branch=master
+[circleci img]: https://circleci.com/gh/sevntu-checkstyle/methods-distance/tree/master.svg?style=svg
