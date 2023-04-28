@@ -1,5 +1,8 @@
 [![][circleci img]][circleci]
 
+Builds [Dependency Structure Matrix](https://en.wikipedia.org/wiki/Design_structure_matrix) (DSM) for Java class methods. This task is ambitious attempt to improve code read-ability by minimizing user jump/scrolls in source file to look at details of method implementation when user looks at method first usage.
+
+
 Running:
 - clone sources
 - compile:
