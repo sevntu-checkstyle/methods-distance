@@ -77,6 +77,8 @@ public final class JsonSerializer {
 
             resolvedCallNode.put("callerIndex", resolvedCall.getCaller().getIndex());
             resolvedCallNode.put("calleeIndex", resolvedCall.getCallee().getIndex());
+            resolvedCallNode.put("lineNo", resolvedCall.getAstNode().getLineNo());
+            resolvedCallNode.put("columnNo", resolvedCall.getAstNode().getColumnNo());
             resolvedCallNode.put("isMethodRef", resolvedCall.isMethodRef());
 
             resolvedCallsNode.add(resolvedCallNode);
