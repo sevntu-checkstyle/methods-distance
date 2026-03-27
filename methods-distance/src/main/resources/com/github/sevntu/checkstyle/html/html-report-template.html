@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Method Call Summary Report</title>
+<style>
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+       background: #f6f8fa; color: #24292f; font-size: 14px; line-height: 1.5; }
+a { color: #0969da; text-decoration: none; cursor: pointer; }
+a:hover { text-decoration: underline; }
+
+/* ── Page Header ──────────────────────────────────────────────────────────── */
+.page-header { position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+               height: 44px; background: #24292f; color: #fff; padding: 0 20px;
+               display: flex; align-items: center; gap: 12px; }
+.page-header h1 { font-size: 16px; font-weight: 600; }
+.page-header .class-name { font-size: 14px; color: #e6edf3; margin-left: auto;
+                            font-family: "SFMono-Regular", Consolas, monospace;
+                            font-weight: 600; letter-spacing: 0.01em; }
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.page-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+               height: 32px; line-height: 32px;
+               text-align: center; color: #8b949e; font-size: 11px;
+               border-top: 1px solid #d0d7de; background: #f6f8fa; }
+
+/* ── Split layout ─────────────────────────────────────────────────────────── */
+/* Header = 44px, footer = 32px. Split-root fills exactly the remaining space
+   and each pane scrolls independently. */
+.split-root { position: fixed; top: 44px; bottom: 32px; left: 0; right: 0;
+               display: flex; overflow: hidden; }
+
+.pane-left  { width: 50%; height: 100%; overflow-y: auto; padding: 16px;
+              display: block;
+              border-right: 1px solid #d0d7de; }
+/* Give each direct child of pane-left a bottom gap (replaces flex gap) */
+.pane-left > * { margin-bottom: 16px; }
+.pane-left > *:last-child { margin-bottom: 0; }
+
+.pane-right { width: 50%; height: 100%; display: flex;
+              flex-direction: column; overflow: hidden; }
+
+/* ── Stats ────────────────────────────────────────────────────────────────── */
+.stats-grid { display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 10px; }
+.stat-group { background: #fff; border: 1px solid #d0d7de; border-radius: 6px;
+              overflow: hidden; }
+.stat-group-header { padding: 8px 12px; background: #f6f8fa;
+                     border-bottom: 1px solid #d0d7de;
+                     display: flex; align-items: baseline; gap: 8px; }
+.stat-group-header .total-value { font-size: 28px; font-weight: 700; color: #0969da; }
+.stat-group-header .total-label { font-size: 14px; color: #24292f; font-weight: 700; }
+.stat-group-body { padding: 6px 12px 8px; display: flex; flex-wrap: wrap; gap: 5px; }
+.stat-chip { display: inline-flex; align-items: center; gap: 4px;
+             border-radius: 20px; padding: 1px 8px; font-size: 11px;
+             font-weight: 500; border: 1px solid transparent; }
+.stat-chip .chip-value { font-weight: 700; }
+
+/* ── Section ──────────────────────────────────────────────────────────────── */
+.section { background: #fff; border: 1px solid #d0d7de; border-radius: 6px;
+           overflow: hidden; }
+.section-header { padding: 8px 14px; background: #f6f8fa;
+                  border-bottom: 1px solid #d0d7de;
+                  display: flex; align-items: center; justify-content: space-between;
+                  gap: 10px; flex-wrap: wrap; }
+.section-header h2 { font-size: 13px; font-weight: 600; }
+.section-header .count-badge { font-size: 11px; color: #57606a; }
+.section-body { overflow-x: auto; }
+
+/* ── Search ──────────────────────────────────────────────────────────────── */
+.search-row { padding: 6px 14px; border-bottom: 1px solid #d0d7de; }
+.search-row input { width: 100%; max-width: 300px; padding: 4px 8px;
+                    border: 1px solid #d0d7de; border-radius: 6px; font-size: 12px; }
+
+/* ── Badge filter bar ─────────────────────────────────────────────────────── */
+.filter-bar { display: none; padding: 5px 14px; gap: 5px; flex-wrap: wrap;
+              align-items: center; border-bottom: 1px solid #d0d7de;
+              background: #f6f8fa; }
+.filter-bar.has-filters { display: flex; }
+.filter-tag { display: inline-flex; align-items: center; gap: 3px;
+              border-radius: 20px; padding: 1px 4px 1px 8px;
+              font-size: 11px; font-weight: 500; border: 1px solid transparent;
+              cursor: default; }
+.filter-tag .ft-x { cursor: pointer; font-size: 13px; line-height: 1;
+                    opacity: 0.7; padding: 0 2px; }
+.filter-tag .ft-x:hover { opacity: 1; }
+/* Clickable badges in tables get a pointer and subtle hover */
+.badge.clickable { cursor: pointer; }
+.badge.clickable:hover { filter: brightness(0.88); }
+.badge.active-filter { outline: 2px solid #0969da; outline-offset: 1px; }
+.clear-all-btn { margin-left: auto; font-size: 11px; color: #0969da; cursor: pointer;
+                 font-weight: 500; white-space: nowrap; padding: 1px 4px;
+                 border-radius: 4px; }
+.clear-all-btn:hover { text-decoration: underline; }
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #f6f8fa; padding: 6px 10px; text-align: left;
+     border-bottom: 1px solid #d0d7de; white-space: nowrap;
+     cursor: pointer; user-select: none; }
+th:hover { background: #eaeef2; }
+th .si { margin-left: 3px; color: #8b949e; font-size: 10px; }
+td { padding: 6px 10px; border-bottom: 1px solid #eaeef2; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f6f8fa; }
+tr.hl td { background: #fffbdd !important; }
+
+/* ── Badges ───────────────────────────────────────────────────────────────── */
+.badge { display: inline-block; padding: 1px 6px; border-radius: 12px;
+         font-size: 10px; font-weight: 500; white-space: nowrap; margin: 1px; }
+.b-public    { background: #dafbe1; color: #116329; }
+.b-protected { background: #fff8c5; color: #7d4e00; }
+.b-private   { background: #ffd8d3; color: #82071e; }
+.b-default   { background: #e1e4e8; color: #57606a; }
+.b-static    { background: #ddf4ff; color: #0550ae; }
+.b-override  { background: #fbefff; color: #7c3aed; }
+.b-overload  { background: #fff0e6; color: #bc4c00; }
+.b-ctor      { background: #e6f0ff; color: #0550ae; }
+.b-getter    { background: #e6ffed; color: #116329; }
+.b-setter    { background: #fff1e5; color: #953800; }
+.b-void      { background: #f1f1f1; color: #57606a; }
+.b-vararg    { background: #ffeef0; color: #82071e; }
+.b-instance  { background: #f1f1f1; color: #57606a; }
+.b-ref       { background: #ddf4ff; color: #0550ae; }
+.b-call      { background: #e1e4e8; color: #57606a; }
+
+/* ── Monospace / dim ──────────────────────────────────────────────────────── */
+.mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 11px; font-weight: 600; }
+.dim  { color: #57606a; font-size: 11px; }
+.arrow { color: #8b949e; }
+
+/* ── DSM Matrix ───────────────────────────────────────────────────────────── */
+.dsm-toolbar { padding: 6px 14px; border-bottom: 1px solid #d0d7de;
+               display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+               background: #f6f8fa; font-size: 11px; }
+.dsm-toolbar label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.dsm-wrap { overflow: auto; }
+.dsm-table { border-collapse: collapse; font-size: 10px; }
+.dsm-table th, .dsm-table td { border: 1px solid #d0d7de; padding: 0; }
+.dsm-corner { background: #f6f8fa; width: 24px; height: 24px; }
+.dsm-col-header { background: #f6f8fa; text-align: center; min-width: 34px;
+                  height: 24px; cursor: pointer; }
+.dsm-col-header:hover { background: #ddf4ff; }
+.dsm-col-header span { display: block; padding: 2px 3px;
+                       font-family: "SFMono-Regular", Consolas, monospace;
+                       font-size: 9px; color: #0969da; }
+.dsm-row-header { background: #f6f8fa; white-space: nowrap; padding: 2px 6px;
+                  cursor: pointer; }
+.dsm-row-header:hover { background: #ddf4ff; }
+.dsm-row-header .rh-idx  { color: #0969da; font-weight: 700;
+                            font-family: monospace; margin-right: 3px; }
+.dsm-row-header .rh-name { color: #24292f; font-size: 10px; }
+.dsm-cell { text-align: center; cursor: pointer; min-width: 34px; height: 24px;
+            vertical-align: middle; padding: 2px 3px; font-family: monospace;
+            font-size: 10px; }
+.dsm-cell:hover { filter: brightness(0.9); }
+.dsm-cell.has-call     { background: #ddf4ff; color: #0550ae; }
+.dsm-cell.has-call.neg { background: #ffd8d3; color: #82071e; }
+.dsm-cell.diag         { background: #f6f8fa; cursor: default; }
+.dsm-legend { padding: 6px 14px; border-top: 1px solid #d0d7de;
+              font-size: 10px; color: #57606a; display: flex; gap: 12px;
+              flex-wrap: wrap; align-items: center; }
+.dsm-legend-swatch { display: inline-block; width: 10px; height: 10px;
+                     border-radius: 2px; vertical-align: middle; margin-right: 3px; }
+
+/* ── Source Viewer (right pane) ───────────────────────────────────────────── */
+.source-pane-header { padding: 8px 14px; background: #f6f8fa;
+                      border-bottom: 1px solid #d0d7de;
+                      display: flex; align-items: center; justify-content: space-between;
+                      gap: 10px; flex-shrink: 0; }
+.source-pane-header h2 { font-size: 13px; font-weight: 600; }
+.source-pane-header .count-badge { font-size: 11px; color: #57606a; }
+.source-toolbar { padding: 5px 14px; border-bottom: 1px solid #d0d7de;
+                  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+                  background: #f6f8fa; font-size: 11px; color: #57606a; }
+.source-toolbar input { padding: 3px 7px; border: 1px solid #d0d7de;
+                        border-radius: 4px; font-size: 11px; width: 56px; }
+.source-toolbar button { padding: 2px 8px; border: 1px solid #d0d7de;
+                         border-radius: 4px; background: #fff; cursor: pointer;
+                         font-size: 11px; }
+.source-toolbar button:hover { background: #f0f0f0; }
+pre#source-pre { margin: 0; padding: 8px 0; overflow: auto; flex: 1;
+                 background: #fff; font-size: 12px;
+                 font-family: "SFMono-Regular", Consolas, monospace;
+                 line-height: 1.6; }
+.src-line { display: flex; }
+.src-ln   { min-width: 44px; padding: 0 10px 0 6px; color: #8b949e;
+            text-align: right; user-select: none; border-right: 1px solid #eaeef2;
+            flex-shrink: 0; }
+.src-code { padding: 0 10px; white-space: pre; flex: 1; }
+.src-line.src-hl     .src-ln   { background: #fff8c5; color: #7d4e00; }
+.src-line.src-hl     .src-code { background: #fffbdd; }
+.src-line.src-target .src-ln   { background: #ddf4ff; }
+.src-line.src-target .src-code { background: #f0f8ff; }
+
+/* ── GitHub-style syntax highlight tokens ────────────────────────────────── */
+.tk-kw  { color: #cf222e; }
+.tk-ty  { color: #0550ae; }
+.tk-str { color: #0a3069; }
+.tk-cmt { color: #6e7781; font-style: italic; }
+.tk-num { color: #0550ae; }
+.tk-ann { color: #953800; }
+
+/* ── Responsive: narrow screen fallback (single column) ─────────────────── */
+@media (max-width: 900px) {
+  /* Revert fixed positioning to normal document flow */
+  html, body    { height: auto; overflow-x: hidden; overflow-y: auto; }
+  .page-header  { position: relative; height: auto; padding: 12px 20px; }
+  .page-footer  { position: relative; height: auto; line-height: normal; padding: 10px; }
+  .split-root   { position: relative; top: auto; bottom: auto; left: auto; right: auto;
+                  width: 100%; height: auto; flex-direction: column;
+                  overflow-x: hidden; overflow-y: visible; }
+  .pane-left    { width: 100%; height: auto; overflow: visible;
+                  border-right: none; border-bottom: 1px solid #d0d7de; }
+  .pane-right   { width: 100%; height: auto; overflow: visible; }
+  pre#source-pre { max-height: 480px; overflow-y: auto; flex: none; }
+}
+
+/* ── No data ──────────────────────────────────────────────────────────────── */
+.no-data { padding: 24px; text-align: center; color: #57606a; }
+</style>
+</head>
+<body>
+
+<!-- ── Embedded data ────────────────────────────────────────────────────── -->
+<script type="application/json" id="report-data">/*REPORT_DATA*/</script>
+<script type="application/json" id="source-data">/*SOURCE_CODE*/</script>
+
+<!-- ── Page header ──────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="#fff" aria-hidden="true">
+    <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75
+             0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714
+             1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9
+             h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/>
+  </svg>
+  <h1>Method Call Summary Report</h1>
+  <span class="class-name" id="header-class-name"></span>
+</div>
+
+<!-- ── Split root ───────────────────────────────────────────────────────── -->
+<div class="split-root">
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       LEFT PANE
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div class="pane-left">
+
+    <!-- 1. Stats -->
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <!-- 2. DSM -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Dependency Structure Matrix (DSM)</h2>
+        <span class="count-badge" id="dsm-subtitle"></span>
+      </div>
+      <div class="dsm-toolbar">
+        <strong style="font-size:11px">Distance:</strong>
+        <label><input type="radio" name="dsm-mode" value="idx" checked
+                      onchange="renderDsm()"> Index</label>
+        <label><input type="radio" name="dsm-mode" value="line"
+                      onchange="renderDsm()"> Line</label>
+      </div>
+      <div class="section-body dsm-wrap">
+        <table class="dsm-table" id="dsm-table"></table>
+      </div>
+      <div class="dsm-legend">
+        <span><span class="dsm-legend-swatch" style="background:#ddf4ff;border:1px solid #d0d7de"></span>
+          Callee <strong>after</strong> caller (positive)</span>
+        <span><span class="dsm-legend-swatch" style="background:#ffd8d3;border:1px solid #d0d7de"></span>
+          Callee <strong>before</strong> caller (negative)</span>
+        <span class="dim">Row = caller &middot; Col = callee &middot; Click &rarr; first call below</span>
+      </div>
+    </div>
+
+    <!-- 3. Methods -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Methods</h2>
+        <span class="count-badge" id="methods-count"></span>
+      </div>
+      <!-- Active badge filters for methods -->
+      <div class="filter-bar" id="method-filter-bar"></div>
+      <div class="search-row">
+        <input type="text" id="method-search" placeholder="Search by name or signature…"
+               oninput="applyMethodFilters()">
+      </div>
+      <div class="section-body">
+        <table id="methods-table">
+          <thead><tr>
+            <th onclick="sortTable('m',0)">#<span class="si">↕</span></th>
+            <th onclick="sortTable('m',1)">Method<span class="si">↕</span></th>
+            <th onclick="sortTable('m',2)">Line<span class="si">↕</span></th>
+            <th onclick="sortTable('m',3)">Len<span class="si">↕</span></th>
+            <th onclick="sortTable('m',4)">Args<span class="si">↕</span></th>
+            <th>Access</th>
+            <th>Traits</th>
+          </tr></thead>
+          <tbody id="methods-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4. Resolved Calls -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Resolved Calls</h2>
+        <span class="count-badge" id="calls-count"></span>
+      </div>
+      <!-- Active badge filters for calls -->
+      <div class="filter-bar" id="call-filter-bar"></div>
+      <div class="search-row" style="display:flex;gap:6px;flex-wrap:wrap">
+        <input type="text" id="call-search-caller" placeholder="Search caller…"
+               style="flex:1;min-width:100px" oninput="applyCallFilters()">
+        <input type="text" id="call-search-callee" placeholder="Search callee…"
+               style="flex:1;min-width:100px" oninput="applyCallFilters()">
+      </div>
+      <div class="section-body">
+        <table id="calls-table">
+          <thead><tr>
+            <th onclick="sortTable('c',0)">Caller<span class="si">↕</span></th>
+            <th style="width:24px"></th>
+            <th onclick="sortTable('c',2)">Callee<span class="si">↕</span></th>
+            <th onclick="sortTable('c',3)">Location<span class="si">↕</span></th>
+            <th>Type</th>
+          </tr></thead>
+          <tbody id="calls-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /.pane-left -->
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       RIGHT PANE — Source Code (fixed)
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div class="pane-right">
+    <div class="source-pane-header">
+      <h2>Source Code</h2>
+      <span class="count-badge" id="source-subtitle"></span>
+    </div>
+    <div class="source-toolbar">
+      <span>Go to line:</span>
+      <input type="number" id="goto-line" min="1" placeholder="…">
+      <button onclick="gotoLine(+document.getElementById('goto-line').value)">Go</button>
+      <span id="source-cursor" style="margin-left:6px"></span>
+    </div>
+    <pre id="source-pre"></pre>
+  </div><!-- /.pane-right -->
+
+</div><!-- /.split-root -->
+
+<div class="page-footer">
+  Generated by <strong>methods-distance</strong> &mdash; <span id="gen-time"></span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+'use strict';
+
+// ── Load data ───────────────────────────────────────────────────────────────
+const data    = JSON.parse(document.getElementById('report-data').textContent);
+const srcText = JSON.parse(document.getElementById('source-data').textContent);
+
+const methods   = data.classDefinition.methods;
+const calls     = data.resolvedCalls;
+const className = data.classDefinition.className;
+
+const mMap = {};
+methods.forEach(function(m) { mMap[m.index] = m; });
+
+// ── Header / footer ─────────────────────────────────────────────────────────
+document.getElementById('header-class-name').textContent = className;
+document.title = 'Report: ' + className;
+document.getElementById('gen-time').textContent = new Date().toUTCString();
+
+// ── Method filter definitions (module-level for reuse in filter predicates) ──────
+var accDefs = [
+  ['public',    function(m){ return m.accessibility === 'PUBLIC';    }, 'b-public'],
+  ['protected', function(m){ return m.accessibility === 'PROTECTED'; }, 'b-protected'],
+  ['private',   function(m){ return m.accessibility === 'PRIVATE';   }, 'b-private'],
+  ['default',   function(m){ return m.accessibility === 'DEFAULT';   }, 'b-default']
+];
+var traitDefs = [
+  ['ctor',      function(m){ return m.isCtor;       }, 'b-ctor'],
+  ['static',    function(m){ return m.isStatic;     }, 'b-static'],
+  ['instance',  function(m){ return m.isInstance;   }, 'b-instance'],
+  ['override',  function(m){ return m.isOverride;   }, 'b-override'],
+  ['overloaded',function(m){ return m.isOverloaded; }, 'b-overload'],
+  ['getter',    function(m){ return m.isGetter;     }, 'b-getter'],
+  ['setter',    function(m){ return m.isSetter;     }, 'b-setter'],
+  ['void',      function(m){ return m.isVoid;       }, 'b-void'],
+  ['vararg',    function(m){ return m.isVarArg;     }, 'b-vararg']
+];
+
+// ── Utility ────────────────────────────────────────────────────────────────
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 1. STATS
+// ══════════════════════════════════════════════════════════════════════════════
+(function buildStats() {
+
+  function chip(label, count, cls, filterKey, filterFn) {
+    var fn = filterFn || 'toggleMethodFilter';
+    var fk = filterKey ? ' data-filter-key="' + filterKey + '" data-filter-fn="' + fn + '"' : '';
+    var clickable = filterKey ? ' clickable' : '';
+    var onclick   = filterKey ? ' onclick="' + fn + '(\'' + filterKey + '\',\'' + cls + '\',\'' + label + '\')"' : '';
+    return '<span class="stat-chip ' + cls + clickable + '"' + fk + onclick + '>' +
+           '<span class="chip-value">' + count + '</span>' +
+           '<span class="chip-label">' + label + '</span></span>';
+  }
+
+  var mChips = '';
+  accDefs.concat(traitDefs).forEach(function(def) {
+    var n = methods.filter(def[1]).length;
+    if (n > 0) mChips += chip(def[0], n, def[2], def[0]);
+  });
+  var mHtml = '<div class="stat-group">' +
+    '<div class="stat-group-header">' +
+    '<span class="total-value">' + methods.length + '</span>' +
+    '<span class="total-label">Methods</span></div>' +
+    '<div class="stat-group-body">' + mChips + '</div></div>';
+
+  var callCount = calls.filter(function(c){ return !c.isMethodRef; }).length;
+  var refCount  = calls.filter(function(c){ return  c.isMethodRef; }).length;
+  var cChips = '';
+  if (callCount > 0) cChips += chip('call',       callCount, 'b-call', 'call',       'toggleCallFilter');
+  if (refCount  > 0) cChips += chip('method ref', refCount,  'b-ref',  'method ref', 'toggleCallFilter');
+  var cHtml = '<div class="stat-group">' +
+    '<div class="stat-group-header">' +
+    '<span class="total-value">' + calls.length + '</span>' +
+    '<span class="total-label">Resolved Calls</span></div>' +
+    '<div class="stat-group-body">' + cChips + '</div></div>';
+
+  document.getElementById('stats-grid').innerHTML = mHtml + cHtml;
+})();
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 2. DSM MATRIX
+// ══════════════════════════════════════════════════════════════════════════════
+var dsmMap = {};
+calls.forEach(function(c) {
+  if (!dsmMap[c.callerIndex]) dsmMap[c.callerIndex] = {};
+  var ex = dsmMap[c.callerIndex][c.calleeIndex];
+  if (!ex || c.lineNo < ex.lineNo) dsmMap[c.callerIndex][c.calleeIndex] = c;
+});
+
+document.getElementById('dsm-subtitle').textContent =
+  methods.length + ' \u00d7 ' + methods.length;
+
+(function buildDsmSkeleton() {
+  var tbl = document.getElementById('dsm-table');
+  var html = '<thead><tr><th class="dsm-corner"></th>';
+  methods.forEach(function(m) {
+    html += '<th class="dsm-col-header" title="' + esc(m.signature) + '"' +
+            ' onclick="jumpToMethod(' + m.index + ')"><span>' + m.index + '</span></th>';
+  });
+  html += '</tr></thead><tbody>';
+  methods.forEach(function(caller) {
+    html += '<tr><td class="dsm-row-header" onclick="jumpToMethod(' + caller.index + ')"' +
+            ' title="' + esc(caller.signature) + '">' +
+            '<span class="rh-idx">' + caller.index + '</span>' +
+            '<span class="rh-name">' + esc(caller.name) + '</span></td>';
+    methods.forEach(function(callee) {
+      if (caller.index === callee.index) {
+        html += '<td class="dsm-cell diag" id="dsm-' + caller.index + '-' + callee.index + '"></td>';
+      } else {
+        html += '<td class="dsm-cell" id="dsm-' + caller.index + '-' + callee.index + '"' +
+                ' onclick="jumpToCallByPair(' + caller.index + ',' + callee.index + ')"></td>';
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+})();
+
+window.renderDsm = function() {
+  var mode = document.querySelector('input[name="dsm-mode"]:checked').value;
+  methods.forEach(function(caller) {
+    methods.forEach(function(callee) {
+      if (caller.index === callee.index) return;
+      var cell = document.getElementById('dsm-' + caller.index + '-' + callee.index);
+      if (!cell) return;
+      var call = (dsmMap[caller.index] || {})[callee.index];
+      if (!call) {
+        cell.className = 'dsm-cell';
+        cell.textContent = '';
+        cell.title = '';
+        return;
+      }
+      var dIdx  = callee.index  - caller.index;
+      var dLine = callee.lineNo - caller.lineNo;
+      var neg   = dIdx < 0;
+      cell.className = 'dsm-cell has-call' + (neg ? ' neg' : '');
+      cell.title = 'Caller: ' + caller.signature +
+                   '\nCallee: ' + callee.signature +
+                   '\nFirst call @ line ' + call.lineNo;
+      var display;
+      if (mode === 'idx') {
+        display = (dIdx >= 0 ? '+' : '') + dIdx;
+      } else if (mode === 'line') {
+        display = (dLine >= 0 ? '+' : '') + dLine;
+      } else {
+        display = '@' + call.lineNo;
+      }
+      cell.textContent = display;
+    });
+  });
+};
+renderDsm();
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 3. METHODS TABLE
+// ══════════════════════════════════════════════════════════════════════════════
+function filterBadge(key, cls, label) {
+  return ' onclick="event.stopPropagation();toggleMethodFilter(\'' + key + '\',\'' + cls + '\',\'' + label + '\')"' +
+         ' class="badge ' + cls + ' clickable"';
+}
+function accessBadge(acc) {
+  var cls = {PUBLIC:'b-public',PROTECTED:'b-protected',PRIVATE:'b-private'}[acc] || 'b-default';
+  var key = acc.toLowerCase();
+  return '<span' + filterBadge(key, cls, key) + '>' + key + '</span>';
+}
+function traitBadges(m) {
+  var b = [];
+  if (m.isCtor)       b.push('<span' + filterBadge('ctor',      'b-ctor',     'ctor')      + '>ctor</span>');
+  if (m.isStatic)     b.push('<span' + filterBadge('static',    'b-static',   'static')    + '>static</span>');
+  if (m.isInstance)   b.push('<span' + filterBadge('instance',  'b-instance', 'instance')  + '>instance</span>');
+  if (m.isOverride)   b.push('<span' + filterBadge('override',  'b-override', 'override')  + '>override</span>');
+  if (m.isOverloaded) b.push('<span' + filterBadge('overloaded','b-overload', 'overloaded')+ '>overloaded</span>');
+  if (m.isGetter)     b.push('<span' + filterBadge('getter',    'b-getter',   'getter')    + '>getter</span>');
+  if (m.isSetter)     b.push('<span' + filterBadge('setter',    'b-setter',   'setter')    + '>setter</span>');
+  if (m.isVoid)       b.push('<span' + filterBadge('void',      'b-void',     'void')      + '>void</span>');
+  if (m.isVarArg)     b.push('<span' + filterBadge('vararg',    'b-vararg',   'vararg')    + '>vararg</span>');
+  return b.join(' ');
+}
+
+function renderMethods(list) {
+  document.getElementById('methods-count').textContent = list.length + ' methods';
+  var tbody = document.getElementById('methods-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="no-data">No methods match.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(function(m) {
+    var ln = m.lineNo || 0;
+    return '<tr id="method-row-' + m.index + '"' +
+      ' style="cursor:pointer"' +
+      ' onclick="handleMethodRowClick(event,' + ln + ')">' +
+      '<td>' + m.index + '</td>' +
+      '<td><a class="mono" onclick="event.stopPropagation();gotoLine(' + ln + ')">' + esc(m.signature) + '</a>' +
+      (m.accessiblePropertyName
+        ? '<div class="dim">property: ' + esc(m.accessiblePropertyName) + '</div>' : '') +
+      '</td>' +
+      '<td><a onclick="event.stopPropagation();gotoLine(' + ln + ')" class="dim">' + ln + '</a></td>' +
+      '<td>' + m.length + '</td>' +
+      '<td>' + m.argCount + '</td>' +
+      '<td>' + accessBadge(m.accessibility) + '</td>' +
+      '<td>' + traitBadges(m) + '</td>' +
+      '</tr>';
+  }).join('');
+}
+renderMethods(methods);
+
+// ── Badge filter state ───────────────────────────────────────────────────────
+var activeMethodFilters = {}; // key -> { cls, label }
+
+window.toggleMethodFilter = function(key, cls, label) {
+  if (activeMethodFilters[key]) {
+    delete activeMethodFilters[key];
+  } else {
+    activeMethodFilters[key] = { cls: cls, label: label };
+  }
+  renderMethodFilterBar();
+  applyMethodFilters();
+};
+
+window.removeMethodFilter = function(key) {
+  delete activeMethodFilters[key];
+  renderMethodFilterBar();
+  applyMethodFilters();
+};
+
+window.clearAllMethodFilters = function() {
+  activeMethodFilters = {};
+  renderMethodFilterBar();
+  applyMethodFilters();
+};
+
+function renderMethodFilterBar() {
+  var bar = document.getElementById('method-filter-bar');
+  var keys = Object.keys(activeMethodFilters);
+  if (!keys.length) {
+    bar.className = 'filter-bar';
+    bar.innerHTML = '';
+    // clear active-filter outlines on stat chips
+    var chips = document.querySelectorAll('.stat-chip.clickable');
+    for (var i = 0; i < chips.length; i++) chips[i].classList.remove('active-filter');
+    return;
+  }
+  bar.className = 'filter-bar has-filters';
+  var html = '<span style="font-size:11px;color:#57606a;font-weight:600">Filters:</span>';
+  keys.forEach(function(k) {
+    var f = activeMethodFilters[k];
+    html += '<span class="filter-tag ' + f.cls + '">' + f.label +
+            '<span class="ft-x" onclick="removeMethodFilter(\'' + k + '\')">&times;</span></span>';
+  });
+  html += '<span class="clear-all-btn" onclick="clearAllMethodFilters()">Clear all</span>';
+  bar.innerHTML = html;
+  // highlight active stat chips
+  var chips = document.querySelectorAll('.stat-chip.clickable');
+  for (var i = 0; i < chips.length; i++) {
+    var fk = chips[i].getAttribute('data-filter-key');
+    if (fk && activeMethodFilters[fk]) chips[i].classList.add('active-filter');
+    else chips[i].classList.remove('active-filter');
+  }
+}
+
+// Predicate map: filter key -> function(method) -> bool
+var filterPredicates = {};
+accDefs.concat(traitDefs).forEach(function(def) { filterPredicates[def[0]] = def[1]; });
+
+window.applyMethodFilters = function() {
+  var q    = document.getElementById('method-search').value.toLowerCase();
+  var keys = Object.keys(activeMethodFilters);
+  var list = methods.filter(function(m) {
+    // text search
+    if (q && m.name.toLowerCase().indexOf(q) === -1 &&
+             m.signature.toLowerCase().indexOf(q) === -1) return false;
+    // badge filters (AND across all active filters)
+    for (var i = 0; i < keys.length; i++) {
+      var pred = filterPredicates[keys[i]];
+      if (pred && !pred(m)) return false;
+    }
+    return true;
+  });
+  renderMethods(list);
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 4. RESOLVED CALLS TABLE
+// ══════════════════════════════════════════════════════════════════════════════
+function renderCalls(list) {
+  document.getElementById('calls-count').textContent = list.length + ' calls';
+  var tbody = document.getElementById('calls-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="no-data">No calls match.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(function(c, i) {
+    var caller = mMap[c.callerIndex];
+    var callee = mMap[c.calleeIndex];
+    var crSig  = caller ? esc(caller.signature) : '#' + c.callerIndex;
+    var ceSig  = callee ? esc(callee.signature) : '#' + c.calleeIndex;
+    var ln     = c.lineNo != null ? c.lineNo : 0;
+    var loc    = ln > 0
+      ? '<a onclick="gotoLine(' + ln + ')" class="mono dim">' + ln + ':' + (c.columnNo != null ? c.columnNo : '?') + '</a>'
+      : '<span class="dim">\u2013</span>';
+    var type   = c.isMethodRef
+      ? '<span class="badge b-ref clickable" onclick="event.stopPropagation();toggleCallFilter(\'method ref\',\'b-ref\',\'method ref\')">method ref</span>'
+      : '<span class="badge b-call clickable" onclick="event.stopPropagation();toggleCallFilter(\'call\',\'b-call\',\'call\')">call</span>';
+    return '<tr id="call-row-' + i + '"' +
+           ' data-caller="' + c.callerIndex + '"' +
+           ' data-callee="' + c.calleeIndex + '"' +
+           ' data-line="' + (ln || 999999) + '"' +
+           ' style="cursor:pointer"' +
+           ' onclick="handleCallRowClick(event,' + ln + ')">' +
+      '<td><a onclick="event.stopPropagation();jumpToMethod(' + c.callerIndex + ')" class="mono">' + crSig + '</a></td>' +
+      '<td class="arrow" style="text-align:center">\u2192</td>' +
+      '<td><a onclick="event.stopPropagation();jumpToMethod(' + c.calleeIndex + ')" class="mono">' + ceSig + '</a></td>' +
+      '<td>' + loc + '</td>' +
+      '<td>' + type + '</td>' +
+      '</tr>';
+  }).join('');
+}
+renderCalls(calls);
+
+// ── Call filter state ───────────────────────────────────────────────────────
+var activeCallFilters = {}; // key -> { cls, label }
+
+window.toggleCallFilter = function(key, cls, label) {
+  if (activeCallFilters[key]) {
+    delete activeCallFilters[key];
+  } else {
+    activeCallFilters[key] = { cls: cls, label: label };
+  }
+  renderCallFilterBar();
+  applyCallFilters();
+};
+
+window.removeCallFilter = function(key) {
+  delete activeCallFilters[key];
+  renderCallFilterBar();
+  applyCallFilters();
+};
+
+window.clearAllCallFilters = function() {
+  activeCallFilters = {};
+  renderCallFilterBar();
+  applyCallFilters();
+};
+
+function renderCallFilterBar() {
+  var bar = document.getElementById('call-filter-bar');
+  var keys = Object.keys(activeCallFilters);
+  if (!keys.length) {
+    bar.className = 'filter-bar';
+    bar.innerHTML = '';
+    var chips = document.querySelectorAll('.stat-chip[data-filter-fn="toggleCallFilter"]');
+    for (var i = 0; i < chips.length; i++) chips[i].classList.remove('active-filter');
+    return;
+  }
+  bar.className = 'filter-bar has-filters';
+  var html = '<span style="font-size:11px;color:#57606a;font-weight:600">Filters:</span>';
+  keys.forEach(function(k) {
+    var f = activeCallFilters[k];
+    html += '<span class="filter-tag ' + f.cls + '">' + f.label +
+            '<span class="ft-x" onclick="removeCallFilter(\'' + k + '\')">&times;</span></span>';
+  });
+  html += '<span class="clear-all-btn" onclick="clearAllCallFilters()">Clear all</span>';
+  bar.innerHTML = html;
+  var chips = document.querySelectorAll('.stat-chip[data-filter-fn="toggleCallFilter"]');
+  for (var i = 0; i < chips.length; i++) {
+    var fk = chips[i].getAttribute('data-filter-key');
+    if (fk && activeCallFilters[fk]) chips[i].classList.add('active-filter');
+    else chips[i].classList.remove('active-filter');
+  }
+}
+
+window.applyCallFilters = function() {
+  var qr = document.getElementById('call-search-caller').value.toLowerCase();
+  var qe = document.getElementById('call-search-callee').value.toLowerCase();
+  var ckeys = Object.keys(activeCallFilters);
+  renderCalls(calls.filter(function(c) {
+    var cr = mMap[c.callerIndex]; var ce = mMap[c.calleeIndex];
+    var crSig = cr ? cr.signature.toLowerCase() : '';
+    var ceSig = ce ? ce.signature.toLowerCase() : '';
+    if (qr && crSig.indexOf(qr) === -1) return false;
+    if (qe && ceSig.indexOf(qe) === -1) return false;
+    // type filter: 'call' means !isMethodRef, 'method ref' means isMethodRef
+    for (var i = 0; i < ckeys.length; i++) {
+      if (ckeys[i] === 'call'       && c.isMethodRef)  return false;
+      if (ckeys[i] === 'method ref' && !c.isMethodRef) return false;
+    }
+    return true;
+  }));
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 5. SOURCE CODE VIEWER
+// ══════════════════════════════════════════════════════════════════════════════
+(function buildSource() {
+  var lines = srcText.split('\n');
+  document.getElementById('source-subtitle').textContent = lines.length + ' lines';
+
+  var KEYWORDS = {
+    'abstract':1,'assert':1,'boolean':1,'break':1,'byte':1,'case':1,'catch':1,
+    'char':1,'class':1,'const':1,'continue':1,'default':1,'do':1,'double':1,
+    'else':1,'enum':1,'extends':1,'final':1,'finally':1,'float':1,'for':1,
+    'goto':1,'if':1,'implements':1,'import':1,'instanceof':1,'int':1,
+    'interface':1,'long':1,'native':1,'new':1,'package':1,'private':1,
+    'protected':1,'public':1,'return':1,'short':1,'static':1,'strictfp':1,
+    'super':1,'switch':1,'synchronized':1,'this':1,'throw':1,'throws':1,
+    'transient':1,'try':1,'var':1,'void':1,'volatile':1,'while':1,
+    'true':1,'false':1,'null':1,'record':1,'sealed':1,'permits':1,'yield':1
+  };
+  var TOKEN_RE = /\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|@[A-Za-z_]\w*|\b\d[\d_]*(?:\.\d[\d_]*)?[LlFfDd]?\b|[A-Za-z_$][\w$]*|[^A-Za-z_$\d\s]/g;
+
+  function highlightLine(raw) {
+    var out = '', last = 0, m;
+    TOKEN_RE.lastIndex = 0;
+    while ((m = TOKEN_RE.exec(raw)) !== null) {
+      if (m.index > last) out += esc(raw.slice(last, m.index));
+      last = m.index + m[0].length;
+      var tok = m[0];
+      if (tok.charAt(0) === '/' && (tok.charAt(1) === '/' || tok.charAt(1) === '*')) {
+        out += '<span class="tk-cmt">' + esc(tok) + '</span>';
+      } else if (tok.charAt(0) === '"' || tok.charAt(0) === "'") {
+        out += '<span class="tk-str">' + esc(tok) + '</span>';
+      } else if (tok.charAt(0) === '@') {
+        out += '<span class="tk-ann">' + esc(tok) + '</span>';
+      } else if (/^\d/.test(tok)) {
+        out += '<span class="tk-num">' + esc(tok) + '</span>';
+      } else if (KEYWORDS[tok]) {
+        out += '<span class="tk-kw">' + esc(tok) + '</span>';
+      } else if (/^[A-Z]/.test(tok)) {
+        out += '<span class="tk-ty">' + esc(tok) + '</span>';
+      } else {
+        out += esc(tok);
+      }
+    }
+    if (last < raw.length) out += esc(raw.slice(last));
+    return out;
+  }
+
+  var html = '';
+  lines.forEach(function(line, i) {
+    var ln = i + 1;
+    html += '<div class="src-line" id="src-ln-' + ln + '">' +
+            '<span class="src-ln">' + ln + '</span>' +
+            '<span class="src-code">' + highlightLine(line) + '</span>' +
+            '</div>';
+  });
+  document.getElementById('source-pre').innerHTML = html;
+})();
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SORTING
+// ══════════════════════════════════════════════════════════════════════════════
+var sortState = {};
+window.sortTable = function(tbl, col) {
+  var key = tbl + ':' + col;
+  sortState[key] = !sortState[key];
+  var asc = sortState[key];
+  if (tbl === 'm') {
+    var mFns = [function(m){return m.index;},function(m){return m.signature;},
+                function(m){return m.lineNo;},function(m){return m.length;},
+                function(m){return m.argCount;}];
+    var mFn = mFns[col] || mFns[0];
+    renderMethods(methods.slice().sort(function(a,b){
+      return asc ? (mFn(a) > mFn(b) ? 1 : -1) : (mFn(a) < mFn(b) ? 1 : -1);
+    }));
+  } else {
+    var cFns = [
+      function(c){return (mMap[c.callerIndex]||{signature:''}).signature;},
+      function(c){return (mMap[c.callerIndex]||{signature:''}).signature;},
+      function(c){return (mMap[c.calleeIndex]||{signature:''}).signature;},
+      function(c){return c.lineNo || 0;}
+    ];
+    var cFn = cFns[col] || cFns[3];
+    renderCalls(calls.slice().sort(function(a,b){
+      return asc ? (cFn(a) > cFn(b) ? 1 : -1) : (cFn(a) < cFn(b) ? 1 : -1);
+    }));
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════════════════
+window.jumpToMethod = function(idx) {
+  var row = document.getElementById('method-row-' + idx);
+  if (!row) return;
+  row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  row.classList.add('hl');
+  setTimeout(function(){ row.classList.remove('hl'); }, 1800);
+};
+
+window.handleMethodRowClick = function(event, ln) {
+  // Clicks on <a> elements stop propagation and are handled individually;
+  // clicking anywhere else on the row (badges, index cell, etc.) jumps to source.
+  if (ln > 0) gotoLine(ln);
+};
+
+window.handleCallRowClick = function(event, ln) {
+  if (ln > 0) gotoLine(ln);
+};
+
+window.jumpToCallByPair = function(callerIdx, calleeIdx) {
+  var target = null, minLine = Infinity;
+  var rows = document.querySelectorAll('#calls-tbody tr');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    if (+row.dataset.caller === callerIdx && +row.dataset.callee === calleeIdx) {
+      var ln = +row.dataset.line;
+      if (ln < minLine) { minLine = ln; target = row; }
+    }
+  }
+  if (!target) return;
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  target.classList.add('hl');
+  setTimeout(function(){ target.classList.remove('hl'); }, 1800);
+};
+
+window.gotoLine = function(ln) {
+  if (!ln || ln < 1) return;
+  var prev = document.querySelectorAll('.src-line.src-target');
+  for (var i = 0; i < prev.length; i++) prev[i].classList.remove('src-target');
+  var el = document.getElementById('src-ln-' + ln);
+  if (!el) return;
+  el.classList.add('src-target');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('source-cursor').textContent = 'Line ' + ln;
+};
+
+document.getElementById('goto-line').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') gotoLine(+e.target.value);
+});
+
+})();
+</script>
+</body>
+</html>

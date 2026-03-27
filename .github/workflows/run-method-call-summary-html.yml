@@ -1,0 +1,136 @@
+####################################################################################
+# GitHub Action to run methods-distance analysis:
+#
+#  User provides a Java file URL
+#  Workflow generates and publishes all three report formats:
+#    - JSON raw report (Test.java.json)
+#    - HTML report via old DSM web UI (Test.java.html from ReportCli)
+#    - HTML report via new interactive UI (Test.java.html from HtmlCli)
+#  All artifacts are uploaded as non-zipped for direct browser preview
+####################################################################################
+
+name: Run-Method-Call-Summary
+
+on:
+  workflow_dispatch:
+    inputs:
+      java-source-url:
+        description: 'URL to Java source file to analyze'
+        required: true
+      compile:
+        description: 'compile java by javac'
+        type: boolean
+        required: true
+        default: false
+      generate-json:
+        description: 'generate a JSON report'
+        type: boolean
+        required: true
+        default: false
+      generate-interactive-html:
+        description: 'generate an interactive HTML report'
+        type: boolean
+        required: true
+        default: false
+      generate-dsm-html:
+        description: 'generate a DSM HTML report'
+        type: boolean
+        required: true
+        default: false
+      generate-dot:
+        description: 'generate a call graph dot file'
+        type: boolean
+        required: true
+        default: false
+
+concurrency:
+  group: ${{ github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Build project with Maven
+        run: |
+          cd methods-distance
+          mvn -e --no-transfer-progress -B package
+
+      - name: Download target Java source
+        run: |
+          curl --fail-with-body -X GET "${{ inputs.java-source-url }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -o "Target.java"
+
+      - name: Run methods-distance analysis
+        run: |
+          pwd
+          ls -la
+          echo "Content of Target.java:"
+          cat -n "Target.java"
+          echo ""
+          if [[ "${{ inputs.compile }}" == "true" ]]; then
+            echo "javac Target.java:"
+            javac "Target.java"
+          fi
+          echo ""
+          cd "methods-distance"
+          JAR=(target/methods-distance-*-with-dependencies.jar)
+
+          mkdir -p ../reports
+
+          if [[ "${{ inputs.generate-json }}" == "true" ]]; then
+            echo "Generating JSON report..."
+            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.JsonCli "../Target.java" "../reports"
+            mv ../reports/Target.java.json ../reports/report.json
+          fi
+
+          if [[ "${{ inputs.generate-interactive-html }}" == "true" ]]; then
+            echo "Generating interactive HTML report..."
+            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.HtmlCli "../Target.java" "../reports"
+            mv ../reports/Target.java.html ../reports/interactive-report.html
+          fi
+
+          if [[ "${{ inputs.generate-dsm-html }}" == "true" ]]; then
+            echo "Generating DSM HTML report..."
+            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.Main "../Target.java" --generate-dsm
+            mv Target.java.html ../reports/dsm-report.html
+          fi
+
+          if [[ "${{ inputs.generate-dot }}" == "true" ]]; then
+            echo "Generating call graph dot file..."
+            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.Main "../Target.java" --generate-dot
+            mv Target.java.dot ../reports/call-graph.dot
+          fi
+
+      - name: Count generated reports
+        id: count
+        run: |
+          COUNT=$(ls reports/ | wc -l)
+          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload single report (direct browser preview)
+        if: steps.count.outputs.count == '1'
+        uses: actions/upload-artifact@v7
+        with:
+          name: method-call-summary-report
+          path: reports/
+          archive: false
+
+      - name: Upload multiple reports (bundled)
+        if: steps.count.outputs.count != '1'
+        uses: actions/upload-artifact@v7
+        with:
+          name: method-call-summary-report
+          path: reports/

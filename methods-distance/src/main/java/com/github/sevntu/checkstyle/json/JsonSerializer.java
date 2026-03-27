@@ -13,7 +13,6 @@ import com.github.sevntu.checkstyle.domain.ClassDefinition;
 import com.github.sevntu.checkstyle.domain.Dependencies;
 import com.github.sevntu.checkstyle.domain.MethodDefinition;
 import com.github.sevntu.checkstyle.domain.ResolvedCall;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 public final class JsonSerializer {
@@ -27,12 +26,13 @@ public final class JsonSerializer {
 
         try (PrintWriter file = new PrintWriter(new File(fileName))) {
             file.write(serialize(dependencies, javaSource, config));
-        } catch (final CheckstyleException | FileNotFoundException ex) {
+        } catch (final FileNotFoundException ex) {
             throw new IllegalArgumentException(ex);
         }
     }
 
-    public static String serialize(Dependencies dependencies, String javaSource, Configuration config) throws CheckstyleException {
+    public static String serialize(
+            Dependencies dependencies, String javaSource, Configuration config) {
         ClassDefinition classDefinition = dependencies.getClassDefinition();
         List<ResolvedCall> resolvedCalls = dependencies.getResolvedCalls();
 
