@@ -114,23 +114,34 @@ jobs:
             mv Target.java.dot ../reports/call-graph.dot
           fi
 
-      - name: Count generated reports
-        id: count
-        run: |
-          COUNT=$(ls reports/ | wc -l)
-          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
-
-      - name: Upload single report (direct browser preview)
-        if: steps.count.outputs.count == '1'
+      - name: Upload JSON
+        if: inputs.generate-json
         uses: actions/upload-artifact@v7
         with:
-          name: method-call-summary-report
-          path: reports/
+          name: method-call-summary-report-json
+          path: reports/report.json
           archive: false
 
-      - name: Upload multiple reports (bundled)
-        if: steps.count.outputs.count != '1'
+      - name: Upload interactive HTML
+        if: inputs.generate-interactive-html
         uses: actions/upload-artifact@v7
         with:
-          name: method-call-summary-report
-          path: reports/
+          name: method-call-summary-report-interactive-html
+          path: reports/interactive-report.html
+          archive: false
+
+      - name: Upload DSM HTML
+        if: inputs.generate-dsm-html
+        uses: actions/upload-artifact@v7
+        with:
+          name: method-call-summary-report-dsm-html
+          path: reports/dsm-report.html
+          archive: false
+
+      - name: Upload dot file
+        if: inputs.generate-dot
+        uses: actions/upload-artifact@v7
+        with:
+          name: method-call-summary-report-dot
+          path: reports/call-graph.dot
+          archive: false
