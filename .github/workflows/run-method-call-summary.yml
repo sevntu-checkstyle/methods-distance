@@ -17,11 +17,6 @@ on:
       java-source-url:
         description: 'URL to Java source file to analyze'
         required: true
-      compile:
-        description: 'compile java by javac'
-        type: boolean
-        required: true
-        default: false
 
 concurrency:
   group: ${{ github.run_id }}
@@ -60,11 +55,7 @@ jobs:
           echo "Content of Target.java:"
           cat -n "Target.java"
           echo ""
-          if [[ "${{ inputs.compile }}" == "true" ]]; then
-            echo "javac Target.java:"
-            javac "Target.java"
-          fi
-          echo ""
+
           cd "methods-distance"
           JAR=(target/methods-distance-*-with-dependencies.jar)
 
