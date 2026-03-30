@@ -22,26 +22,6 @@ on:
         type: boolean
         required: true
         default: false
-      generate-json:
-        description: 'generate a JSON report'
-        type: boolean
-        required: true
-        default: false
-      generate-interactive-html:
-        description: 'generate an interactive HTML report'
-        type: boolean
-        required: true
-        default: false
-      generate-dsm-html:
-        description: 'generate a DSM HTML report'
-        type: boolean
-        required: true
-        default: false
-      generate-dot:
-        description: 'generate a call graph dot file'
-        type: boolean
-        required: true
-        default: false
 
 concurrency:
   group: ${{ github.run_id }}
@@ -90,32 +70,23 @@ jobs:
 
           mkdir -p ../reports
 
-          if [[ "${{ inputs.generate-json }}" == "true" ]]; then
-            echo "Generating JSON report..."
-            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.JsonCli "../Target.java" "../reports"
-            mv ../reports/Target.java.json ../reports/report.json
-          fi
+          echo "Generating JSON report..."
+          java -cp "${JAR[0]}" com.github.sevntu.checkstyle.JsonCli "../Target.java" "../reports"
+          mv ../reports/Target.java.json ../reports/report.json
 
-          if [[ "${{ inputs.generate-interactive-html }}" == "true" ]]; then
-            echo "Generating interactive HTML report..."
-            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.HtmlCli "../Target.java" "../reports"
-            mv ../reports/Target.java.html ../reports/interactive-report.html
-          fi
+          echo "Generating interactive HTML report..."
+          java -cp "${JAR[0]}" com.github.sevntu.checkstyle.HtmlCli "../Target.java" "../reports"
+          mv ../reports/Target.java.html ../reports/interactive-report.html
 
-          if [[ "${{ inputs.generate-dsm-html }}" == "true" ]]; then
-            echo "Generating DSM HTML report..."
-            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.Main "../Target.java" --generate-dsm
-            mv Target.java.html ../reports/dsm-report.html
-          fi
+          echo "Generating DSM HTML report..."
+          java -cp "${JAR[0]}" com.github.sevntu.checkstyle.Main "../Target.java" --generate-dsm
+          mv Target.java.html ../reports/dsm-report.html
 
-          if [[ "${{ inputs.generate-dot }}" == "true" ]]; then
-            echo "Generating call graph dot file..."
-            java -cp "${JAR[0]}" com.github.sevntu.checkstyle.Main "../Target.java" --generate-dot
-            mv Target.java.dot ../reports/call-graph.dot
-          fi
+          echo "Generating call graph dot file..."
+          java -cp "${JAR[0]}" com.github.sevntu.checkstyle.Main "../Target.java" --generate-dot
+          mv Target.java.dot ../reports/call-graph.dot
 
       - name: Upload JSON
-        if: inputs.generate-json
         uses: actions/upload-artifact@v7
         with:
           name: method-call-summary-report-json
@@ -123,7 +94,6 @@ jobs:
           archive: false
 
       - name: Upload interactive HTML
-        if: inputs.generate-interactive-html
         uses: actions/upload-artifact@v7
         with:
           name: method-call-summary-report-interactive-html
@@ -131,7 +101,6 @@ jobs:
           archive: false
 
       - name: Upload DSM HTML
-        if: inputs.generate-dsm-html
         uses: actions/upload-artifact@v7
         with:
           name: method-call-summary-report-dsm-html
@@ -139,7 +108,6 @@ jobs:
           archive: false
 
       - name: Upload dot file
-        if: inputs.generate-dot
         uses: actions/upload-artifact@v7
         with:
           name: method-call-summary-report-dot
